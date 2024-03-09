@@ -1,0 +1,6 @@
+@Flink_HostAddress = http://localhost:5206
+
+GET {{Flink_HostAddress}}/
+Accept: application/json
+
+###

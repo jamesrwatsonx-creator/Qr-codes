@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flink", "Flink\Flink.csproj", "{474F73A8-52F6-4339-B502-6E059AEDD4A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flink.Domain", "Flink.Domain\Flink.Domain.csproj", "{9BD475D6-258B-4CA9-88D5-0FF1F7804FEF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{474F73A8-52F6-4339-B502-6E059AEDD4A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{474F73A8-52F6-4339-B502-6E059AEDD4A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{474F73A8-52F6-4339-B502-6E059AEDD4A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{474F73A8-52F6-4339-B502-6E059AEDD4A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BD475D6-258B-4CA9-88D5-0FF1F7804FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BD475D6-258B-4CA9-88D5-0FF1F7804FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BD475D6-258B-4CA9-88D5-0FF1F7804FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BD475D6-258B-4CA9-88D5-0FF1F7804FEF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

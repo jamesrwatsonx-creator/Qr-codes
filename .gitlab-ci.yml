@@ -1,0 +1,33 @@
+stages:
+  - build
+  - test
+  - publish
+
+build:
+  stage: build
+  image:
+    name: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - dotnet build
+
+unit-test:
+  stage: test
+  image:
+    name: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - dotnet test Flink.UnitTests/Flink.UnitTests.csproj
+
+integration-test:
+  stage: test
+  image:
+    name: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - dotnet test Flink.IntegrationTests/Flink.IntegrationTests.csproj
+
+podman-build:
+  stage: publish
+  image:
+    name: quay.io/podman/stable
+  script:
+    - podman login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - podman build -t "$CI_REGISTRY_IMAGE:latest" .

@@ -6,9 +6,8 @@ namespace Flink.ShortLinks.Repositories;
 
 public class InMemoryShortLinkRepository : IShortLinkRepository {
   private readonly List<ShortenedLink> _memoryStorage = [];
-  
-  public Task<Result<ShortenedLink>> AddAsync(ShortenedLink shortenedLink) {
 
+  public Task<Result<ShortenedLink>> AddAsync(ShortenedLink shortenedLink) {
     _memoryStorage.Add(shortenedLink);
     return Task.FromResult(Result.Success(shortenedLink));
   }

@@ -13,7 +13,7 @@ public static class QrCodeGenerator {
     var qrCodeImage = qrCode.GetGraphic(40);
     return EncodeToRawPng(qrCodeImage);
   }
-  
+
   private static byte[] EncodeToRawPng(Image img) {
     using var stream = new MemoryStream();
     img.Save(stream, new PngEncoder());

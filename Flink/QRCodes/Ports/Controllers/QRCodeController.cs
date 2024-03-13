@@ -7,14 +7,14 @@ namespace Flink.QRCodes.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class QRCodeController(IShortLinkRepository shortLinkRepository, ILogger<QRCodeController> logger) : ControllerBase {
+public class QrCodeController(IShortLinkRepository shortLinkRepository, ILogger<QrCodeController> logger) : ControllerBase {
   [HttpGet("/qr/{id}")]
   [ProducesResponseType(typeof(byte[]), 200, "image/png")]
   [ProducesResponseType(typeof(ActionResult), 404, "application/json")]
   [ProducesResponseType(typeof(ActionResult), 500, "application/json")]
   public Task<ActionResult> Get(string id) {
     logger.LogInformation("Requesting Short Link with {Id}", id);
-    
+
     return shortLinkRepository
       .GetAsync(id)
       .Match(maybeLink => maybeLink

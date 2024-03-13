@@ -36,7 +36,7 @@ public class SqliteShortLinkRepository(DatabaseContext dbContext) : IShortLinkRe
   public async Task<Result<Maybe<ShortenedLink>>> GetAsync(string id) {
     try {
       using var connection = dbContext.CreateConnection();
-      var result = await connection.QueryFirstOrDefaultAsync<ShortenedLink>(QueryByIdStatement, new {Id = id});
+      var result = await connection.QueryFirstOrDefaultAsync<ShortenedLink>(QueryByIdStatement, new { Id = id });
       return Result.Success(result == null ? Maybe<ShortenedLink>.None : Maybe.From(result));
     } catch {
       return Result.Failure<Maybe<ShortenedLink>>("Could not query from database");

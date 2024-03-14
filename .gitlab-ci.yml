@@ -23,13 +23,13 @@ unit-test:
     when: always
     paths:
       - $CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml
-      - $CI_PROJECT_DIR/Flink.UnitTests/TestResults/*/coverage.cobertura.xml
+      - $CI_PROJECT_DIR/Flink.UnitTests/TestResults/**/coverage.cobertura.xml
     reports:
       junit:
         - $CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml
       coverage_report:
         coverage_format: cobertura
-        path: $CI_PROJECT_DIR/Flink.UnitTests/cobertura/*/coverage.cobertura.xml
+        path: $CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml
 
       
 integration-test:
@@ -45,13 +45,13 @@ integration-test:
     when: always
     paths:
       - $CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml
-      - $CI_PROJECT_DIR/Flink.IntegrationTests/TestResults/*/coverage.cobertura.xml
+      - $CI_PROJECT_DIR/Flink.IntegrationTests/TestResults/**/coverage.cobertura.xml
     reports:
       junit:
         - $CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml
       coverage_report:
         coverage_format: cobertura
-        path: $CI_PROJECT_DIR/Flink.IntegrationTests/TestResults/*/coverage.cobertura.xml
+        path: $CI_PROJECT_DIR/Flink.IntegrationTests/TestResults/**/coverage.cobertura.xml
 
 podman-build:
   stage: publish

@@ -7,27 +7,59 @@ build:
   stage: build
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
+  artifacts:
+    paths:
+      - ./
+    untracked: true
+    expire_in: 2h
   script:
     - dotnet build
 
 unit-test:
   stage: test
+  dependencies:
+    - build
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
-    - dotnet test Flink.UnitTests/Flink.UnitTests.csproj
+    - cd Flink.UnitTests/
+    - dotnet test -c Debug -r ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/Flink.IntegrationTests/junit/unit-test-result.xml
+    reports:
+      junit:
+        - $CI_PROJECT_DIR/Flink.IntegrationTests/junit/unit-test-result.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/*/coverage.cobertura.xml
 
+      
 integration-test:
   stage: test
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
-    - dotnet test Flink.IntegrationTests/Flink.IntegrationTests.csproj
+    - cd Flink.IntegrationTests/
+    - dotnet test -c Debug -r ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/Flink.IntegrationTests/junit/integration-test-result.xml
+    reports:
+      junit:
+        - $CI_PROJECT_DIR/Flink.IntegrationTests/junit/integration-test-result.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/*/coverage.cobertura.xml
 
 podman-build:
   stage: publish
   image:
     name: quay.io/podman/stable
+  only:
+    - tags
   script:
     - podman login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - podman build -t "$CI_REGISTRY_IMAGE:latest" .

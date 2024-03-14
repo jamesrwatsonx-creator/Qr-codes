@@ -56,7 +56,8 @@ integration-test:
 podman-build:
   stage: publish
   dependencies:
-    - test
+    - unit-test
+    - integration-test
   image:
     name: quay.io/podman/stable
   only:

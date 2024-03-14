@@ -23,7 +23,7 @@ unit-test:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
     - cd Flink.UnitTests/
-    - dotnet test -c Debug -r ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+    - dotnet test -c Debug -r ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
   artifacts:
     when: always
     paths:
@@ -42,7 +42,7 @@ integration-test:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
     - cd Flink.IntegrationTests/
-    - dotnet test -c Debug -r ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"'
+    - dotnet test -c Debug -r ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
   artifacts:
     when: always
     paths:

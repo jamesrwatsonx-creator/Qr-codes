@@ -31,7 +31,7 @@ unit-test:
       - $CI_PROJECT_DIR/Flink.UnitTests/TestResults/*/coverage.cobertura.xml
     reports:
       junit:
-        - $CI_PROJECT_DIR/Flink.UnitTests/junit/unit-test-result.xml
+        - $CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml
       coverage_report:
         coverage_format: cobertura
         path: $CI_PROJECT_DIR/Flink.UnitTests/cobertura/*/coverage.cobertura.xml
@@ -47,7 +47,7 @@ integration-test:
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/Flink.IntegrationTests/junit/integration-test-result.xml
+      - $CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml
       - $CI_PROJECT_DIR/Flink.IntegrationTests/TestResults/*/coverage.cobertura.xml
     reports:
       junit:

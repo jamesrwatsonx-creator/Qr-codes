@@ -12,12 +12,12 @@ COPY ["Flink/Flink.csproj", "Flink/"]
 RUN dotnet restore "Flink/Flink.csproj"
 COPY . .
 WORKDIR "/src/Flink"
-RUN dotnet build "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:AssemblyVersion=$VERSION
+RUN dotnet build "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:Version=$VERSION
 
 FROM build AS publish
 ARG VERSION="1.0.0"
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:AssemblyVersion=$VERSION
+RUN dotnet publish "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:Version=$VERSION
 
 FROM base AS final
 WORKDIR /app

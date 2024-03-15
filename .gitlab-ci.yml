@@ -30,7 +30,6 @@ unit-test:
       coverage_report:
         coverage_format: cobertura
         path: $CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml
-
       
 integration-test:
   stage: test
@@ -63,8 +62,7 @@ podman-publish:
   only:
     - tags
   script:
-    - echo "Logging in to quay.io with Username $QUAY_CR_USERNAME"
     - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
-    - podman build -t "quay.io/repository/flink-shortener/flink:latest" -t "quay.io/repository/flink-shortener/flink:$CI_COMMIT_TAG" -f Flink/Dockerfile
+    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" -t "quay.io/repository/flink-shortener/flink:latest" -t "quay.io/repository/flink-shortener/flink:$CI_COMMIT_TAG" -f Flink/Dockerfile
     - podman push "quay.io/repository/flink-shortener/flink:latest"
     - podman push "quay.io/repository/flink-shortener/flink:$CI_COMMIT_TAG"

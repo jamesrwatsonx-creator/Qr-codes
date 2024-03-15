@@ -6,16 +6,17 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG VERSION=1.0.0
 WORKDIR /src
 COPY ["Flink/Flink.csproj", "Flink/"]
 RUN dotnet restore "Flink/Flink.csproj"
 COPY . .
 WORKDIR "/src/Flink"
-RUN dotnet build "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:AssemblyVersion=$VERSION
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Flink.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:AssemblyVersion=$VERSION
 
 FROM base AS final
 WORKDIR /app

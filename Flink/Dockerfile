@@ -24,5 +24,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-USER flink
 ENTRYPOINT ["dotnet", "Flink.dll"]

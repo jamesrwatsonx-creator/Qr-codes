@@ -9,6 +9,7 @@ ARG VERSION="1.0.0"
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Flink/Flink.csproj", "Flink/"]
+COPY ["Flink.Domain/Flink.Domain.csproj", "Flink.Domain/"]
 RUN dotnet restore "Flink/Flink.csproj"
 COPY . .
 WORKDIR "/src/Flink"

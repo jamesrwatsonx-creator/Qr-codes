@@ -14,6 +14,7 @@ public class DatabaseContext(ILogger<DatabaseContext> logger) {
   }
 
   public async Task Initialize() {
+    
     using var connection = CreateConnection();
     const string CreateShortenedLinkTable = $"""
                                              CREATE TABLE IF NOT EXISTS

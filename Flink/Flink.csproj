@@ -37,10 +37,6 @@
     <Content Include="..\.dockerignore">
       <Link>.dockerignore</Link>
     </Content>
-    <None Remove="flink.sqlite" />
-    <Content Include="flink.sqlite">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>

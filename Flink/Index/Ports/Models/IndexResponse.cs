@@ -17,5 +17,10 @@ public class IndexResponse {
   /// <summary>
   /// The version of Flink
   /// </summary>
-  public string ApplicationVersion => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion ?? "Unknown";
+  public string ApplicationVersion => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion ?? "Unknown";
+  
+  /// <summary>
+  /// Short description explaining Flink
+  /// </summary>
+  public string Description => "A F(L)OSS zero-config url shortener with QR Code generator and (optional) Open Telemetry Metrics support written in ASP.NET";
 }

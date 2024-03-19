@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using Flink.Domain;
-using Flink.ShortLinks.Models;
 
 namespace Flink.ShortLinks.Ports;
 

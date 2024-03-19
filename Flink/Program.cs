@@ -80,3 +80,5 @@ OpenApiInfo CreateOpenApiInfo() {
     Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion
   };
 }
+
+public partial class Program { }

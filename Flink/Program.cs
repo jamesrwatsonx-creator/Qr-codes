@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
-using Flink.ShortLinks.Ports;
-using Flink.ShortLinks.Repositories;
+using Flink.ShortLinks;
+using Flink.ShortLinks.Ports.IoC;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
@@ -34,7 +34,7 @@ builder.Services.AddSwaggerGen(o => {
 });
 
 builder.Services.AddScoped<DatabaseContext>();
-builder.Services.AddScoped<IShortLinkRepository, SqliteShortLinkRepository>();
+builder.Services.RegisterShortLinksDomain();
 
 builder.Services.AddOpenTelemetry()
   .ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName))
@@ -42,6 +42,7 @@ builder.Services.AddOpenTelemetry()
     .AddAspNetCoreInstrumentation()
     .AddMeter("Microsoft.AspNetCore.Hosting")
     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+    .AddMeter(ShortLinkMetricsRegistry.MeterName)
     .AddPrometheusExporter())
   .WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();
@@ -81,4 +82,4 @@ OpenApiInfo CreateOpenApiInfo() {
   };
 }
 
-public partial class Program { }
+public abstract partial class Program { }

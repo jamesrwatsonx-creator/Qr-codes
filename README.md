@@ -1,6 +1,6 @@
 # flink
 
-Flink is a simple, Free, Libre, and Open Source URL Shortener built with love .NET 8 (ASP.NET Core 8) WebAPI. It allows you to quickly create shortened URLs and optionally generate QR codes for them, making it particularly convenient for mobile devices.
+Flink is a simple, Free, Libre, and Open Source URL Shortener built with love and a ASP.NET Core 8 Web API. Why yet another URL Shortener, you might ask yourself? Well, because `flink` has a unique feature set, and demands around scalabilty, simplicity, security and traceability that no other URL shortener was able to fullfil.
 
 ## Features
 
@@ -34,6 +34,15 @@ curl -X "POST" \
 # want to use Grafana & Promethues to understand how often you clicked the link, navigate to http://localhost:8080/metrics
 # the Swagger OpenAPI documentation can be found http://localhost:8080/swagger/index.html
 ```
+
+## Roadmap
+
+- [ ] In-Memory caching to improve performance and load-reduction on the sqlite database
+- [ ] In-Memory caching for generated QR codes
+- [ ] Variable QR Code sizes (attach a URL parameter specifying height in px)
+- [ ] Scalability through Federation
+- [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
+- [ ] Optional authentication for creating short links (to prevent potential abuse)
 
 ## Contributing
 

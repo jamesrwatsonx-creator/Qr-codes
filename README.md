@@ -13,10 +13,9 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 📈 keep track of how often short links are visited through built-in Prometheus support
 
 
-
 ## Quickstart Guide
 
-### Start `flink`
+### Start flink
 
 ```bash
 # if you are using podman

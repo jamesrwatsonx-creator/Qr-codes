@@ -16,6 +16,8 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 
 ## Quickstart Guide
 
+### Start `flink`
+
 ```bash
 # if you are using podman
 podman run -p 8080:8080 quay.io/flink-shortener/flink
@@ -23,26 +25,32 @@ podman run -p 8080:8080 quay.io/flink-shortener/flink
 # alternatively if you use docker
 docker run -p 8080:8080 quay.io/flink-shortener/flink
 
+# yes, that's it flink is up and running 🚀
+```
+
+### Creating your first Short Link from CLI
+
+```bash
 # create a short link pointing to blog.rtrace.io with the static id "awesomeblog"
 curl -X "POST" \
     -H "Content-Type: application/json" \
     -d '{ "uri": "https://blog.rtrace.io", "creator": "ruffy", "preferredId": "awesomeblog" }' \
     'http://localhost:8080/to'
 
-# create a short link pointing to blog.rtrace.io with a 4-character random id (returned in the response)
+# create a short link pointing to blog.rtrace.io with a random 4-character id
 curl -X "POST" \
     -H "Content-Type: application/json" \
     -d '{ "uri": "https://blog.rtrace.io", "creator": "ruffy", "preferredIdLength": 4 }' \
     'http://localhost:8080/to'
-
-
-# Now it's time to explore! Open up your browser
-
-# 1. navigate to http://localhost:8080/to/awesomeblog and you'll be immediately redirected
-# 2. navigate to http://localhost:8080/qr/awesomeblog and you'll get a QR code redirecting you
-# 3. want to integrate `flink` into Grafana/Prometheus to get click-statistics? navigate to http://localhost:8080/metrics
-# 4. the Swagger OpenAPI documentation can be found here: http://localhost:8080/swagger/index.html
 ```
+
+### Exploring flink with your browser
+
+1. navigate to [/to/awesomeblog](http://localhost:8080/to/awesomeblog) and `flink` does what it does best: redirecting you
+2. navigate to [/qr/awesomeblog](http://localhost:8080/qr/awesomeblog) and `flink` will give you the URL encoded as QRcode
+3. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana)
+4. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser
+5. navigate to [/swagger/v1/swagger.json](http://localhost:5206/swagger/v1/swagger.json) to get the OpenAPI definition of `flink`
 
 ## Roadmap
 

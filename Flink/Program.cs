@@ -26,6 +26,7 @@ builder.Logging.AddSimpleConsole(o => {
   o.TimestampFormat = "yyyy-MM-ddTHH:mm:ss ";
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => {

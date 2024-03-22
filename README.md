@@ -39,7 +39,7 @@ curl -X "POST" \
 
 ## Roadmap
 
-- [ ] In-Memory caching to improve performance and load-reduction on the sqlite database
+- [x] In-Memory caching to improve performance and load-reduction on the sqlite database
 - [ ] In-Memory caching for generated QR codes
 - [ ] Variable QR Code sizes (attach a URL parameter specifying height in px)
 - [ ] Scalability through Federation

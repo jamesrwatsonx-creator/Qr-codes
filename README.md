@@ -23,18 +23,25 @@ podman run -p 8080:8080 quay.io/flink-shortener/flink
 # alternatively if you use docker
 docker run -p 8080:8080 quay.io/flink-shortener/flink
 
-# create a short link pointing to blog.rtrace.io with the id "awesomeblog" (obviously you change the the link and id to whatever you want)
+# create a short link pointing to blog.rtrace.io with the static id "awesomeblog"
 curl -X "POST" \
     -H "Content-Type: application/json" \
     -d '{ "uri": "https://blog.rtrace.io", "creator": "ruffy", "preferredId": "awesomeblog" }' \
     'http://localhost:8080/to'
 
-# Now it's time to explore!
+# create a short link pointing to blog.rtrace.io with a 4-character random id (returned in the response)
+curl -X "POST" \
+    -H "Content-Type: application/json" \
+    -d '{ "uri": "https://blog.rtrace.io", "creator": "ruffy", "preferredIdLength": 4 }' \
+    'http://localhost:8080/to'
 
-# open up your browser, navigate to http://localhost:8080/to/awesomeblog
-# want the QR Code, navigate to http://localhost:8080/qr/awesomeblog
-# want to use Grafana & Promethues to understand how often you clicked the link, navigate to http://localhost:8080/metrics
-# the Swagger OpenAPI documentation can be found http://localhost:8080/swagger/index.html
+
+# Now it's time to explore! Open up your browser
+
+# 1. navigate to http://localhost:8080/to/awesomeblog and you'll be immediately redirected
+# 2. navigate to http://localhost:8080/qr/awesomeblog and you'll get a QR code redirecting you
+# 3. want to integrate `flink` into Grafana/Prometheus to get click-statistics? navigate to http://localhost:8080/metrics
+# 4. the Swagger OpenAPI documentation can be found here: http://localhost:8080/swagger/index.html
 ```
 
 ## Roadmap
@@ -42,6 +49,7 @@ curl -X "POST" \
 - [x] In-Memory caching to improve performance and load-reduction on the sqlite database
 - [ ] In-Memory caching for generated QR codes
 - [ ] Variable QR Code sizes (attach a URL parameter specifying height in px)
+- [ ] simple static UI shipped with `flink`
 - [ ] Scalability through Federation
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
 - [ ] Optional authentication for creating short links (to prevent potential abuse)

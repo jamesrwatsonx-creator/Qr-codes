@@ -1,5 +1,7 @@
 # flink
 
+![flink-logo](flink-logo.png)
+
 Flink is a simple, Free, Libre, and Open Source URL Shortener built with love and a ASP.NET Core 8 Web API. Why yet another URL Shortener, you might ask yourself? Well, because `flink` has a unique feature set, and demands around scalabilty, simplicity, security and traceability that no other URL shortener was able to fullfil.
 
 ## Features
@@ -11,6 +13,8 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 🖥️ runs on Linux, Windows, Mac
 - 🐳 deployable as container (podman and docker)
 - 📈 keep track of how often short links are visited through built-in Prometheus support
+
+
 
 ## Quickstart Guide
 

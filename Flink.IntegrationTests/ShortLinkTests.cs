@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Flink.ShortLinks.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+
+using Flink.ShortLinks.Models;
 
 namespace Flink.IntegrationTests;
 
@@ -80,5 +80,20 @@ public class ShortLinkTests(WebApplicationFactory<Program> webApplicationFactory
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.Redirect);
     r.Headers.Location.Should().Be(Uri);
+  }
+  
+  [Fact]
+  public async Task AddMultipleIdenticalExistingShortLinkRequest_WithIdenticalId_Returns400() {
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = Guid.NewGuid().ToString(),
+      PreferredId = Guid.NewGuid().ToString(),
+      Uri = "https://flink.rtrace.io/"
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.PostAsync($"/to", payload);
+    var r = await httpClient.PostAsync($"/to", payload);
+    
+    r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
   }
 }

@@ -36,10 +36,13 @@ public class ShortLinkController(IShortLinkRepository shortLinkRepository, ILogg
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow
     };
-
+    
     return shortLinkRepository
       .AddAsync(shortenedLink)
+      .TapError(e => logger.LogError("Could not create Shortened Link with {Id}, because {Error}", shortenedLink.Id, e))
       .Tap(shortLink => logger.LogInformation("Saved Shortened Link with {Id}", shortLink.Id))
+      .Tap(_ => metrics.Created())
+      .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
       .Match(shortLink => (ActionResult)Created($"/to/{shortLink.Id}", shortLink), BadRequest);
   }
 }

@@ -1,7 +1,7 @@
 using System.Diagnostics.Metrics;
-using Flink.Metrics.Ports;
+using Flink.Shared;
 
-namespace Flink.ShortLinks;
+namespace Flink.ShortLinks.Ports;
 
 public class ShortLinkMetricsRegistry {
   public const string MeterName = "shortlinks";

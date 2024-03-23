@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
-using Flink.ShortLinks;
+using Flink.QRCodes.Ports.IoC;
+using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
@@ -35,7 +36,9 @@ builder.Services.AddSwaggerGen(o => {
 });
 
 builder.Services.AddScoped<DatabaseContext>();
-builder.Services.RegisterShortLinksDomain();
+builder.Services
+  .RegisterShortLinksDomain()
+  .RegisterQrCodeDomain();
 
 builder.Services.AddOpenTelemetry()
   .ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName))
@@ -83,4 +86,6 @@ OpenApiInfo CreateOpenApiInfo() {
   };
 }
 
-public abstract partial class Program { }
+namespace Flink {
+  public abstract partial class Program;
+}

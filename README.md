@@ -54,8 +54,8 @@ curl -X "POST" \
 ## Roadmap
 
 - [x] In-Memory caching to improve performance and load-reduction on the sqlite database
-- [ ] In-Memory caching for generated QR codes
-- [ ] Variable QR Code sizes (attach a URL parameter specifying height in px)
+- [x] In-Memory caching for generated QR codes
+- [x] Variable QR Code sizes (attach a URL parameter specifying height in px)
 - [ ] simple static UI shipped with `flink`
 - [ ] Scalability through Federation
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)

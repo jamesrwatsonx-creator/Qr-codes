@@ -1,5 +1,7 @@
 ![flink-logo](flink-logo.png)
 
+[![Docker Repository on Quay](https://quay.io/repository/rtraceio/flink/status "Docker Repository on Quay")](https://quay.io/repository/rtraceio/flink)
+
 Flink is a simple, Free, Libre, and Open Source URL Shortener built with love and a ASP.NET Core 8 Web API. Why yet another URL Shortener, you might ask yourself? Well, because `flink` has a unique feature set, and demands around scalabilty, simplicity, security and traceability that no other URL shortener was able to fullfil.
 
 ## Features
@@ -19,10 +21,10 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 
 ```bash
 # if you are using podman
-podman run -p 8080:8080 quay.io/flink-shortener/flink
+podman run -p 8080:8080 quay.io/rtraceio/flink
 
 # alternatively if you use docker
-docker run -p 8080:8080 quay.io/flink-shortener/flink
+docker run -p 8080:8080 quay.io/rtraceio/flink
 
 # yes, that's it flink is up and running 🚀
 ```
@@ -57,6 +59,7 @@ curl -X "POST" \
 - [x] In-Memory caching for generated QR codes
 - [x] Variable QR Code sizes (attach a URL parameter specifying height in px)
 - [ ] simple static UI shipped with `flink`
+- [ ] implement MetaData extractor (opengraph, twitter:cards, etc. ...)
 - [ ] Scalability through Federation
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
 - [ ] Optional authentication for creating short links (to prevent potential abuse)

@@ -1,6 +1,8 @@
 ![flink-logo](flink-logo.png)
 
-[![Docker Repository on Quay](https://quay.io/repository/rtraceio/flink/status "Docker Repository on Quay")](https://quay.io/repository/rtraceio/flink)
+[![Latest Release](https://gitlab.com/rtraceio/web/flink/-/badges/release.svg "Latest Release on Gitlab")](https://gitlab.com/rtraceio/web/flink/-/releases)
+[![Code Coverage](https://gitlab.com/rtraceio/web/flink/badges/main/coverage.svg "Code Covoerage")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
+[![Pipeline Status](https://gitlab.com/rtraceio/web/flink/badges/main/pipeline.svg "Pipeline Status")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
 
 Flink is a simple, Free, Libre, and Open Source URL Shortener built with love and a ASP.NET Core 8 Web API. Why yet another URL Shortener, you might ask yourself? Well, because `flink` has a unique feature set, and demands around scalabilty, simplicity, security and traceability that no other URL shortener was able to fullfil.
 

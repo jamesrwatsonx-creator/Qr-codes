@@ -1,10 +1,7 @@
 using CSharpFunctionalExtensions;
-using Flink.Domain;
 using Flink.QRCodes.Repositories;
-using Flink.Shared.Extensions;
 using Flink.ShortLinks.Ports;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace Flink.QRCodes.Ports.Controllers;
 

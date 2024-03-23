@@ -14,6 +14,6 @@ public class QrCodeCache(IMemoryCache cache) : IQrCodeCache {
       ? Result.Success<Maybe<byte[]>>(data)
       : Result.Success(Maybe<byte[]>.None);
   }
-  
+
   private static string BuildCacheKey(string id, int height) => $"{id}-{height}px";
 }

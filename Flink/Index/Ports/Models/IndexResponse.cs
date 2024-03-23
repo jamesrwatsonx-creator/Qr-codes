@@ -8,17 +8,17 @@ public class IndexResponse {
   /// Name of the Application
   /// </summary>
   public string ApplicationName => "Flink";
-  
+
   /// <summary>
   /// Repository of Flink
   /// </summary>
   public string ApplicationRepository => "https://gitlab.com/rtraceio/web/flink";
-  
+
   /// <summary>
   /// The version of Flink
   /// </summary>
   public string ApplicationVersion => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion ?? "Unknown";
-  
+
   /// <summary>
   /// Short description explaining Flink
   /// </summary>

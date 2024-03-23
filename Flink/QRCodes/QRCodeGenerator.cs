@@ -15,6 +15,7 @@ public static class QrCodeGenerator {
     qrCodeImage.Mutate(x => x.Resize(length, length));
     return EncodeToRawPng(qrCodeImage);
   }
+
   private static byte[] EncodeToRawPng(Image img) {
     using var stream = new MemoryStream();
     img.Save(stream, new PngEncoder());

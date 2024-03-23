@@ -20,7 +20,7 @@ unit-test:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.UnitTests/
     - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-    - ../calc-codecov.sh
+    - ../calc-codecov.sh "$CI_PROJECT_DIR/Flink.UnitTests/cobertura/"
   coverage: /TOTAL_COVERAGE=(\d+.\d+)/
   artifacts:
     when: always
@@ -44,7 +44,7 @@ integration-test:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.IntegrationTests/
     - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-    - ../calc-codecov.sh
+    - ../calc-codecov.sh "$CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/"
   coverage: /TOTAL_COVERAGE=(\d+.\d+)/
   artifacts:
     when: always

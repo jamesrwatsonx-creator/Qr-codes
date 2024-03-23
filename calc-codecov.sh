@@ -3,7 +3,7 @@
 total_coverage=0
 count=0
 
-for i in $(find "$CI_PROJECT_DIR/cobertura" -name '*.xml');
+for i in $(find "$1" -name '*.xml');
 do
 	printf "Found coverage report: %s\n" "$i"
 	line_rate="$(head -n 2 ${i} | sed 'N;s/.*line-rate="\([^" ]*\).*/\1/g')"

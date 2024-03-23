@@ -17,8 +17,10 @@ unit-test:
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
+    - apt-get update -y && apt-get install zip bc -y
     - cd Flink.UnitTests/
     - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+  coverage: /TOTAL_COVERAGE=(\d+.\d+)/
   artifacts:
     when: always
     paths:
@@ -38,8 +40,10 @@ integration-test:
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
+    - apt-get update -y && apt-get install zip bc -y
     - cd Flink.IntegrationTests/
     - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+  coverage: /TOTAL_COVERAGE=(\d+.\d+)/
   artifacts:
     when: always
     paths:
@@ -66,3 +70,42 @@ podman-publish:
     - podman build --build-arg="VERSION=$CI_COMMIT_TAG" -t "quay.io/rtraceio/flink:latest" -t "quay.io/rtraceio/flink:$CI_COMMIT_TAG" -f Flink/Dockerfile .
     - podman push "quay.io/rtraceio/flink:latest"
     - podman push "quay.io/rtraceio/flink:$CI_COMMIT_TAG"
+
+build-executables:
+  stage: publish
+  dependencies:
+    - unit-test
+    - integration-test
+  image:
+    name: mcr.microsoft.com/dotnet/sdk:8.0
+  only:
+    - tags
+  script:
+    - mkdir -p $CI_PROJECT_DIR/release
+    - echo "Building Win-x86"
+    - dotnet publish --self-contained -c Release /p:UseAppHost=false /p:Version=$CI_COMMIT_TAG -r win-x86 -o $CI_PROJECT_DIR/release/win-x86 $CI_PROJECT_DIR/Flink/Flink.csproj
+    - zip -r $CI_PROJECT_DIR/release/win-x86.zip $CI_PROJECT_DIR/release/win-x86/
+    - echo "Building Win-x64"
+    - dotnet publish --self-contained -c Release /p:UseAppHost=false /p:Version=$CI_COMMIT_TAG -r win-x64 -o $CI_PROJECT_DIR/release/win-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
+    - zip -r $CI_PROJECT_DIR/release/win-x64.zip $CI_PROJECT_DIR/release/win-x64/
+    - echo "Building Linux-x64"
+    - dotnet publish --self-contained -c Release /p:UseAppHost=false /p:Version=$CI_COMMIT_TAG -r linux-x64 -o $CI_PROJECT_DIR/release/linux-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
+    - zip -r $CI_PROJECT_DIR/release/linux-x64.zip $CI_PROJECT_DIR/release/linux-x64/
+    - echo "Building Linux-ARM"
+    - dotnet publish --self-contained -c Release /p:UseAppHost=false /p:Version=$CI_COMMIT_TAG -r linux-arm -o $CI_PROJECT_DIR/release/linux-arm $CI_PROJECT_DIR/Flink/Flink.csproj
+    - zip -r $CI_PROJECT_DIR/release/linux-arm.zip $CI_PROJECT_DIR/release/linux-arm/
+    - echo "Building Linux-musl-x64"
+    - dotnet publish --self-contained -c Release /p:UseAppHost=false /p:Version=$CI_COMMIT_TAG -r linux-musl-x64 -o $CI_PROJECT_DIR/release/linux-musl-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
+    - zip -r $CI_PROJECT_DIR/release/linux-musl-x64.zip $CI_PROJECT_DIR/release/linux-musl-x64/
+    - echo "Building MacOSX-x64"
+    - dotnet publish --self-contained -c Release /p:UseAppHost=false /p:Version=$CI_COMMIT_TAG -r osx-x64 -o $CI_PROJECT_DIR/release/osx-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
+    - zip -r $CI_PROJECT_DIR/release/osx-x64.zip $CI_PROJECT_DIR/release/osx-x64/
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/release/win-x86.zip
+      - $CI_PROJECT_DIR/release/win-x64.zip
+      - $CI_PROJECT_DIR/release/linux-x64.zip
+      - $CI_PROJECT_DIR/release/linux-arm.zip
+      - $CI_PROJECT_DIR/release/linux-musl-x64.zip
+      - $CI_PROJECT_DIR/release/osx-x64.zip

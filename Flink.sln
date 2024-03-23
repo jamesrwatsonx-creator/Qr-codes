@@ -15,6 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cicd", "cicd", "{9F7A245D-CD5A-456F-BE7C-C3B9D34C4C33}"
 	ProjectSection(SolutionItems) = preProject
 		.gitlab-ci.yml = .gitlab-ci.yml
+		calc-codecov.sh = calc-codecov.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flink.Shared", "Flink.Shared\Flink.Shared.csproj", "{474A7404-6DD5-484E-BC88-B895C900BC0B}"

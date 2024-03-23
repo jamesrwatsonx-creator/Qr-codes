@@ -17,9 +17,10 @@ unit-test:
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
-    - apt-get update -y && apt-get install zip bc -y
+    - apt-get update -y && apt-get install bc -y
     - cd Flink.UnitTests/
     - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+    - ../calc-codecov.sh
   coverage: /TOTAL_COVERAGE=(\d+.\d+)/
   artifacts:
     when: always
@@ -40,9 +41,10 @@ integration-test:
   image:
     name: mcr.microsoft.com/dotnet/sdk:8.0
   script:
-    - apt-get update -y && apt-get install zip bc -y
+    - apt-get update -y && apt-get install bc -y
     - cd Flink.IntegrationTests/
     - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+    - ../calc-codecov.sh
   coverage: /TOTAL_COVERAGE=(\d+.\d+)/
   artifacts:
     when: always

@@ -83,6 +83,7 @@ build-executables:
   only:
     - tags
   script:
+    - apt-get update -y && apt-get install zip -y
     - mkdir -p $CI_PROJECT_DIR/release
     - echo "Building Win-x86"
     - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r win-x86 -o $CI_PROJECT_DIR/release/win-x86 $CI_PROJECT_DIR/Flink/Flink.csproj

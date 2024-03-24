@@ -2,9 +2,9 @@
 
 [![Latest Release](https://gitlab.com/rtraceio/web/flink/-/badges/release.svg "Latest Release on Gitlab")](https://gitlab.com/rtraceio/web/flink/-/releases)
 [![Total Code Coverage](https://gitlab.com/rtraceio/web/flink/badges/main/coverage.svg "Code Covoerage")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
-[![Integration Test Coverage](https://gitlab.com/%{project_path}/badges/%{default_branch}/coverage.svg?job=integration-test&key_text=Integration+Test+Coverage&key_width=150 "Integration Test Coverage")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
-[![Unit Test Coverage](https://gitlab.com/%{project_path}/badges/%{default_branch}/coverage.svg?job=unit-test&key_text=Unit+Test+Coverage&key_width=125 "Unit Test Coverage")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
-[![Pipeline Status](https://gitlab.com/%{project_path}/badges/%{default_branch}/pipeline.svg?key_text=Pipeline+Status&key_width=100 "Pipeline Status")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
+[![Integration Test Coverage](https://gitlab.com/rtraceio/web/flink/badges/main/coverage.svg?job=integration-test&key_text=Integration+Test+Coverage&key_width=150 "Integration Test Coverage")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
+[![Unit Test Coverage](https://gitlab.com/rtraceio/web/flink/badges/main/coverage.svg?job=unit-test&key_text=Unit+Test+Coverage&key_width=125 "Unit Test Coverage")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
+[![Pipeline Status](https://gitlab.com/rtraceio/web/flink/badges/main/pipeline.svg?key_text=Pipeline+Status&key_width=100 "Pipeline Status")](https://gitlab.com/rtraceio/web/flink/-/pipelines)
 
 Flink is a simple, Free, Libre, and Open Source URL Shortener built with love and a ASP.NET Core 8 Web API. Why yet another URL Shortener, you might ask yourself? Well, because `flink` has a unique feature set, and demands around scalabilty, simplicity, security and traceability that no other URL shortener was able to fullfil.
 

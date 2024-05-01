@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Flink.Index.Ports.Models;
+namespace Flink.Info.Ports.Models;
 
 public class IndexResponse {
   /// <summary>

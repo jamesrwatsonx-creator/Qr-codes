@@ -1,12 +1,13 @@
-using Flink.Index.Ports.Models;
+using Flink.Info.Ports.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Flink.Index.Ports.Controllers;
+namespace Flink.Info.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class IndexController : ControllerBase {
-  [HttpGet("/")]
+public class InfoController : ControllerBase {
+  
+  [HttpGet("/info")]
   [ProducesResponseType(typeof(IndexResponse), 200, "application/json")]
   public IndexResponse Get() {
     return new IndexResponse();

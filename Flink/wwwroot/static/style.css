@@ -1,0 +1,83 @@
+html, body {
+  display: block;
+  margin: auto auto;
+  padding: 0;
+  width: 75%;
+
+  color: #CFCFCF;
+  background-color: #101010;
+}
+
+.error-glow {
+  box-shadow: 0 0 30px #ff0000;
+}
+
+img {
+  display: block;
+  width: 60%;
+  margin: 15px auto;
+  padding: 0;
+  filter: drop-shadow(0 0 100px #00A0FF);
+}
+
+button {
+  display: block;
+  width: 100%;
+  min-height: 4rem;
+
+  margin: 15px 0;
+  padding: 0;
+
+  font-size: 1.75rem;
+  font-weight: 700;
+  border-radius: 10px;
+  box-shadow: 0 0 5px #2323F6;
+
+  cursor: pointer;
+
+  border: none;
+  text-decoration: none;
+  color: #CCC;
+  background-color: #4545F6;
+}
+
+button:hover {
+  background-color: #5666FF;
+  box-shadow: 0 0 15px #4545F6;
+  color: white;
+}
+
+input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 4rem;
+
+  margin: 15px 0;
+  padding: 0;
+
+  font-size: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #151515;
+
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  color: #CCC;
+  background-color: #404040;
+}
+
+input:hover {
+  box-shadow: 0 0 15px #505050;
+}
+
+hr {
+  margin: 30px 0;
+}
+
+.status-text {
+  display: block;
+  width: 100%;
+  text-align: right;
+}
+

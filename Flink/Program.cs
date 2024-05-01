@@ -4,6 +4,7 @@ using Flink;
 using Flink.QRCodes.Ports.IoC;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
+using Flink.WebUI.Ports.IoC;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
@@ -38,7 +39,8 @@ builder.Services.AddSwaggerGen(o => {
 builder.Services.AddScoped<DatabaseContext>();
 builder.Services
   .RegisterShortLinksDomain()
-  .RegisterQrCodeDomain();
+  .RegisterQrCodeDomain()
+  .RegisterWebUi();
 
 builder.Services.AddOpenTelemetry()
   .ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName))
@@ -64,6 +66,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
+app.UseWebUi();
 
 app.UseHttpsRedirection();
 app.Run();
@@ -87,5 +90,5 @@ OpenApiInfo CreateOpenApiInfo() {
 }
 
 namespace Flink {
-  public abstract partial class Program;
+  public abstract class Program;
 }

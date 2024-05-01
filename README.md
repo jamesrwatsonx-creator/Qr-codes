@@ -17,6 +17,16 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 🖥️ runs on Linux, Windows, Mac
 - 🐳 deployable as container (podman and docker)
 - 📈 keep track of how often short links are visited through built-in Prometheus support
+- 🌐 a simple, minimalistic Web UI
+
+
+## Flink Instances
+
+Flink is F(L)OSS and made for the public! If you are running a Flink instance and would share it with the world, please provide a PR adding your instance details to the table below. Alternatively send an e-mail to [flink@rtrace.io](mailto:flink@rtrace.io).
+
+| Source                                                | Country  | Cloudflare |
+|-------------------------------------------------------|:--------:|:----------:|
+| [flink.rtrace.io](https://flink.rtrace.io)            | 🇩🇪       | ⛔         |
 
 
 ## Quickstart Guide
@@ -62,7 +72,7 @@ curl -X "POST" \
 - [x] In-Memory caching to improve performance and load-reduction on the sqlite database
 - [x] In-Memory caching for generated QR codes
 - [x] Variable QR Code sizes (attach a URL parameter specifying height in px)
-- [ ] simple static UI shipped with `flink`
+- [x] simple static UI shipped with `flink`
 - [ ] implement MetaData extractor (opengraph, twitter:cards, etc. ...)
 - [ ] Scalability through Federation
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)

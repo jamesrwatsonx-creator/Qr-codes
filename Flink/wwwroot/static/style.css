@@ -1,20 +1,64 @@
 html, body {
   display: block;
-  margin: auto auto;
+  margin: 0;
   padding: 0;
-  width: 75%;
 
-  color: #CFCFCF;
   background-color: #101010;
 }
 
-.error-glow {
-  box-shadow: 0 0 30px #ff0000;
+.flink-form {
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media (min-width: 120px) and (max-width: 575px) {
+  .flink-form {
+    width: 100%;
+  }
+  img {
+    width: 75%;
+  }
+}
+
+@media (min-width: 576px) {
+  .flink-form {
+    width: 90%;
+  }
+  img {
+    width: 75%;
+  }
+}
+
+@media (min-width: 768px) {
+  .flink-form {
+    width: 90%;
+  }
+  img {
+    width: 65%;
+  }
+}
+
+@media (min-width: 992px) {
+  .flink-form {
+    width: 80%;
+  }
+  img {
+    width: 55%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .flink-form {
+    width: 50%;
+  }
+  img {
+    width: 50%;
+  }
 }
 
 img {
   display: block;
-  width: 60%;
   margin: 15px auto;
   padding: 0;
   filter: drop-shadow(0 0 100px #00A0FF);
@@ -22,21 +66,22 @@ img {
 
 button {
   display: block;
-  width: 100%;
-  min-height: 4rem;
-
   margin: 15px 0;
   padding: 0;
+
+  width: 100%;
+  min-height: 4rem;
+  max-height: 180px;
 
   font-size: 1.75rem;
   font-weight: 700;
   border-radius: 10px;
   box-shadow: 0 0 5px #2323F6;
 
-  cursor: pointer;
-
   border: none;
+  cursor: pointer;
   text-decoration: none;
+
   color: #CCC;
   background-color: #4545F6;
 }
@@ -50,7 +95,6 @@ button:hover {
 input {
   display: block;
   width: 100%;
-  max-width: 100%;
   min-height: 4rem;
 
   margin: 15px 0;
@@ -72,12 +116,21 @@ input:hover {
 }
 
 hr {
+  display: block;
   margin: 30px 0;
+  padding: 0;
+  width: 100%;
 }
 
 .status-text {
   display: block;
   width: 100%;
   text-align: right;
+  color: #00A0FFFF;
+  font-weight: 700;
+}
+
+.error-glow {
+  box-shadow: 0 0 30px #ff0000;
 }
 

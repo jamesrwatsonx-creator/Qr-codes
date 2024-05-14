@@ -125,9 +125,10 @@ hr {
 .status-text {
   display: block;
   width: 100%;
-  text-align: right;
+  text-align: center;
   color: #00A0FFFF;
   font-weight: 700;
+  height: 1.5rem;
 }
 
 .error-glow {

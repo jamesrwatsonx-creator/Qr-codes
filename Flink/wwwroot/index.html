@@ -8,14 +8,14 @@
 <body>
   <div class="flink-form">
     <img src="/static/flink-logo.png"/>
-    <hr/>
     <section>
       <input id="input-url" class="url-textbox" type="url" minlength="11" maxlength="1000" placeholder="  enter URL to shorten">
       <button id="shorten-action">🦔 shorten URL</button>
     </section>
-    <hr/>
-    <input id="output-url" class="url-textbox" type="url" hidden="hidden" readonly/>
     <p id="status-text" class="status-text"></p>
+    <hr/>
+    <input id="output-url" class="url-textbox" type="url" style="display: none;" readonly/>
+    <img id="output-qr-code" src="" style="display: none;">
   </div>
 <script src="/static/flink.js"></script>
 </body>

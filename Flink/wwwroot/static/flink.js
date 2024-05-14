@@ -26,6 +26,7 @@ function copyURLToClipboard(statusElement, url) {
   const status = document.getElementById("status-text");
   const inputUrl = document.getElementById("input-url");
   const outputUrl = document.getElementById("output-url");
+  const outputQrCode = document.getElementById("output-qr-code");
   const shortenAction = document.getElementById("shorten-action");
 
   inputUrl.addEventListener('input', () => {
@@ -37,6 +38,15 @@ function copyURLToClipboard(statusElement, url) {
   outputUrl.addEventListener('dblclick', () => copyURLToClipboard(outputUrl.value));
 
   shortenAction.addEventListener('click', () => {
+    
+    // Hide the QR code
+    outputQrCode.style.display = "none";
+    outputQrCode.src = "";
+    // Hide the output field
+    outputUrl.style.display = "none";
+    outputUrl.value = "";
+
+
     if(!isURL(inputUrl.value)) {
       setInputError(inputUrl, status);
       return;
@@ -49,7 +59,12 @@ function copyURLToClipboard(statusElement, url) {
         clearInputError(inputUrl, status);
         const data = JSON.parse(r.responseText);
         console.log("Created ShortLink", data);
+        // Display the shortened URL
         outputUrl.value = `${document.URL}to/${data['id']}`;
+        outputUrl.style.display = "block";
+        // Display the QR code
+        outputQrCode.src = `${document.URL}qr/${data['id']}`;
+        outputQrCode.style.display = "block";
         setStatus(status, "✅ URL successfully shortened")
       }
     };

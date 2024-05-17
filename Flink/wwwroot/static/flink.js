@@ -35,6 +35,14 @@ function copyURLToClipboard(statusElement, url) {
       : setInputError(inputUrl, status);
   });
 
+  // Submit on Enter
+  inputUrl.addEventListener('keyup', (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      shortenAction.click();
+    }
+  });
+
   outputUrl.addEventListener('dblclick', () => copyURLToClipboard(outputUrl.value));
 
   shortenAction.addEventListener('click', () => {

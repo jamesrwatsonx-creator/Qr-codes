@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
+using Flink.MetaData.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
@@ -36,9 +37,10 @@ builder.Services.AddSwaggerGen(o => {
   o.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
 });
 
-builder.Services.AddScoped<DatabaseContext>();
+builder.Services.AddSingleton<DatabaseContext>();
 builder.Services
   .RegisterShortLinksDomain()
+  .RegisterMetaDataDomain()
   .RegisterQrCodeDomain()
   .RegisterWebUi();
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
+using Flink.MetaData.Ports;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
 
@@ -8,7 +9,7 @@ namespace Flink.ShortLinks.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class ShortLinkController(IShortLinkRepository shortLinkRepository, ILogger<ShortLinkController> logger, ShortLinkMetricsRegistry metrics)
+public class ShortLinkController(IShortLinkRepository shortLinkRepository, ILogger<ShortLinkController> logger, IScrapingQueue scrapingQueue, ShortLinkMetricsRegistry metrics)
   : ControllerBase {
   [HttpGet("/to/{id}")]
   [ProducesResponseType(typeof(RedirectResult), 301, "application/json")]
@@ -37,11 +38,12 @@ public class ShortLinkController(IShortLinkRepository shortLinkRepository, ILogg
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow
     };
-
+    
     return shortLinkRepository
       .AddAsync(shortenedLink)
       .TapError(e => logger.LogError("Could not create Shortened Link with {Id}, because {Error}", shortenedLink.Id, e))
       .Tap(shortLink => logger.LogInformation("Saved Shortened Link with {Id}", shortLink.Id))
+      .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
       .Match(shortLink => (ActionResult)Created($"/to/{shortLink.Id}", shortLink), BadRequest);

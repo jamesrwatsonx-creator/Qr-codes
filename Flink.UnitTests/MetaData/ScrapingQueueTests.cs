@@ -1,15 +1,21 @@
+using System.Diagnostics.Metrics;
 using Flink.Domain;
 using Flink.MetaData;
+using Flink.MetaData.Ports;
+using Flink.UnitTests.TestSupport;
 using FluentAssertions;
+using Moq;
 
 namespace Flink.UnitTests.MetaData;
 
 public class ScrapingQueueTests {
+  private static readonly IMeterFactory MeterFactoryMock = Mock.Of<IMeterFactory>();
+  
   [Fact]
   public void EmptyQueue_EntryAdded_EnqueueResultIsSuccess() {
     // Arrange
     var shortenedLink = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
-    var scrapingQueue = new InMemoryScrapingQueue();
+    var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     
     // Act
     var enqueueResult = scrapingQueue.EnqueueForScraping(shortenedLink);
@@ -22,7 +28,7 @@ public class ScrapingQueueTests {
   public void QueueWithSingleElement_MaxCountDequeue_ReturnsSingleElement() {
     // Arrange
     var shortenedLink = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
-    var scrapingQueue = new InMemoryScrapingQueue();
+    var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     scrapingQueue.EnqueueForScraping(shortenedLink);
     
     // Act
@@ -38,7 +44,7 @@ public class ScrapingQueueTests {
     // Arrange
     var shortenedLink1 = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "1st", Uri = "https://blog.rtrace.io" };
     var shortenedLink2 = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "2nd", Uri = "https://blog.rtrace.io" };
-    var scrapingQueue = new InMemoryScrapingQueue();
+    var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     scrapingQueue.EnqueueForScraping(shortenedLink1);
     scrapingQueue.EnqueueForScraping(shortenedLink2);
     
@@ -53,7 +59,7 @@ public class ScrapingQueueTests {
   [Fact]
   public void EmptyQueue_AttemptToDequeue_ReturnsEmptyResult() {
     // Arrange
-    var scrapingQueue = new InMemoryScrapingQueue();
+    var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     
     // Act
     var resultList = scrapingQueue.Dequeue(int.MaxValue).ToList();

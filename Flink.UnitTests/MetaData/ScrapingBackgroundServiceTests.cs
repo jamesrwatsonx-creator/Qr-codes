@@ -1,9 +1,11 @@
+using System.Diagnostics.Metrics;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.MetaData;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Repositories;
 using Flink.MetaData.Services;
+using Flink.UnitTests.TestSupport;
 using Flink.UnitTests.TestSupport.Extensions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -27,7 +29,7 @@ public class ScrapingBackgroundServiceTests {
       .Setup(x => x.AddOrUpdateAsync(It.IsAny<ShortLinkMetaData>()))
       .ReturnsAsync(Result.Success(metaData));
     
-    var scrapingQueue = new InMemoryScrapingQueue();
+    var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     var service = new ScrapingBackgroundService(NullLogger<ScrapingBackgroundService>.Instance, scrapingQueue, scrapingMock.Object, metaDataRepo.Object);
     var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
     

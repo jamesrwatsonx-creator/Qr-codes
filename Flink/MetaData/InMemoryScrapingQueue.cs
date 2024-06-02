@@ -1,15 +1,16 @@
-using System.Collections.Concurrent;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.MetaData.Ports;
+using Flink.Shared.Extensions;
 
 namespace Flink.MetaData;
 
-public class InMemoryScrapingQueue : IScrapingQueue {
+public class InMemoryScrapingQueue(ScrapingQueueMetricsRegistry scrapingQueueMetricsRegistry) : IScrapingQueue {
   private readonly Queue<ShortenedLink> _taskQueue = new(1024);
   
   public Result EnqueueForScraping(ShortenedLink shortenedLink) {
     _taskQueue.Enqueue(shortenedLink);
+    scrapingQueueMetricsRegistry.Enqueue();
     return Result.Success();
   }
 
@@ -22,7 +23,8 @@ public class InMemoryScrapingQueue : IScrapingQueue {
 
   private Maybe<ShortenedLink> TryDequeueSingle() {
     try {
-      return Maybe.From(_taskQueue.Dequeue());
+      return Maybe.From(_taskQueue.Dequeue())
+        .TapSome(_ => scrapingQueueMetricsRegistry.Dequeue());
     } catch {
       return Maybe.None;
     }

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
+using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
 using Flink.ShortLinks.Ports;
@@ -51,6 +52,7 @@ builder.Services.AddOpenTelemetry()
     .AddMeter("Microsoft.AspNetCore.Hosting")
     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
     .AddMeter(ShortLinkMetricsRegistry.MeterName)
+    .AddMeter(ScrapingQueueMetricsRegistry.MeterName)
     .AddPrometheusExporter())
   .WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();

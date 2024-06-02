@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions {
       .AddHttpClient<IMetaDataScraper, MetaDataScraper>();
 
     return serviceCollection
+      .AddSingleton<ScrapingQueueMetricsRegistry>()
       .AddTransient<IMetaDataRepository, SqliteMetaDataRepository>()
       .AddSingleton<IScrapingQueue, InMemoryScrapingQueue>()
       .AddTransient<IMetaDataScraper, MetaDataScraper>()

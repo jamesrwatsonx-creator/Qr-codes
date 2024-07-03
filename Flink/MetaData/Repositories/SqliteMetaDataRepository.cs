@@ -21,8 +21,8 @@ public class SqliteMetaDataRepository(DatabaseContext dbContext) : IMetaDataRepo
                                                           @{nameof(ShortLinkMetaData.Author)},
                                                           @{nameof(ShortLinkMetaData.Description)},
                                                           @{nameof(ShortLinkMetaData.Image)},
-                                                          @{nameof(ShortLinkMetaData.DocumentSize)},
                                                           @{nameof(ShortLinkMetaData.HttpStatusCode)},
+                                                          @{nameof(ShortLinkMetaData.DocumentSize)},
                                                           @{nameof(ShortLinkMetaData.LastUpdate)})
                                                        """;
 

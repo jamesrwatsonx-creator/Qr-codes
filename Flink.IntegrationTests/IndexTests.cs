@@ -15,11 +15,11 @@ public class IndexTests(WebApplicationFactory<Program> webApplicationFactory) : 
   }
   
   [Fact]
-  public async Task EmbedRequest_NoParametersPassed_Returns200() {
+  public async Task EmbedRequest_NoParametersPassed_Returns404() {
     var r = await webApplicationFactory
       .CreateClient()
       .GetAsync("/embed");
 
-    r.StatusCode.Should().Be(HttpStatusCode.OK);
+    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
 }

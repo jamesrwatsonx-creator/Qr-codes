@@ -7,7 +7,7 @@ namespace Flink.MetaData;
 public class  MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
   public async Task<Result<ShortLinkMetaData>> ScrapeAsync(ShortenedLink shortenedLink) {
     try {
-      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
       var httpRequest = await httpClient.GetAsync(shortenedLink.Uri, cts.Token);
       var body = await httpRequest.Content.ReadAsStringAsync(cts.Token);
       var metaDict = HtmlMetaDataExtractor.ExtractMetadata(body);
@@ -18,6 +18,8 @@ public class  MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
         Description = metaDict.GetOrDefault(["description", "og:description", "twitter:description"], null),
         Image = metaDict.GetOrDefault(["og:image", "twitter:image"], null),
         Title = metaDict.GetOrDefault(["title", "og:description", "twitter:description"], null),
+        HttpStatusCode = (int)httpRequest.StatusCode,
+        DocumentSize = body.Length,
         LastUpdate = DateTime.UtcNow
       });
     } catch (Exception e) {

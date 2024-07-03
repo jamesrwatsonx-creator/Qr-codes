@@ -31,6 +31,8 @@ public class DatabaseContext(ILogger<DatabaseContext> logger) {
                                                {nameof(ShortLinkMetaData.Image)}             TEXT,
                                                {nameof(ShortLinkMetaData.Description)}       TEXT,
                                                {nameof(ShortLinkMetaData.LastUpdate)}        TEXT,
+                                               {nameof(ShortLinkMetaData.HttpStatusCode)}    INTEGER,
+                                               {nameof(ShortLinkMetaData.DocumentSize)}      INTEGER,
                                                FOREIGN KEY ({nameof(ShortLinkMetaData.ShortLinkId)}) REFERENCES {nameof(ShortenedLink)} ({nameof(ShortenedLink.Id)}) 
                                              );
                                              """;

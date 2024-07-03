@@ -3,6 +3,7 @@ using System.Reflection;
 using Flink;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
+using Flink.Proxy.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
@@ -43,6 +44,7 @@ builder.Services
   .RegisterShortLinksDomain()
   .RegisterMetaDataDomain()
   .RegisterQrCodeDomain()
+  .RegisterProxyDomain()
   .RegisterWebUi();
 
 builder.Services.AddOpenTelemetry()

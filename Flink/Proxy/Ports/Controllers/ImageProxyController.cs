@@ -1,29 +1,26 @@
 using System.Net;
+using CSharpFunctionalExtensions;
+using Flink.MetaData.Repositories;
+using Flink.ShortLinks.Ports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flink.Proxy.Ports.Controllers;
 
 [ApiController]
-public class ImageProxyController(HttpClient httpClient) : ControllerBase {
-  [HttpGet("/proxy")]
+public class ImageProxyController(IMetaDataRepository metaDataRepository, IForwardProxy forwardProxy) : ControllerBase {
+  [HttpGet("/proxy/image/{shortLinkId}")]
   [ProducesResponseType(typeof(string), 200, "text/html")]
-  public async Task<IActionResult> ProxyImage([FromQuery] string url) {
-    if (string.IsNullOrWhiteSpace(url))
+  public async Task<IActionResult> ProxyImage(string shortLinkId) {
+    if (string.IsNullOrWhiteSpace(shortLinkId))
       return BadRequest("URL parameter is required.");
-    
-    if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult) || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
-      return BadRequest("Invalid URL.");
 
+    var r = await metaDataRepository.GetAsync(shortLinkId);
+    if (r.IsFailure) 
+      return BadRequest($"Failed to read ShortLink MetaData for entry with Id '{shortLinkId}'");
+    if (r is { IsSuccess: true, Value.HasNoValue: true })
+      return NotFound($"The given ShortLink MetaData fo the Id '{shortLinkId}' does not (yet) exist");
 
-    try {
-      var response = await httpClient.GetAsync(uriResult);
-      var content = await response.Content.ReadAsByteArrayAsync();
-
-      // Return the response content as the result
-      return File(content, response.Content.Headers.ContentType?.ToString()!);
-    } catch (HttpRequestException) {
-      // Handle the error appropriately
-      return StatusCode((int)HttpStatusCode.BadRequest);
-    }
+    return await forwardProxy.Proxy(r.Value.Value.Image!)
+      .Match(fileContentResult => fileContentResult, f => (IActionResult)BadRequest(f));
   }
 }

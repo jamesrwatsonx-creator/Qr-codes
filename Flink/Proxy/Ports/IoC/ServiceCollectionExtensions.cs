@@ -1,0 +1,19 @@
+using Microsoft.Extensions.Caching.Memory;
+
+namespace Flink.Proxy.Ports.IoC;
+
+public static class ServiceCollectionExtensions {
+  public static IServiceCollection RegisterProxyDomain(this IServiceCollection serviceCollection) {
+    serviceCollection.AddHttpClient<ForwardProxy>();
+
+    serviceCollection
+      .AddSingleton<ForwardProxy>()
+      .AddSingleton<IForwardProxy>(sp => {
+        var proxied = sp.GetRequiredService<ForwardProxy>();
+        var memoryCache = sp.GetRequiredService<IMemoryCache>();
+        return new CachingForwardProxy(proxied, memoryCache);
+      });
+
+    return serviceCollection;
+  }
+}

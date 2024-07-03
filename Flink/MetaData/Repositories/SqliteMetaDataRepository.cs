@@ -35,7 +35,7 @@ public class SqliteMetaDataRepository(DatabaseContext dbContext) : IMetaDataRepo
     }
   }
 
-  public async Task<Result<Maybe<ShortLinkMetaData>>> Get(string shortLinkId) {
+  public async Task<Result<Maybe<ShortLinkMetaData>>> GetAsync(string shortLinkId) {
     try {
       using var connection = dbContext.CreateConnection();
       var result = await connection.QueryFirstOrDefaultAsync<ShortLinkMetaData>(GetMetaDataByShortLinkIdQuery, new { Id = shortLinkId });

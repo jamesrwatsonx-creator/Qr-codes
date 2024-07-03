@@ -1,16 +1,12 @@
-using System.Diagnostics.Metrics;
 using Flink.Domain;
 using Flink.MetaData;
 using Flink.MetaData.Ports;
 using Flink.UnitTests.TestSupport;
 using FluentAssertions;
-using Moq;
 
 namespace Flink.UnitTests.MetaData;
 
 public class ScrapingQueueTests {
-  private static readonly IMeterFactory MeterFactoryMock = Mock.Of<IMeterFactory>();
-  
   [Fact]
   public void EmptyQueue_EntryAdded_EnqueueResultIsSuccess() {
     // Arrange

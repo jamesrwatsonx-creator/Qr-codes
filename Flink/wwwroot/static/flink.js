@@ -18,8 +18,10 @@ function clearInputError(inputUrlElement, statusElement) {
 }
 function copyURLToClipboard(statusElement, url) {
   console.debug("Clipboard")
-  navigator.clipboard.writeText(url);
-  setStatus(statusElement, "📋 Copied to clipboard")
+  navigator.clipboard
+    .writeText(url)
+    .then(() => setStatus(statusElement, "📋 Copied to clipboard"))
+    .catch(() => console.error('Could not write to clipboard.'));
 }
 
 (function() {
@@ -46,14 +48,12 @@ function copyURLToClipboard(statusElement, url) {
   outputUrl.addEventListener('dblclick', () => copyURLToClipboard(outputUrl.value));
 
   shortenAction.addEventListener('click', () => {
-    
     // Hide the QR code
     outputQrCode.style.display = "none";
     outputQrCode.src = "";
     // Hide the output field
     outputUrl.style.display = "none";
     outputUrl.value = "";
-
 
     if(!isURL(inputUrl.value)) {
       setInputError(inputUrl, status);

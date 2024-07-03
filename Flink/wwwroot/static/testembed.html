@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test embed</title>
+<style>
+
+iframe {
+    display: inline-block;
+    border: none;
+    margin: 0;
+}
+
+.box{
+  display: none;
+  width: 100%;
+}
+
+a:hover + .box,.box:hover{
+  display: block;
+  position: relative;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+  <p>Hello this is an awesome text about making the world a better place. This is my <a id="myLink" href="https://blog.rtrace.io">Blog</a>. I hope you read it and enjoy it</p>
+	
+  <div class="box"></div><iframe id="myframe" src="http://localhost:5206/embed/W1bY"></iframe></div>
+</body>
+
+<script>
+function gotResizeMessage(event) {
+
+console.log( "got resize message: " + JSON.stringify(event.data))
+
+if(event.data.messageType !== 'frameDimensions') return;
+
+var matches = document.querySelectorAll('iframe'); // iterate through all iFrames on page
+for (let i=0; i < matches.length; i++)
+{
+if(matches[i].contentWindow === event.source) // found the iFrame that sent us a message
+{
+console.log("found iframe that sent a message: " + matches[i].src);
+
+matches[i].width = event.data.messageContent.width;
+matches[i].height = event.data.messageContent.height;
+
+return 1;
+}
+}
+}
+
+(function() {
+window.addEventListener('message', gotResizeMessage, false)
+
+  var link = document.getElementById('myLink');
+  var iframe = document.getElementById('myframe');
+
+  function placeIframe() {
+    var linkRect = link.getBoundingClientRect();
+    //iframe.style.width = linkRect.width + 'px';
+    //iframe.style.height = linkRect.height + 'px';
+    iframe.style.top = (linkRect.top + window.scrollY - linkRect.height) + 'px';
+    iframe.style.left = linkRect.left + window.scrollX + 'px';
+  }
+
+  // Place iframe over the link when the page loads
+  placeIframe();
+
+  // Adjust iframe position when the window is resized
+  window.addEventListener('resize', placeIframe);
+})();
+</script>
+
+</html>

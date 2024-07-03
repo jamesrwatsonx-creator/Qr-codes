@@ -12,7 +12,7 @@ public class MetaDataController(IMetaDataRepository metaDataRepository,ILogger<M
   [ProducesResponseType(typeof(ActionResult), 404, "application/json")]
   [ProducesResponseType(typeof(ActionResult), 500, "application/json")]
   public Task<ActionResult> Get(string id) =>
-    metaDataRepository.Get(id)
+    metaDataRepository.GetAsync(id)
       .TapError(e => logger.LogError("Could not get MetaData for {Id}, because {Error}", id, e))
       .Match(maybeMetaData => maybeMetaData.HasValue ? (ActionResult)Ok(maybeMetaData.Value) : NotFound(), BadRequest);
 }

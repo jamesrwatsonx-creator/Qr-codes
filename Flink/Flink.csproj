@@ -46,7 +46,6 @@
 
   <ItemGroup>
     <None Remove="WebUI\static\flink-logo.png" />
-    <None Include="wwwroot\static\index.html" />
   </ItemGroup>
 
   <ItemGroup>

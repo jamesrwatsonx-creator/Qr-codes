@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <title>Test embed</title>
 <style>
@@ -10,65 +10,54 @@ iframe {
     margin: 0;
 }
 
-.box{
-  display: none;
-  width: 100%;
+.popover-box {
+  z-index: 1;
+  position: absolute;
 }
 
-a:hover + .box,.box:hover{
-  display: block;
-  position: relative;
-  z-index: 100;
-}
 </style>
 </head>
 <body>
-  <p>Hello this is an awesome text about making the world a better place. This is my <a id="myLink" href="https://blog.rtrace.io">Blog</a>. I hope you read it and enjoy it</p>
-	
-  <div class="box"></div><iframe id="myframe" src="http://localhost:5206/embed/W1bY"></iframe></div>
+  <p>Hello this is an awesome text about making the world a better place. This is my <a id="myLink" href="https://blog.rtrace.io">Blog</a>. 
+    I hope you read it and enjoy it
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+  </p>
+  <div id="popover-box" class="popover-box">
+    <iframe id="myframe" src="http://localhost:5206/embed/yRpc" width="600" loading="lazy"></iframe>
+  </div>
 </body>
 
 <script>
 function gotResizeMessage(event) {
-
-console.log( "got resize message: " + JSON.stringify(event.data))
-
-if(event.data.messageType !== 'frameDimensions') return;
-
-var matches = document.querySelectorAll('iframe'); // iterate through all iFrames on page
-for (let i=0; i < matches.length; i++)
-{
-if(matches[i].contentWindow === event.source) // found the iFrame that sent us a message
-{
-console.log("found iframe that sent a message: " + matches[i].src);
-
-matches[i].width = event.data.messageContent.width;
-matches[i].height = event.data.messageContent.height;
-
-return 1;
+  console.log( "got resize message: " + JSON.stringify(event.data))
+  if(event.data.messageType !== 'frameDimensions') return;
+  document.getElementById('myframe').width = event.data.messageContent.width;
+  document.getElementById('myframe').height = event.data.messageContent.height;
 }
-}
+
+function placeIframe() {
+  const link = document.getElementById('myLink');
+  const popover = document.getElementById("popover-box");
+  const linkRect = link.getBoundingClientRect();
+  console.log(linkRect);
+  popover.style.top = linkRect.top + window.scrollY + 25 + 'px';
+  popover.style.left = Math.max(0, linkRect.left + (linkRect.width/2) - (document.getElementById('myframe').width / 2)) + 'px';
 }
 
 (function() {
-window.addEventListener('message', gotResizeMessage, false)
-
-  var link = document.getElementById('myLink');
-  var iframe = document.getElementById('myframe');
-
-  function placeIframe() {
-    var linkRect = link.getBoundingClientRect();
-    //iframe.style.width = linkRect.width + 'px';
-    //iframe.style.height = linkRect.height + 'px';
-    iframe.style.top = (linkRect.top + window.scrollY - linkRect.height) + 'px';
-    iframe.style.left = linkRect.left + window.scrollX + 'px';
+  const link = document.getElementById('myLink');
+  const box = document.getElementById("popover-box");
+  box.hidden = true;
+  
+  window.addEventListener('message', gotResizeMessage, false)
+  
+  link.onmouseover = () => {
+    box.hidden = false;
+    placeIframe();
   }
-
-  // Place iframe over the link when the page loads
-  placeIframe();
-
-  // Adjust iframe position when the window is resized
-  window.addEventListener('resize', placeIframe);
+  link.onmouseout  = () => {
+    setTimeout(() => box.hidden = true, 1000);
+  }
 })();
 </script>
 

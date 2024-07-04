@@ -1,7 +1,5 @@
-using System.Net;
 using CSharpFunctionalExtensions;
 using Flink.MetaData.Repositories;
-using Flink.ShortLinks.Ports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flink.Proxy.Ports.Controllers;
@@ -19,6 +17,8 @@ public class ImageProxyController(IMetaDataRepository metaDataRepository, IForwa
       return BadRequest($"Failed to read ShortLink MetaData for entry with Id '{shortLinkId}'");
     if (r is { IsSuccess: true, Value.HasNoValue: true })
       return NotFound($"The given ShortLink MetaData fo the Id '{shortLinkId}' does not (yet) exist");
+    if (r is { IsSuccess: true, Value.HasValue: true } && r.Value.Value.Image == null)
+      return Redirect($"/qr/{shortLinkId}?height=512");
 
     return await forwardProxy.Proxy(r.Value.Value.Image!)
       .Match(fileContentResult => fileContentResult, f => (IActionResult)BadRequest(f));

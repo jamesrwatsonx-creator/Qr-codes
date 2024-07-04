@@ -4,6 +4,7 @@ html, body {
   padding: 0;
   max-height: 600px;
   max-width: 600px;
+  background: transparent;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,7 +35,6 @@ html, body {
   }
 }
 
-
 .link-preview {
   margin: 0;
   padding: 15px;
@@ -52,7 +52,7 @@ html, body {
   max-width: 150px;
   max-height: 150px;
   object-fit: cover;
-  filter: drop-shadow(0 0 5px #151515);
+  filter: drop-shadow(0 0 15px #000);
 }
 
 .link-content h2 {
@@ -62,14 +62,14 @@ html, body {
 
 .link-content h3 {
   margin: 5px 15px;
-  font-size: 0.7em;
-  color: #4040FF;
+  font-size: 0.85em;
+  color: #6090FF;
   font-weight: 500;
 }
 
 .link-content p {
   margin: 5px 15px;
-  font-size: 0.8em;
+  font-size: 0.80em;
 }
 
 .link-preview-container {

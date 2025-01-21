@@ -1,64 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Test embed</title>
-<style>
+  <title>Test embed</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }  
+    
+    iframe {
+      display: block;
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
 
-iframe {
-    display: inline-block;
-    border: none;
-    margin: 0;
-}
-
-.popover-box {
-  z-index: 1;
-  position: absolute;
-}
-
-</style>
+    .popover-box {
+      z-index: 1;
+      position: absolute;
+    }
+  </style>
 </head>
 <body>
-  <p>Hello this is an awesome text about making the world a better place. This is my <a id="myLink" href="https://blog.rtrace.io">Blog</a>. 
-    I hope you read it and enjoy it
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-  </p>
-  <div id="popover-box" class="popover-box">
-    <iframe id="myframe" src="http://localhost:5206/embed/yRpc" width="600" loading="lazy"></iframe>
-  </div>
+<p>Hello this is an awesome text about making the world a better place. This is my <a id="myLink"
+                                                                                      href="https://blog.rtrace.io">Blog</a>.
+  I hope you read it and enjoy it
+  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+  magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
+  gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
+  elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos
+  et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
+  sit amet.
+</p>
+<div id="popover-box" class="popover-box">
+  <iframe id="myframe" src="http://localhost:5206/embed/yRpc" width="600" height="600"></iframe>
+</div>
 </body>
 
 <script>
-function gotResizeMessage(event) {
-  console.log( "got resize message: " + JSON.stringify(event.data))
-  if(event.data.messageType !== 'frameDimensions') return;
-  document.getElementById('myframe').width = event.data.messageContent.width;
-  document.getElementById('myframe').height = event.data.messageContent.height;
-}
 
-function placeIframe() {
-  const link = document.getElementById('myLink');
-  const popover = document.getElementById("popover-box");
-  const linkRect = link.getBoundingClientRect();
-  console.log(linkRect);
-  popover.style.top = linkRect.top + window.scrollY + 25 + 'px';
-  popover.style.left = Math.max(0, linkRect.left + (linkRect.width/2) - (document.getElementById('myframe').width / 2)) + 'px';
-}
+  function findCorrectFlinkEmbed(messageEvent) {
+    const allIframes = document.getElementsByTagName('iframe');
+    for (let i = 0; i < allIframes.length; i++) {
+      const currentFlinkEmbed = allIframes[i];
+      const iframeWindow = currentFlinkEmbed.contentWindow || currentFlinkEmbed.contentDocument?.defaultView;
+      if (iframeWindow === messageEvent.source)
+        return currentFlinkEmbed;
+    }
+    return null;
+  }
 
-(function() {
-  const link = document.getElementById('myLink');
-  const box = document.getElementById("popover-box");
-  box.hidden = true;
-  
-  window.addEventListener('message', gotResizeMessage, false)
-  
-  link.onmouseover = () => {
-    box.hidden = false;
-    placeIframe();
+  function onFlinkEmbedResizeEvent(messageEvent) {
+    if (messageEvent.data.messageType !== 'frameDimensions') return;
+    const flinkEmbedIframe = findCorrectFlinkEmbed(messageEvent);
+    if (flinkEmbedIframe === null) return;
+    flinkEmbedIframe.width = Math.min(messageEvent.data.messageContent.width, window.innerWidth) + 'px';
+    flinkEmbedIframe.height = Math.min(messageEvent.data.messageContent.height, window.innerHeight) + 'px';
   }
-  link.onmouseout  = () => {
-    setTimeout(() => box.hidden = true, 1000);
+
+  function placeFlinkEmbedRelativeToElement(link, popover) {
+    const linkBoundingRectangle = link.getBoundingClientRect();
+    popover.style.top = (linkBoundingRectangle.top + linkBoundingRectangle.height + 15) + 'px';
+    
+    const linkCenterFromLeft = linkBoundingRectangle.left + (linkBoundingRectangle.width / 2)
+    const popOverHalfWidth = popover.getBoundingClientRect().width / 2;
+    const hasRightOverlap = linkCenterFromLeft + popOverHalfWidth > window.innerWidth;
+    const overlapRight = window.innerWidth - (linkCenterFromLeft + popOverHalfWidth);
+    console.log(`linkCenterFromLeft: ${linkCenterFromLeft}; popOverHalf: ${popOverHalfWidth}; totalWidth: ${window.innerWidth}; hasOverlap: ${hasRightOverlap}; overlapRight: ${overlapRight}`);
+    
+    if(hasRightOverlap) {
+      popover.style.left = Math.max(0, linkCenterFromLeft - popOverHalfWidth + overlapRight) + 'px';
+    }
+    else {
+
+      popover.style.left = Math.max(0, linkCenterFromLeft - popOverHalfWidth) + 'px';
+    }
   }
-})();
+
+  (function () {
+    const link = document.getElementById('myLink');
+    const box = document.getElementById("popover-box");
+    box.hidden = true;
+    let entered = false;
+    window.addEventListener('message', onFlinkEmbedResizeEvent, false)
+
+    link.onmouseover = () => {
+      box.hidden = false;
+      placeFlinkEmbedRelativeToElement(link, box);
+    }
+    link.onmouseout = () => {
+      setTimeout(() => box.hidden = !entered, 1000);
+    }
+
+    box.onmouseover = () => {
+      entered = true;
+      box.hidden = false;
+    }
+
+    box.onmouseout = () => {
+      entered = false;
+      box.hidden = true;
+    }
+
+  })();
 </script>
 
 </html>

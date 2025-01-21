@@ -1,13 +1,16 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
+using Flink.MetaData.Database;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
 using Flink.Proxy.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
+using Flink.ShortLinks.Database;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
 using Flink.WebUI.Ports.IoC;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
@@ -39,10 +42,13 @@ builder.Services.AddSwaggerGen(o => {
   o.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
 });
 
-builder.Services.AddSingleton<DatabaseContext>();
+var dbConfiguration = builder.Configuration
+  .GetSection(nameof(DbConfiguration))
+  .Get<DbConfiguration>()!;
+
 builder.Services
-  .RegisterShortLinksDomain()
-  .RegisterMetaDataDomain()
+  .RegisterShortLinksDomain(dbConfiguration)
+  .RegisterMetaDataDomain(dbConfiguration)
   .RegisterQrCodeDomain()
   .RegisterProxyDomain()
   .RegisterWebUi();
@@ -64,9 +70,10 @@ builder.Services.AddOpenTelemetry()
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope()) {
-  await scope.ServiceProvider.GetRequiredService<DatabaseContext>().Initialize();
-}
+using var scope = app.Services.CreateScope();
+scope.ServiceProvider.GetRequiredService<ShortenedLinkDbContext>().Database.Migrate();
+scope.ServiceProvider.GetRequiredService<MetaDataDbContext>().Database.Migrate();
+
 
 app.UseSwagger();
 app.UseSwaggerUI();

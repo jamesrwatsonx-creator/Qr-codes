@@ -4,10 +4,10 @@ using Flink.MetaData.Extensions;
 
 namespace Flink.MetaData;
 
-public class  MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
+public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
   public async Task<Result<ShortLinkMetaData>> ScrapeAsync(ShortenedLink shortenedLink) {
     try {
-      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(300));
       var httpRequest = await httpClient.GetAsync(shortenedLink.Uri, cts.Token);
       var body = await httpRequest.Content.ReadAsStringAsync(cts.Token);
       var metaDict = HtmlMetaDataExtractor.ExtractMetadata(body);

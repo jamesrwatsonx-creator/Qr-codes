@@ -10,7 +10,6 @@ public static class HtmlMetaDataExtractor {
     "twitter:title", "twitter:description", "twitter:image"
   ];
   
-  
   public static IDictionary<string, string> ExtractMetadata(string htmlBody) {
     try {
       var doc = new HtmlDocument();
@@ -39,6 +38,5 @@ public static class HtmlMetaDataExtractor {
     } catch { /* ignored */ }
 
     return null;
-
   }
 }

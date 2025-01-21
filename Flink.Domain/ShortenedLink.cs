@@ -1,8 +1,11 @@
-﻿namespace Flink.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Flink.Domain;
 
 public class ShortenedLink {
-  public required string Id { get; set; }
-  public required DateTime CreationDate { get; set; }
-  public required string Creator { get; set; }
-  public required string Uri { get; set; }
+  [Key]
+  public required string Id { get; init; }
+  public required DateTime CreationDate { get; init; }
+  public required string Creator { get; init; }
+  public required string Uri { get; init; }
 }

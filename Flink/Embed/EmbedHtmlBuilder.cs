@@ -59,7 +59,6 @@ public class EmbedHtmlBuilder {
                    </div>
                  </div>
                </a>
-               <script src="/static/embed.js"></script>
              </body>
              </html>
              """;

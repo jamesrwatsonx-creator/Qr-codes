@@ -9,7 +9,7 @@ public class IocTests {
   [Fact]
   public void MetaDataDomainInjected_AllDependenciesAreProvided_ScrapingQueueMustBeRegistered() {
     var serviceCollection = new ServiceCollection();
-    serviceCollection.RegisterMetaDataDomain();
+    serviceCollection.RegisterMetaDataDomain(new DbConfiguration() {DbType = SupportedDatabases.Sqlite});
     
     serviceCollection.BuildServiceProvider()
       .GetService<IScrapingQueue>().Should().NotBeNull();

@@ -2,13 +2,14 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Flink.Domain;
+using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
+
 namespace Flink.IntegrationTests;
 
-public class MetaDataTests(WebApplicationFactory<Program> webApplicationFactory) : IClassFixture<WebApplicationFactory<Program>> {
-  private readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions {
+public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : IClassFixture<FlinkWebApplicationFactory> {
+  private readonly JsonSerializerOptions _serializerOptions = new() {
     PropertyNameCaseInsensitive = true
   };
   
@@ -28,7 +29,7 @@ public class MetaDataTests(WebApplicationFactory<Program> webApplicationFactory)
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
       Creator = "ruffy",
       PreferredId = shortLinkId,
-      Uri = "https://flink.rtrace.io/",
+      Uri = "https://blog.rtrace.io/",
       PreferredIdLength = 14
     }), Encoding.UTF8, "application/json");
 

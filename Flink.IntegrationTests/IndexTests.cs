@@ -1,10 +1,10 @@
 using System.Net;
+using Flink.IntegrationTests.TestScaffolding;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Flink.IntegrationTests;
 
-public class IndexTests(WebApplicationFactory<Program> webApplicationFactory) : IClassFixture<WebApplicationFactory<Program>> {
+public class IndexTests(FlinkWebApplicationFactory webApplicationFactory) : IClassFixture<FlinkWebApplicationFactory> {
   [Fact]
   public async Task IndexPageRequest_NoParametersPassed_Returns200() {
     var r = await webApplicationFactory

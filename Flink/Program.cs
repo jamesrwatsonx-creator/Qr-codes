@@ -69,6 +69,7 @@ builder.Services.AddOpenTelemetry()
   });
 
 var app = builder.Build();
+
 try {
   /*
   dotnet ef migrations add V001CreateShortenedLinkDbTables --context ShortenedLinkDbContext --output-dir Migrations/ShortenedLink

@@ -13,7 +13,7 @@ public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
       var metaDict = HtmlMetaDataExtractor.ExtractMetadata(body);
 
       return Result.Success(new ShortLinkMetaData {
-        ShortLinkId = shortenedLink.Id,
+        Id = shortenedLink.Id,
         Author = metaDict.GetOrDefault(["author", "article:author"], null),
         Description = metaDict.GetOrDefault(["description", "og:description", "twitter:description"], null),
         Image = metaDict.GetOrDefault(["og:image", "twitter:image"], null),

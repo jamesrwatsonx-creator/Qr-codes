@@ -1,13 +1,14 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Flink.IntegrationTests;
 
-public class QrCodeGeneratorTests(WebApplicationFactory<Program> webApplicationFactory) : IClassFixture<WebApplicationFactory<Program>> {
+public class QrCodeGeneratorTests(FlinkWebApplicationFactory webApplicationFactory) : IClassFixture<FlinkWebApplicationFactory> {
   [Fact]
   public async Task GetQrCodeRequest_RequestedShortLinkExists_ReturnsExpectedImage() {
     // Arrange

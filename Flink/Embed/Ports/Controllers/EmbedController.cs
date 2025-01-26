@@ -33,7 +33,7 @@ public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkR
         .WithTitle(v.Title)
         .WithDescription(v.Description)
         .WithShortLinkId(shortLinkResult.GetValueOrDefault().GetValueOrDefault()?.Id!)
-        .WithImage($"/proxy/image/{v.ShortLinkId}", v.Title)
+        .WithImage($"/proxy/image/{v.Id}", v.Title)
         .WithOriginalUrl(shortLinkResult.GetValueOrDefault().GetValueOrDefault()?.Uri)
         .Build(), _ => _404Embed.Build());
     

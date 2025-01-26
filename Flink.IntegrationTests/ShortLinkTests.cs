@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Flink.IntegrationTests.TestScaffolding;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -8,10 +9,8 @@ using Flink.ShortLinks.Models;
 
 namespace Flink.IntegrationTests;
 
-public class ShortLinkTests(WebApplicationFactory<Program> webApplicationFactory) : IClassFixture<WebApplicationFactory<Program>> {
-#pragma warning disable CA2211
-  public static IEnumerable<object[]> SerializerSettings = new List<object[]> {
-#pragma warning restore CA2211
+public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : IClassFixture<FlinkWebApplicationFactory> {
+  public static readonly IEnumerable<object[]> SerializerSettings = new List<object[]> {
     new object[] { new JsonSerializerOptions() },
     new object[] { new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase } },
     new object[] { new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower } },
@@ -19,7 +18,6 @@ public class ShortLinkTests(WebApplicationFactory<Program> webApplicationFactory
     new object[] { new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower } },
     new object[] { new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseUpper } }
   };
-  
   
   [Fact]
   public async Task GetShortLinkRequest_WhenRequestedShortLinkDoesNotExist_Returns404() {

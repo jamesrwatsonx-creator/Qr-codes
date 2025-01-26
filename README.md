@@ -26,6 +26,7 @@ Flink is F(L)OSS and made for the public! If you are running a Flink instance an
 
 | Source                                                | Country  | Cloudflare |
 |-------------------------------------------------------|:--------:|:----------:|
+| [flink.is](https://flink.is)                          | 🇦🇹       | ⛔         |
 | [flink.rtrace.io](https://flink.rtrace.io)            | 🇩🇪       | ⛔         |
 
 
@@ -73,7 +74,8 @@ curl -X "POST" \
 - [x] In-Memory caching for generated QR codes
 - [x] Variable QR Code sizes (attach a URL parameter specifying height in px)
 - [x] simple static UI shipped with `flink`
-- [ ] implement MetaData extractor (opengraph, twitter:cards, etc. ...)
+- [x] implement MetaData extractor (opengraph, twitter:cards, etc. ...)
+- [x] implement rudimentary short link embeds
 - [ ] Scalability through Federation
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
 - [ ] Optional authentication for creating short links (to prevent potential abuse)

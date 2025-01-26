@@ -2,79 +2,119 @@ html, body {
   display: block;
   margin: 0;
   padding: 0;
-
+  height: 100%;
+  width: 100%;
   background-color: #101010;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+nav {
+  background-color: #151525;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+a {
+  color: #DDE;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-align: center;
+  font-size: 16px;
+  min-width: 120px;
+  height: 100%;
+  line-height: 50px;
+}
+
+nav > a:hover {
+  background-color: #151515;
+  font-weight: 600;
 }
 
 .flink-form {
-  display: block;
-  margin: 0 auto;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: stretch;
+  align-content: stretch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 120px) and (max-width: 575px) {
-  .flink-form {
+  .input-area {
     width: 100%;
   }
-  img {
-    width: 75%;
+  .flink-logo-img {
+    width: 50%;
   }
 }
 
 @media (min-width: 576px) {
-  .flink-form {
-    width: 90%;
+  .input-area {
+    width: 95%;
   }
-  img {
-    width: 75%;
+  .flink-logo-img {
+    width: 50%;
   }
 }
 
 @media (min-width: 768px) {
-  .flink-form {
+  .input-area {
     width: 90%;
   }
-  img {
-    width: 65%;
+  .flink-logo-img {
+    width: 45%;
   }
 }
 
 @media (min-width: 992px) {
-  .flink-form {
-    width: 80%;
+  .input-area {
+    width: 85%;
   }
-  img {
-    width: 55%;
+  .flink-logo-img {
+    width: 35%;
   }
 }
 
 @media (min-width: 1200px) {
-  .flink-form {
-    width: 50%;
+  .input-area {
+    width: 80%;
   }
-  img {
+  .flink-logo-img {
     width: 50%;
   }
 }
 
-img {
+.flink-logo-img {
   display: block;
   margin: 15px auto;
   padding: 0;
+  max-height: 300px;
+  object-fit: scale-down;
   filter: drop-shadow(0 0 100px #00A0FF);
+}
+
+.input-area {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
 }
 
 button {
   display: block;
-  margin: 15px 0;
   padding: 0;
-
   width: 100%;
-  min-height: 4rem;
-  max-height: 180px;
+  height: 50px;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
 
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 550;
   border-radius: 10px;
   box-shadow: 0 0 5px #2323F6;
 
@@ -95,12 +135,13 @@ button:hover {
 input {
   display: block;
   width: 100%;
-  min-height: 4rem;
-
-  margin: 15px 0;
+  height: 50px;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0;
 
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   border-radius: 10px;
   box-shadow: 0 0 15px #151515;
 
@@ -115,11 +156,31 @@ input:hover {
   box-shadow: 0 0 15px #505050;
 }
 
-hr {
+.output-area {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+#embed-output {
   display: block;
-  margin: 30px 0;
-  padding: 0;
+  max-width: 600px;
   width: 100%;
+  height: 202px;
+  border: none;
+}
+
+#output-qr-code {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 202px;
 }
 
 .status-text {

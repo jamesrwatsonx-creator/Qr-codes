@@ -5,16 +5,16 @@ html, body, head {
 
   margin: 0;
   padding: 0;
-  max-width: 600px;
-  min-width: 400px;
-  min-height: 400px;
-  max-height: 600px;
+  width: 600px;
+  height: 250px;
 }
 
 .link-preview-container {
   display: block;
   margin: 0;
   padding: 0;
+  height: 200px;
+  width: 599px;
   text-decoration: none;
 }
 
@@ -24,17 +24,18 @@ html, body, head {
   justify-content: flex-start;
   align-items: center;
   align-content: flex-start;
-
   margin: 0;
   padding: 0;
+  height: 200px;
 
   border: 1px solid #AAA;
   border-radius: 5px;
 }
 
 .link-preview img {
-  margin: 15px;
+  margin: 15px 0 15px 15px;
   max-width: 200px;
+  max-height: 170px;
   object-fit: cover;
   filter: drop-shadow(0 0 15px #000);
 }
@@ -43,26 +44,26 @@ html, body, head {
   margin: 15px;
   padding: 0;
   display: flex;
-  height: 100%;
+  max-height: 200px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
 }
 
-.link-content h2 {
+.link-content > h2 {
   margin: 0 15px;
   font-size: 1em;
 }
 
-.link-content h3 {
+.link-content > h3 {
   margin: 5px 15px;
   font-size: 0.85em;
   color: #6090FF;
   font-weight: 500;
 }
 
-.link-content p {
+.link-content > p {
   margin: 5px 15px;
   font-size: 0.80em;
 }

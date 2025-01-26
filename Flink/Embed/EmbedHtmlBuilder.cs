@@ -28,7 +28,7 @@ public class EmbedHtmlBuilder {
 
   public EmbedHtmlBuilder WithDescription(string? description) {
     if (description == null) return this;
-    _descriptionHtml = $"<p class=\"secondary-foreground-color \">{description}</p>";
+    _descriptionHtml = $"<p class=\"secondary-foreground-color \">{description.Truncate(400)}</p>";
     return this;
   }
   

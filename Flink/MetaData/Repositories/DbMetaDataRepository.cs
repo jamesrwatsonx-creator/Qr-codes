@@ -1,10 +1,10 @@
 using CSharpFunctionalExtensions;
 using Flink.Domain;
-using Flink.MetaData.Database;
+using Flink.Migrations;
 
 namespace Flink.MetaData.Repositories;
 
-public class DbMetaDataRepository(MetaDataDbContext dbContext) : IMetaDataRepository {
+public class DbMetaDataRepository(FlinkDbContext dbContext) : IMetaDataRepository {
   public async Task<Result<ShortLinkMetaData>> AddOrUpdateAsync(ShortLinkMetaData shortLinkMetaData) {
     try {
       var existingMetaData = await dbContext.ShortLinkMetaData.FindAsync(shortLinkMetaData.Id);

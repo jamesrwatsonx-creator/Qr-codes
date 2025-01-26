@@ -1,12 +1,11 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
-using Flink.MetaData.Database;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
+using Flink.Migrations;
 using Flink.Proxy.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
-using Flink.ShortLinks.Database;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
 using Flink.WebUI.Ports.IoC;
@@ -47,8 +46,9 @@ var dbConfiguration = builder.Configuration
   .Get<DbConfiguration>()!;
 
 builder.Services
-  .RegisterShortLinksDomain(dbConfiguration)
-  .RegisterMetaDataDomain(dbConfiguration)
+  .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))
+  .RegisterShortLinksDomain()
+  .RegisterMetaDataDomain()
   .RegisterQrCodeDomain()
   .RegisterProxyDomain()
   .RegisterWebUi();
@@ -76,8 +76,7 @@ try {
   dotnet ef migrations add V001CreateMetaDataDbTables --context MetaDataDbContext --output-dir Migrations/MetaData
   */
   using var scope = app.Services.CreateScope();
-  scope.ServiceProvider.GetRequiredService<ShortenedLinkDbContext>().Database.Migrate();
-  scope.ServiceProvider.GetRequiredService<MetaDataDbContext>().Database.Migrate();
+  scope.ServiceProvider.GetRequiredService<FlinkDbContext>().Database.Migrate();
 } catch{ /* ignored */ }
 
 app.UseSwagger();

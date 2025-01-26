@@ -1,12 +1,12 @@
 using CSharpFunctionalExtensions;
 using Flink.Domain;
-using Flink.ShortLinks.Database;
+using Flink.Migrations;
 using Flink.ShortLinks.Ports;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flink.ShortLinks.Repositories;
 
-public class DbShortLinkRepository(ShortenedLinkDbContext dbContext) : IShortLinkRepository {
+public class DbShortLinkRepository(FlinkDbContext dbContext) : IShortLinkRepository {
   public async Task<Result<ShortenedLink>> AddAsync(ShortenedLink shortenedLink) {
     try {
       await dbContext.ShortenedLinks.AddAsync(shortenedLink);

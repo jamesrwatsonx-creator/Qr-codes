@@ -30,6 +30,7 @@ function copyURLToClipboard(statusElement, url) {
   const outputUrl = document.getElementById("output-url");
   const outputQrCode = document.getElementById("output-qr-code");
   const shortenAction = document.getElementById("shorten-action");
+  const embedIframe = document.getElementById("embed-output");
 
   inputUrl.addEventListener('input', () => {
     isURL(inputUrl.value)
@@ -71,9 +72,16 @@ function copyURLToClipboard(statusElement, url) {
         outputUrl.value = `${document.URL}to/${data['id']}`;
         outputUrl.style.display = "block";
         // Display the QR code
-        outputQrCode.src = `${document.URL}qr/${data['id']}`;
+        outputQrCode.src = `${document.URL}qr/${data['id']}?height=202`;
         outputQrCode.style.display = "block";
+        // set the iframe
+        setTimeout(() => {
+          embedIframe.src = `${document.URL}embed/${data['id']}`;
+          embedIframe.contentWindow.document.location.href=`${document.URL}embed/${data['id']}`;
+        }, 2000)
+
         setStatus(status, "✅ URL successfully shortened")
+
       }
     };
 

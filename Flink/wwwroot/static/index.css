@@ -161,7 +161,7 @@ input:hover {
   margin-bottom: 25px;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   align-content: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -196,3 +196,24 @@ input:hover {
   box-shadow: 0 0 30px #ff0000;
 }
 
+.loader {
+  margin-left: 260px;
+  margin-right: 260px;
+  width: 60px;
+  height: 60px;
+  border: 5px solid #FFF;
+  border-bottom-color: #00A0FFFF;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

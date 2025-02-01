@@ -24,6 +24,26 @@ function copyURLToClipboard(statusElement, url) {
     .catch(() => console.error('Could not write to clipboard.'));
 }
 
+function retryHttpGetCallUntil200(url, interval, callback) {
+  const intervalId = setInterval(() => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          clearInterval(intervalId);
+          callback();
+        }
+        if (xhr.status !== 404) {
+          clearInterval(intervalId);
+        }
+      }
+    };
+    xhr.send();
+  }, interval);
+}
+
 (function() {
   const status = document.getElementById("status-text");
   const inputUrl = document.getElementById("input-url");
@@ -31,6 +51,7 @@ function copyURLToClipboard(statusElement, url) {
   const outputQrCode = document.getElementById("output-qr-code");
   const shortenAction = document.getElementById("shorten-action");
   const embedIframe = document.getElementById("embed-output");
+  const embedLoader = document.getElementById("embed-loader");
 
   inputUrl.addEventListener('input', () => {
     isURL(inputUrl.value)
@@ -66,6 +87,7 @@ function copyURLToClipboard(statusElement, url) {
     r.onload = function() {
       if (r.status === 201) {
         clearInputError(inputUrl, status);
+        embedIframe.style.display = 'none';
         const data = JSON.parse(r.responseText);
         console.log("Created ShortLink", data);
         // Display the shortened URL
@@ -75,10 +97,13 @@ function copyURLToClipboard(statusElement, url) {
         outputQrCode.src = `${document.URL}qr/${data['id']}?height=202`;
         outputQrCode.style.display = "block";
         // set the iframe
-        setTimeout(() => {
+        embedLoader.style.display = 'block';
+        retryHttpGetCallUntil200(`${document.URL}meta/${data['id']}`, 300, () => {
+          embedLoader.style.display = 'none';
           embedIframe.src = `${document.URL}embed/${data['id']}`;
           embedIframe.contentWindow.document.location.href=`${document.URL}embed/${data['id']}`;
-        }, 2000)
+          embedIframe.style.display = 'block';
+        });
 
         setStatus(status, "✅ URL successfully shortened")
 

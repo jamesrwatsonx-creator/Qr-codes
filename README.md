@@ -21,6 +21,8 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 🌐 a simple, minimalistic Web UI
 - 💾 supports Sqlite, PostgreSQL and MariaDB/MySQL
 
+![Flink UI Demo image](flink-ui-sample.png)
+
 
 ## Flink Instances
 

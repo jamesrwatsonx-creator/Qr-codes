@@ -12,12 +12,14 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 
 - 🚀 get a production-grade `flink` instance up and running in less then 1 minute
 - 📱 easy generation of QR Codes for shortened links
+- 🪪 generate Link previews that are embeddable as `iframe`
 - ⌨️ batch short link creation from your terminal (using `curl`, `wget` or any other board util)
 - 😎 swagger (OpenAPI) interface allowing you to build on top of `flink`
 - 🖥️ runs on Linux, Windows, Mac
-- 🐳 deployable as container (podman and docker)
+- 🐳 deployable as container (podman and docker), support for Kubernetes
 - 📈 keep track of how often short links are visited through built-in Prometheus support
 - 🌐 a simple, minimalistic Web UI
+- 💾 supports Sqlite, PostgreSQL and MariaDB/MySQL
 
 
 ## Flink Instances
@@ -44,6 +46,8 @@ docker run -p 8080:8080 quay.io/rtraceio/flink
 # yes, that's it flink is up and running 🚀
 ```
 
+Flink defaults to using Sqlite unless specified.
+
 ### Creating your first Short Link from CLI
 
 ```bash
@@ -62,11 +66,25 @@ curl -X "POST" \
 
 ### Exploring flink with your browser
 
-1. navigate to [/to/awesomeblog](http://localhost:8080/to/awesomeblog) and `flink` does what it does best: redirecting you
-2. navigate to [/qr/awesomeblog](http://localhost:8080/qr/awesomeblog) and `flink` will give you the URL encoded as QRcode
-3. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana)
-4. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser
-5. navigate to [/swagger/v1/swagger.json](http://localhost:5206/swagger/v1/swagger.json) to get the OpenAPI definition of `flink`
+1. navigate to [/](http://localhost:8080/) and you'll see the `flink` UI
+2. navigate to [/to/awesomeblog](http://localhost:8080/to/awesomeblog) and `flink` does what it does best: redirecting you
+3. navigate to [/qr/awesomeblog](http://localhost:8080/qr/awesomeblog) and `flink` will give you the URL encoded as QRcode
+4. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana)
+5. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser
+6. navigate to [/swagger/v1/swagger.json](http://localhost:5206/swagger/v1/swagger.json) to get the OpenAPI definition of `flink`
+
+### Flink Configuration
+
+all configurations are optional. Flink works out-of-the-box and is configured with secure and reliable defaults.
+
+#### Database Configuration
+
+| Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
+|:-----------------------------------------:|:----------------------------------------:|:---------------------------------------------------------------------------------:|:-----------------------:|
+| DBCONFIGURATION__DBTYPE                   | DbConfiguration:DbType                   | which database type shall be used (enum, either `Postgres`, `MySql` or `Sqlite`)  | Sqlite                  |
+| DBCONFIGURATION__SQLITECONNECTIONSTRING   | DbConfiguration:SqliteConnectionString   | format: `Data Source=flink.sqlite`                                                | `Data Source=flink.db ` |
+| DBCONFIGURATION__POSTGRESCONNECTIONSTRING | DbConfiguration:PostgresConnectionString | format: `Server=localhost;Port=5432;Database=flink;User Id=flink;Password=flink;` | null                    |
+
 
 ## Roadmap
 
@@ -76,7 +94,7 @@ curl -X "POST" \
 - [x] simple static UI shipped with `flink`
 - [x] implement MetaData extractor (opengraph, twitter:cards, etc. ...)
 - [x] implement rudimentary short link embeds
-- [ ] Scalability through Federation
+- [ ] Scalability through Federation (ActivityPub)
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
 - [ ] Optional authentication for creating short links (to prevent potential abuse)
 

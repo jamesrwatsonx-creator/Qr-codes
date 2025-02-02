@@ -15,10 +15,10 @@ namespace Flink.Migrations
                 name: "ShortenedLinks",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Creator = table.Column<string>(type: "TEXT", nullable: false),
-                    Uri = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Creator = table.Column<string>(type: "text", nullable: false),
+                    Uri = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,14 +29,14 @@ namespace Flink.Migrations
                 name: "ShortLinkMetaData",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
-                    Author = table.Column<string>(type: "TEXT", nullable: true),
-                    Image = table.Column<string>(type: "TEXT", nullable: true),
-                    HttpStatusCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    DocumentSize = table.Column<int>(type: "INTEGER", nullable: false),
-                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Author = table.Column<string>(type: "text", nullable: true),
+                    Image = table.Column<string>(type: "text", nullable: true),
+                    HttpStatusCode = table.Column<int>(type: "integer", nullable: false),
+                    DocumentSize = table.Column<int>(type: "integer", nullable: false),
+                    LastUpdate = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {

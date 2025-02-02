@@ -20,7 +20,7 @@ public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
         Title = metaDict.GetOrDefault(["title", "og:description", "twitter:description"], null),
         HttpStatusCode = (int)httpRequest.StatusCode,
         DocumentSize = body.Length,
-        LastUpdate = DateTime.UtcNow
+        LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
       });
     } catch (Exception e) {
       return Result.Failure<ShortLinkMetaData>(e.Message);

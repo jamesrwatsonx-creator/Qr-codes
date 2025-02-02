@@ -11,5 +11,5 @@ public class ShortLinkMetaData {
   public string? Image { get; init; }
   public int HttpStatusCode { get; init; }
   public int DocumentSize { get; init; }
-  public DateTime LastUpdate { get; init; }
+  public long LastUpdate { get; init; }
 }

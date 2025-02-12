@@ -71,7 +71,7 @@ curl -X "POST" \
 1. navigate to [/](http://localhost:8080/) and you'll see the `flink` UI
 2. navigate to [/to/awesomeblog](http://localhost:8080/to/awesomeblog) and `flink` does what it does best: redirecting you
 3. navigate to [/qr/awesomeblog](http://localhost:8080/qr/awesomeblog) and `flink` will give you the URL encoded as QRcode
-4. navigate to [/qr/awesomeblog](http://localhost:8080/meta/awesomeblog) and `flink` will give you the Meta Data of the site it has crawled
+4. navigate to [/meta/awesomeblog](http://localhost:8080/meta/awesomeblog) and `flink` will give you the Meta Data of the site it has crawled
 5. navigate to [/embed/awesomeblog](http://localhost:8080/embed/awesomeblog) and `flink` will show you a nice link preview (that you can embed as iframe on your website)
 6. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana)
 7. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser

@@ -49,7 +49,7 @@ var dbConfiguration = builder.Configuration
   .Get<DbConfiguration>()
   .ValidateConfiguration();
 
-builder.Configuration
+var metricsConfiguration = builder.Configuration
   .GetSection(nameof(MetricsConfiguration))
   .Get<MetricsConfiguration>()
   .ValidateConfiguration();
@@ -93,7 +93,7 @@ try {
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
-app.MapPrometheusScrapingEndpoint();
+app.MapPrometheusScrapingEndpoint(metricsConfiguration.MetricsEndpointPath);
 app.UseMiddleware<MetricsMiddleware>();
 
 app.UseWebUi();

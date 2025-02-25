@@ -7,7 +7,7 @@ namespace Flink.Metrics.Ports.Middleware;
 
 public class MetricsMiddleware(IOptions<MetricsConfiguration> metricsConfiguration, RequestDelegate next) {
   public async Task Invoke(HttpContext context) {
-    if (!context.Request.Path.StartsWithSegments("/metrics")) {
+    if (!context.Request.Path.StartsWithSegments(metricsConfiguration.Value.MetricsEndpointPath)) {
       await next(context);
       return;
     }

@@ -9,7 +9,11 @@ namespace Flink.ShortLinks.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class ShortLinkController(IShortLinkRepository shortLinkRepository, ILogger<ShortLinkController> logger, IScrapingQueue scrapingQueue, ShortLinkMetricsRegistry metrics)
+public class ShortLinkController(
+  IShortLinkRepository shortLinkRepository,
+  ILogger<ShortLinkController> logger,
+  IScrapingQueue scrapingQueue,
+  ShortLinkMetricsRegistry metrics)
   : ControllerBase {
   [HttpGet("/to/{id}")]
   [ProducesResponseType(typeof(RedirectResult), 301, "application/json")]
@@ -38,7 +42,7 @@ public class ShortLinkController(IShortLinkRepository shortLinkRepository, ILogg
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow
     };
-    
+
     return shortLinkRepository
       .AddAsync(shortenedLink)
       .TapError(e => logger.LogError("Could not create Shortened Link with {Id}, because {Error}", shortenedLink.Id, e))

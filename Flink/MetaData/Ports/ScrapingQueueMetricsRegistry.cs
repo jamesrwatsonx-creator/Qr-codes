@@ -6,7 +6,7 @@ public class ScrapingQueueMetricsRegistry {
   public const string MeterName = "scrapingqueue";
   private const string Unit = "requests";
   private readonly Counter<long> _queueSize;
-  
+
 
   public ScrapingQueueMetricsRegistry(IMeterFactory meterFactory) {
     var meter = meterFactory.Create(MeterName, "1.0.0");

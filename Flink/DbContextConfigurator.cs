@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flink;
@@ -9,7 +10,10 @@ public enum SupportedDatabases {
 }
 
 public class DbConfiguration {
+  [Required]
+  [EnumDataType(typeof(SupportedDatabases))]
   public required SupportedDatabases DbType { get; init; }
+
   public string? PostgresConnectionString { get; init; } = null;
   public string? MySqlConnectionString { get; init; } = null;
   public string? SqliteConnectionString { get; init; } = null;

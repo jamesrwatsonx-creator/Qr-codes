@@ -13,7 +13,7 @@ public class IndexTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
 
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
-  
+
   [Fact]
   public async Task EmbedRequest_NoParametersPassed_Returns404() {
     var r = await webApplicationFactory

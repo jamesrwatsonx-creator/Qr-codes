@@ -4,9 +4,10 @@ using Flink.MetaData.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flink.MetaData.Ports.Controllers;
+
 [ApiController]
 [Produces("application/json")]
-public class MetaDataController(IMetaDataRepository metaDataRepository,ILogger<MetaDataController> logger) : ControllerBase {
+public class MetaDataController(IMetaDataRepository metaDataRepository, ILogger<MetaDataController> logger) : ControllerBase {
   [HttpGet("/meta/{id}")]
   [ProducesResponseType(typeof(ShortLinkMetaData), 200, "application/json")]
   [ProducesResponseType(typeof(ActionResult), 404, "application/json")]

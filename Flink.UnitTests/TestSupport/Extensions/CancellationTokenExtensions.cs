@@ -7,6 +7,6 @@ public static class CancellationTokenExtensions {
         await Task.Delay(TimeSpan.FromMilliseconds(100), ct);
         return;
       }
-    } catch(TaskCanceledException){}
+    } catch (TaskCanceledException) { }
   }
 }

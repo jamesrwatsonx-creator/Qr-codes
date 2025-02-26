@@ -3,9 +3,12 @@ using System.Reflection;
 using Flink;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
+using Flink.Metrics.Ports.Middleware;
+using Flink.Metrics.Ports.Models;
 using Flink.Migrations;
 using Flink.Proxy.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
+using Flink.Shared.Extensions;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
 using Flink.WebUI.Ports.IoC;
@@ -43,7 +46,13 @@ builder.Services.AddSwaggerGen(o => {
 
 var dbConfiguration = builder.Configuration
   .GetSection(nameof(DbConfiguration))
-  .Get<DbConfiguration>()!;
+  .Get<DbConfiguration>()
+  .ValidateConfiguration();
+
+var metricsConfiguration = builder.Configuration
+  .GetSection(nameof(MetricsConfiguration))
+  .Get<MetricsConfiguration>()
+  .ValidateConfiguration();
 
 builder.Services
   .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))
@@ -77,14 +86,17 @@ try {
   */
   using var scope = app.Services.CreateScope();
   scope.ServiceProvider.GetRequiredService<FlinkDbContext>().Database.Migrate();
-} catch{ /* ignored */ }
+} catch {
+  /* ignored */
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
-app.MapPrometheusScrapingEndpoint();
-app.UseWebUi();
+app.MapPrometheusScrapingEndpoint(metricsConfiguration.MetricsEndpointPath);
+app.UseMiddleware<MetricsMiddleware>();
 
+app.UseWebUi();
 app.UseHttpsRedirection();
 app.Run();
 return;

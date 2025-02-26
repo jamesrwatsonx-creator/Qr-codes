@@ -4,7 +4,6 @@ using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Flink.IntegrationTests;
 
@@ -23,18 +22,18 @@ public class QrCodeGeneratorTests(FlinkWebApplicationFactory webApplicationFacto
 
     // Act
     var r = await httpClient.GetAsync($"/qr/blog");
-    
+
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);
     r.Content.Headers.ContentType?.MediaType.Should().Be("image/png");
   }
-  
+
   [Fact]
   public async Task GetQrCodeRequest_NonExistingShortLink_Returns404() {
     var r = await webApplicationFactory
       .CreateClient()
       .GetAsync($"/qr/{Guid.NewGuid()}-surely-not-existing");
-    
+
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
     r.Content.Headers.ContentType?.MediaType.Should().Be("application/json");
   }

@@ -7,7 +7,7 @@ namespace Flink.MetaData;
 
 public class InMemoryScrapingQueue(ScrapingQueueMetricsRegistry scrapingQueueMetricsRegistry) : IScrapingQueue {
   private readonly Queue<ShortenedLink> _taskQueue = new(1024);
-  
+
   public Result EnqueueForScraping(ShortenedLink shortenedLink) {
     _taskQueue.Enqueue(shortenedLink);
     scrapingQueueMetricsRegistry.Enqueue();

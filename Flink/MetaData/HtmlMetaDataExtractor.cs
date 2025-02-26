@@ -9,7 +9,7 @@ public static class HtmlMetaDataExtractor {
     "og:title", "og:description", "og:image",
     "twitter:title", "twitter:description", "twitter:image"
   ];
-  
+
   public static IDictionary<string, string> ExtractMetadata(string htmlBody) {
     try {
       var doc = new HtmlDocument();
@@ -35,7 +35,9 @@ public static class HtmlMetaDataExtractor {
         return new KeyValuePair<string, string>(n.Attributes["name"].Value, n.Attributes["content"].Value);
       if (n.Attributes.Contains("property"))
         return new KeyValuePair<string, string>(n.Attributes["property"].Value, n.Attributes["content"].Value);
-    } catch { /* ignored */ }
+    } catch {
+      /* ignored */
+    }
 
     return null;
   }

@@ -1,5 +1,5 @@
 function isURL(str) {
-  const urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+  const urlRegex = /(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(?:\/[^\s?#]*)*(\?[^\s#]*)?(#[^\s]*)?/;
   return new RegExp(urlRegex, 'i').test(str);
 }
 
@@ -53,10 +53,17 @@ function retryHttpGetCallUntil200(url, interval, callback) {
   const embedIframe = document.getElementById("embed-output");
   const embedLoader = document.getElementById("embed-loader");
 
+  let inputDebounceTimer;
+
   inputUrl.addEventListener('input', () => {
+    clearTimeout(inputDebounceTimer);
+    clearInputError(inputUrl, status);
+
+    inputDebounceTimer = setTimeout(() => {
     isURL(inputUrl.value)
       ? clearInputError(inputUrl, status)
       : setInputError(inputUrl, status);
+    }, 1000);
   });
 
   // Submit on Enter
@@ -81,6 +88,13 @@ function retryHttpGetCallUntil200(url, interval, callback) {
       setInputError(inputUrl, status);
       return;
     }
+
+    const hasSchemaPrefix = [
+      inputUrl.value.startsWith("http://"),
+      inputUrl.value.startsWith("https://")
+    ].reduce((acc, val) => acc || val, false);
+    inputUrl.value = hasSchemaPrefix ? inputUrl.value : `https://${inputUrl.value}`;
+
     const r = new XMLHttpRequest();
     r.open('POST', '/to', true);
     r.setRequestHeader("Content-Type", "application/json; charset=UTF-8");

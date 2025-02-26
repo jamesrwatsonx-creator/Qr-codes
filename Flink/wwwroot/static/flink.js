@@ -54,8 +54,10 @@ function retryHttpGetCallUntil200(url, interval, callback) {
   const embedLoader = document.getElementById("embed-loader");
 
   let inputDebounceTimer;
+  let flinkifyButtonLocked;
 
   inputUrl.addEventListener('input', () => {
+    flinkifyButtonLocked = false;
     clearTimeout(inputDebounceTimer);
     clearInputError(inputUrl, status);
 
@@ -77,6 +79,10 @@ function retryHttpGetCallUntil200(url, interval, callback) {
   outputUrl.addEventListener('dblclick', () => copyURLToClipboard(outputUrl.value));
 
   shortenAction.addEventListener('click', () => {
+    if(flinkifyButtonLocked === true)
+      return;
+
+    flinkifyButtonLocked = true;
     // Hide the QR code
     outputQrCode.style.display = "none";
     outputQrCode.src = "";
@@ -120,7 +126,6 @@ function retryHttpGetCallUntil200(url, interval, callback) {
         });
 
         setStatus(status, "✅ URL successfully shortened")
-
       }
     };
 

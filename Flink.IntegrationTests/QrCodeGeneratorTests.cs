@@ -4,7 +4,6 @@ using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Flink.IntegrationTests;
 

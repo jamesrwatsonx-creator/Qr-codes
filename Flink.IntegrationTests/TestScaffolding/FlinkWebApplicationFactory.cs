@@ -26,10 +26,13 @@ public class FlinkWebApplicationFactory : WebApplicationFactory<Program> {
     });
     
     builder.ConfigureServices(services => {
-      var configuration = new ConfigurationBuilder()
-        .AddInMemoryCollection(_appSettingsOverrides!)
-        .Build();
-      services.AddSingleton<IOptions<MetricsConfiguration>>(_ => Options.Create(configuration.GetSection(nameof(MetricsConfiguration)).Get<MetricsConfiguration>()!));
+      if (_appSettingsOverrides.Any()) {
+        var configuration = new ConfigurationBuilder()
+          .AddInMemoryCollection(_appSettingsOverrides!)
+          .Build();
+        services.AddSingleton<IOptions<MetricsConfiguration>>(_ =>
+          Options.Create(configuration.GetSection(nameof(MetricsConfiguration)).Get<MetricsConfiguration>()!));
+      }
     });
   }
 }

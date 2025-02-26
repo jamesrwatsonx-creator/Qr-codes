@@ -30,7 +30,7 @@ public class ScrapingBackgroundServiceTests {
       .ReturnsAsync(Result.Success(metaData));
 
     var mockServiceProviderFactory = new Mock<IServiceProviderFactory<IServiceCollection>>();
-    
+
     mockServiceProviderFactory
       .Setup(factory => factory.CreateBuilder(It.IsAny<IServiceCollection>()))
       .Returns((IServiceCollection services) => services);

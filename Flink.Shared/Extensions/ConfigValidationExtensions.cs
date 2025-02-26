@@ -10,7 +10,7 @@ public static class ConfigValidationExtensions {
 
     var isValid = Validator.TryValidateObject(configuration, validationContext, results, true);
     if (isValid) return configuration;
-    
+
     var errors = string.Join("; ", results.Select(r => r.ErrorMessage));
     throw new ApplicationException($"Configuration validation failed for {typeof(T).Name}: {errors}");
   }

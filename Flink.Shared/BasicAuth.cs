@@ -24,14 +24,15 @@ public class Credential {
 }
 
 public static class BasicAuth {
-  private static readonly Regex HeaderRegex = new(@"^Basic [A-Za-z0-9+/=]+(?![\r\n])$", RegexOptions.Compiled | RegexOptions.Singleline, TimeSpan.FromSeconds(1));
-  
+  private static readonly Regex HeaderRegex = new(@"^Basic [A-Za-z0-9+/=]+(?![\r\n])$", RegexOptions.Compiled | RegexOptions.Singleline,
+    TimeSpan.FromSeconds(1));
+
   private static readonly Dictionary<string, Func<string, bool>> UsernamePasswordCriteriaCatalog = new() {
     { "Not null, not empty", (u) => !string.IsNullOrEmpty(u) },
     { "Maximum Length", (u) => u.Length < 200 },
     { "Minimum Length", (u) => u.Length >= 3 }
   };
-  
+
   public static Result<Credential> GetCredential(string? authorizationHeaderValue) {
     if (authorizationHeaderValue == null)
       return Result.Failure<Credential>("No Basic Auth Header provided.");

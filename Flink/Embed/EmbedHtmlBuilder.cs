@@ -31,7 +31,7 @@ public class EmbedHtmlBuilder {
     _descriptionHtml = $"<p class=\"secondary-foreground-color \">{description.Truncate(400)}</p>";
     return this;
   }
-  
+
   public EmbedHtmlBuilder WithImage(string? imageUrl, string? altText) {
     if (imageUrl == null) return this;
     _imageHtml = $"<img class=\"link-preview-image\" src=\"{imageUrl}\" alt=\"{altText}\"></img>";
@@ -40,27 +40,27 @@ public class EmbedHtmlBuilder {
 
   public string Build() {
     return $"""
-             <!DOCTYPE html>
-             <html lang="en">
-             <head>
-               <meta charset="UTF-8">
-               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-               <link rel="stylesheet" href="/static/embed.css"/>
-               <title>{_title}</title>
-             </head>
-             <body class="primary-background-color">
-               <a id="short-link" href="/to/{_shortLinkId}" class="link-preview-container" target="_blank">
-                 <div class="link-preview primary-background-color">
-                   {_imageHtml}
-                   <div class="link-content">
-                     {_titleHtml}
-                     {_originalUrlHtml}
-                     {_descriptionHtml}
-                   </div>
-                 </div>
-               </a>
-             </body>
-             </html>
-             """;
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <link rel="stylesheet" href="/static/embed.css"/>
+              <title>{_title}</title>
+            </head>
+            <body class="primary-background-color">
+              <a id="short-link" href="/to/{_shortLinkId}" class="link-preview-container" target="_blank">
+                <div class="link-preview primary-background-color">
+                  {_imageHtml}
+                  <div class="link-content">
+                    {_titleHtml}
+                    {_originalUrlHtml}
+                    {_descriptionHtml}
+                  </div>
+                </div>
+              </a>
+            </body>
+            </html>
+            """;
   }
 }

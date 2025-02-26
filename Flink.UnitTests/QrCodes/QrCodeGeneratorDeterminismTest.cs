@@ -13,7 +13,6 @@ public class QrCodeGeneratorDeterminismTest {
   [InlineData("https://blog.rtrace.io?R0=$&f=2", 32)]
   [InlineData("https://notexisting.domain#14123 aLLe", 44)]
   [InlineData("http://notexisting.domain/Nodd?u=2", 44)]
-
   public void TwoQrCodesAreGenerated_WithSameUrlAndLengthParameters_QrCodeShouldBeEqual(string uri, int length) {
     var q1 = QrCodeGenerator.CreateUriQrCode(uri, length);
     var q2 = QrCodeGenerator.CreateUriQrCode(uri, length);

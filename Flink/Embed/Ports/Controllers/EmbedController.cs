@@ -7,7 +7,7 @@ namespace Flink.Embed.Ports.Controllers;
 
 [ApiController]
 [Produces("text/html")]
-public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkRepository shortLinkRepository): ControllerBase {
+public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkRepository shortLinkRepository) : ControllerBase {
   private static readonly EmbedHtmlBuilder _404Embed = new EmbedHtmlBuilder()
     .WithTitle("404 / Not Found")
     .WithImage("/static/flink-logo.png", "flink logo")
@@ -17,7 +17,7 @@ public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkR
     .WithTitle("Temporary Server Error")
     .WithImage("/static/flink-logo.png", "flink logo")
     .WithDescription("Flink is experiencing a problem. The link preview did not work");
-    
+
   [HttpGet("/embed/{id}")]
   public async Task<IActionResult> GetEmbed(string id) {
     var shortLinkResult = await shortLinkRepository.GetAsync(id);
@@ -26,7 +26,7 @@ public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkR
     var metaDataResult = await metaDataRepository.GetAsync(id);
     if (metaDataResult.IsFailure) return Content(_500Embed.Build(), "text/html");
     if (metaDataResult is { IsSuccess: true, Value.HasNoValue: true }) return Content(_404Embed.Build(), "text/html");
-    
+
     var embedHtml = metaDataResult.Value
       .ToResult(string.Empty)
       .Match(v => new EmbedHtmlBuilder()
@@ -36,7 +36,7 @@ public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkR
         .WithImage($"/proxy/image/{v.Id}", v.Title)
         .WithOriginalUrl(shortLinkResult.GetValueOrDefault().GetValueOrDefault()?.Uri)
         .Build(), _ => _404Embed.Build());
-    
+
     return Content(embedHtml, "text/html");
   }
 }

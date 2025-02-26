@@ -10,7 +10,7 @@ public class IocTests {
   public void MetaDataDomainInjected_AllDependenciesAreProvided_ScrapingQueueMustBeRegistered() {
     var serviceCollection = new ServiceCollection();
     serviceCollection.RegisterMetaDataDomain();
-    
+
     serviceCollection.BuildServiceProvider()
       .GetService<IScrapingQueue>().Should().NotBeNull();
   }

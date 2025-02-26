@@ -42,12 +42,12 @@ public class MetricsMiddleware(IOptions<MetricsConfiguration> metricsConfigurati
       Username = metricsConfiguration.Value.BasicAuthUsername,
       Password = metricsConfiguration.Value.BasicAuthPassword
     };
-    
+
     if (!requiredCredential.Equals(userGivenCredential.Value)) {
       await ReturnUnauthorized(context);
       return;
     }
-    
+
     await next(context);
   }
 

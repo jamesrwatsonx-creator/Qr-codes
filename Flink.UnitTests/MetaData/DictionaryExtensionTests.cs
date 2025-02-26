@@ -13,7 +13,7 @@ public class DictionaryExtensionTests {
     // Assert
     v.Should().Be("default");
   }
-  
+
   [Fact]
   public void EmptyDictionary_GetOrDefaultWithNoKeysIsCalled_ReturnsDefault() {
     // Arrange

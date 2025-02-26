@@ -13,7 +13,7 @@ public class ImageProxyController(IMetaDataRepository metaDataRepository, IForwa
       return BadRequest("URL parameter is required.");
 
     var r = await metaDataRepository.GetAsync(shortLinkId);
-    if (r.IsFailure) 
+    if (r.IsFailure)
       return BadRequest($"Failed to read ShortLink MetaData for entry with Id '{shortLinkId}'");
     if (r is { IsSuccess: true, Value.HasNoValue: true })
       return NotFound($"The given ShortLink MetaData fo the Id '{shortLinkId}' does not (yet) exist");

@@ -14,7 +14,7 @@ public class BasicAuthTests {
     cred.Value.Username.Should().Be(username);
     cred.Value.Password.Should().Be(password);
   }
-  
+
   [Theory]
   [InlineData(null)]
   [InlineData("")]

@@ -12,7 +12,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
   private readonly JsonSerializerOptions _serializerOptions = new() {
     PropertyNameCaseInsensitive = true
   };
-  
+
   [Fact]
   public async Task FlinkIsRunningWithoutAnyScrapedMetaData_MetaDataForNonExistingUrlIsRequested_Returns404() {
     var r = await webApplicationFactory
@@ -21,7 +21,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunning_SelfLinkAddedAsShortLink_ReturnsOkMetaData() {
     // Arrange
@@ -39,7 +39,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     // Act
     await Task.Delay(TimeSpan.FromSeconds(2));
     var metaRequest = await httpClient.GetAsync($"/meta/{shortLinkId}");
-    
+
     // Assert
     metaRequest.StatusCode.Should().Be(HttpStatusCode.OK);
     var responseContent = await metaRequest.Content.ReadAsStringAsync();

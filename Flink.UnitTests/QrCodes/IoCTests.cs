@@ -12,12 +12,12 @@ public class IoCTests {
   public void QrCodeDomainInjected_AllDependenciesAreProvided_QrCodeCacheShallBeRegistered() {
     var serviceCollection = new ServiceCollection();
     serviceCollection
-        // dependencies of the domain
+      // dependencies of the domain
       .AddMemoryCache()
       .AddSingleton(Mock.Of<IShortLinkRepository>())
-        // the domain itself
+      // the domain itself
       .RegisterQrCodeDomain();
-    
+
     serviceCollection.BuildServiceProvider()
       .GetService<IQrCodeCache>().Should().NotBeNull();
   }

@@ -14,8 +14,8 @@ public static class FunctionalExtensionsExtensions {
   }
 
   public static Maybe<T> CompensateNone<T>(this Maybe<T> maybeValue, Func<T> compensation) {
-    return maybeValue.HasNoValue 
-      ? compensation() 
+    return maybeValue.HasNoValue
+      ? compensation()
       : maybeValue;
   }
 }

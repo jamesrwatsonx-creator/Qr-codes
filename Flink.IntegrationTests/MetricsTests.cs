@@ -19,7 +19,7 @@ public class MetricsTests {
 
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningMetricsActiveNoAuth_RandomCredentialsSupplied_MetricsAreExposed() {
     var appSettingOverrides = new Dictionary<string, string> {
@@ -29,12 +29,12 @@ public class MetricsTests {
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
       .SendAsync(new HttpRequestMessage(HttpMethod.Get, "/metrics") {
-        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Zjpm")}
+        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Zjpm") }
       });
-    
+
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningMetricsActiveAuthActive_CorrectCredentialsSupplied_MetricsAreExposed() {
     var appSettingOverrides = new Dictionary<string, string> {
@@ -46,12 +46,12 @@ public class MetricsTests {
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
       .SendAsync(new HttpRequestMessage(HttpMethod.Get, "/metrics") {
-        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Z3VsYXNjaDpndWxhc2No")}
+        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Z3VsYXNjaDpndWxhc2No") }
       });
-    
+
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningMetricsActiveAuthActive_WrongCredentialsSupplied_Unauthorized() {
     var appSettingOverrides = new Dictionary<string, string> {
@@ -63,12 +63,12 @@ public class MetricsTests {
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
       .SendAsync(new HttpRequestMessage(HttpMethod.Get, "/metrics") {
-        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Z3VsYXNjaDpndWxhc2No")}
+        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Z3VsYXNjaDpndWxhc2No") }
       });
-    
+
     r.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningMetricsActiveAuthActive_NoCredentialsSupplied_Unauthorized() {
     var appSettingOverrides = new Dictionary<string, string> {
@@ -80,10 +80,10 @@ public class MetricsTests {
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
       .SendAsync(new HttpRequestMessage(HttpMethod.Get, "/metrics"));
-    
+
     r.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningMetricsAreDisabled_NoAuthCredentialsSupplied_MetricsEndpointReturns404() {
     var appSettingOverrides = new Dictionary<string, string> {
@@ -95,18 +95,18 @@ public class MetricsTests {
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningMetricsAreDisabled_WrongCredentialsSupplied_MetricsEndpointReturns404() {
     var appSettingOverrides = new Dictionary<string, string> {
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.EnableMetrics)}", "false" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.RequireBasicAuth)}", "true" }
     };
-    
+
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
       .SendAsync(new HttpRequestMessage(HttpMethod.Get, "/metrics") {
-        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Zjpm")}
+        Headers = { Authorization = new AuthenticationHeaderValue("Basic", "Zjpm") }
       });
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);

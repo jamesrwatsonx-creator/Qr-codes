@@ -8,9 +8,9 @@ public class DbMetaDataRepository(FlinkDbContext dbContext) : IMetaDataRepositor
   public async Task<Result<ShortLinkMetaData>> AddOrUpdateAsync(ShortLinkMetaData shortLinkMetaData) {
     try {
       var existingMetaData = await dbContext.ShortLinkMetaData.FindAsync(shortLinkMetaData.Id);
-      if(existingMetaData == null) 
+      if (existingMetaData == null)
         await dbContext.ShortLinkMetaData.AddAsync(shortLinkMetaData);
-      else 
+      else
         dbContext.Entry(existingMetaData).CurrentValues.SetValues(shortLinkMetaData);
       await dbContext.SaveChangesAsync();
       return Result.Success(shortLinkMetaData);

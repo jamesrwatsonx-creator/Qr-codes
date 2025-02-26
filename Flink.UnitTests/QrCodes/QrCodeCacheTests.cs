@@ -14,7 +14,7 @@ public class QrCodeCacheTests {
     cacheResult.IsSuccess.Should().BeTrue();
     cacheResult.Value.SequenceEqual(data).Should().BeTrue();
   }
-  
+
   [Fact]
   public void QrCodeQueriedFromCache_ElementNotYetCached_SucceedsButIsEmpty() {
     var qrCodeCache = new QrCodeCache(new MemoryCache(Options.Create(new MemoryCacheOptions())));
@@ -22,13 +22,13 @@ public class QrCodeCacheTests {
     cacheResult.IsSuccess.Should().BeTrue();
     cacheResult.Value.HasNoValue.Should().BeTrue();
   }
-  
+
   [Fact]
   public void QrCodeCodeHappyPath_ElementCachedAndQueried_ReturnsCachedQrCode() {
     var id = $"{Guid.NewGuid()}-actual-existing";
     var data = Enumerable.Range(0, 512).Select(_ => (byte)0x1).ToArray();
     var qrCodeCache = new QrCodeCache(new MemoryCache(Options.Create(new MemoryCacheOptions())));
-    qrCodeCache.Cache(id,512, data);
+    qrCodeCache.Cache(id, 512, data);
     var cachedResult = qrCodeCache.Retrieve(id, 512);
     cachedResult.IsSuccess.Should().BeTrue();
     cachedResult.Value.HasValue.Should().BeTrue();

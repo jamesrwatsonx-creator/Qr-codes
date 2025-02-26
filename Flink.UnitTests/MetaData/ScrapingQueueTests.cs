@@ -12,10 +12,10 @@ public class ScrapingQueueTests {
     // Arrange
     var shortenedLink = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
-    
+
     // Act
     var enqueueResult = scrapingQueue.EnqueueForScraping(shortenedLink);
-    
+
     // Assert
     enqueueResult.IsSuccess.Should().BeTrue();
   }
@@ -26,10 +26,10 @@ public class ScrapingQueueTests {
     var shortenedLink = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     scrapingQueue.EnqueueForScraping(shortenedLink);
-    
+
     // Act
     var resultList = scrapingQueue.Dequeue(int.MaxValue).ToList();
-    
+
     // Assert
     resultList.Should().HaveCount(1);
     resultList.Should().ContainEquivalentOf(shortenedLink);
@@ -43,10 +43,10 @@ public class ScrapingQueueTests {
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     scrapingQueue.EnqueueForScraping(shortenedLink1);
     scrapingQueue.EnqueueForScraping(shortenedLink2);
-    
+
     // Act
     var resultList = scrapingQueue.Dequeue(1).ToList();
-    
+
     // Assert
     resultList.Should().HaveCount(1);
     resultList.Should().ContainEquivalentOf(shortenedLink1);
@@ -56,7 +56,7 @@ public class ScrapingQueueTests {
   public void EmptyQueue_AttemptToDequeue_ReturnsEmptyResult() {
     // Arrange
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
-    
+
     // Act
     var resultList = scrapingQueue.Dequeue(int.MaxValue).ToList();
 

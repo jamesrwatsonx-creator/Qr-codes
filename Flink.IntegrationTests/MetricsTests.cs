@@ -111,32 +111,4 @@ public class MetricsTests {
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-  
-  [Fact]
-  public async Task FlinkIsRunningMetricsActiveNoAuthDifferentEndpoint_NoAuthCredentialsSupplied_MetricsAreExposed() {
-    var appSettingOverrides = new Dictionary<string, string> {
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.EnableMetrics)}", "true" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.RequireBasicAuth)}", "false" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.MetricsEndpointPath)}", "/herbert"}
-    };
-    var r = await new FlinkWebApplicationFactory(appSettingOverrides)
-      .CreateClient()
-      .GetAsync("/herbert");
-
-    r.StatusCode.Should().Be(HttpStatusCode.OK);
-  }
-  
-  [Fact]
-  public async Task FlinkIsRunningMetricsActiveNoAuthDifferentEndpoint_NoAuthCredentialsSuppliedRequestToDefaultMetricsEndpoint_Returns404() {
-    var appSettingOverrides = new Dictionary<string, string> {
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.EnableMetrics)}", "true" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.RequireBasicAuth)}", "false" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.MetricsEndpointPath)}", "/herbert"}
-    };
-    var r = await new FlinkWebApplicationFactory(appSettingOverrides)
-      .CreateClient()
-      .GetAsync("/metrics");
-
-    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
 }

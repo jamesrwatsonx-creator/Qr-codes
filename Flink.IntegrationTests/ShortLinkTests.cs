@@ -18,15 +18,17 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     new object[] { new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseUpper } }
   };
 
-  [Fact]
-  public async Task GetShortLinkRequest_WhenRequestedShortLinkDoesNotExist_Returns404() {
+  [Theory]
+  [InlineData("")]
+  [InlineData("/to")]
+  public async Task GetShortLinkRequest_WhenRequestedShortLinkDoesNotExist_Returns404(string shortLinkPrefix) {
     var r = await webApplicationFactory
       .CreateClient()
-      .GetAsync($"/to/{Guid.NewGuid()}-not-existing-{Guid.NewGuid()}");
+      .GetAsync($"{shortLinkPrefix}/{Guid.NewGuid()}-not-existing-{Guid.NewGuid()}");
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-
+  
   [Fact]
   public async Task AddShortLinkRequest_WhenProvidedPreferredUrlDoesNotYetExist_Returns201() {
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
@@ -57,8 +59,10 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
 
-  [Fact]
-  public async Task GetExistingShortLinkRequest_WhenRequestedUriExists_Returns302() {
+  [Theory]
+  [InlineData("")]
+  [InlineData("/to")]
+  public async Task GetExistingShortLinkRequest_WhenRequestedUriExists_Returns302(string shortLinkPrefix) {
     // Arrange
     var id = Guid.NewGuid().ToString();
     const string Uri = "https://flink.rtrace.io/";
@@ -72,7 +76,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     await httpClient.PostAsync($"/to", payload);
 
     // Act
-    var r = await httpClient.GetAsync($"/to/{id}");
+    var r = await httpClient.GetAsync($"{shortLinkPrefix}/{id}");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.Redirect);
@@ -89,6 +93,34 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     var httpClient = webApplicationFactory.CreateClient();
     await httpClient.PostAsync($"/to", payload);
+    var r = await httpClient.PostAsync($"/to", payload);
+
+    r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+  }
+
+  [Theory]
+  [InlineData("/")]
+  [InlineData("to")]
+  [InlineData("metrics")]
+  [InlineData("scalar")]
+  [InlineData("swagger")]
+  [InlineData("index")]
+  [InlineData("index.html")]
+  [InlineData("meta")]
+  [InlineData("embed")]
+  [InlineData("")]
+  [InlineData("proxy")]
+  [InlineData("info")]
+  [InlineData("Info")]
+  [InlineData("qr")]
+  public async Task AddForbiddenShortLinkId_ToShortLinks_Returns400(string shortLinkId) {
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = Guid.NewGuid().ToString(),
+      PreferredId = shortLinkId,
+      Uri = "https://flink.rtrace.io/"
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient();
     var r = await httpClient.PostAsync($"/to", payload);
 
     r.StatusCode.Should().Be(HttpStatusCode.BadRequest);

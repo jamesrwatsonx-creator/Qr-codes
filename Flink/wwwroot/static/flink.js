@@ -111,7 +111,7 @@ function retryHttpGetCallUntil200(url, interval, callback) {
         const data = JSON.parse(r.responseText);
         console.log("Created ShortLink", data);
         // Display the shortened URL
-        outputUrl.value = `${document.URL}to/${data['id']}`;
+        outputUrl.value = `${document.URL}${data['id']}`;
         outputUrl.style.display = "block";
         // Display the QR code
         outputQrCode.src = `${document.URL}qr/${data['id']}?height=202`;

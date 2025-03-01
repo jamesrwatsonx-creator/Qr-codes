@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,9 +91,16 @@ try {
   /* ignored */
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwagger(x => {
+  x.RouteTemplate = "/openapi/{documentName}.json";
+  x.SerializeAsV2 = true;
+});
+app.UseSwaggerUI(x => {
+  x.SwaggerEndpoint("/openapi/v1.json", "v1");
+});
 app.MapControllers();
+app.MapScalarApiReference();
+
 app.MapPrometheusScrapingEndpoint(metricsConfiguration.MetricsEndpointPath);
 app.UseMiddleware<MetricsMiddleware>();
 

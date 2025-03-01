@@ -1,15 +1,3 @@
-using CSharpFunctionalExtensions;
-using Flink.Domain;
-using Flink.MetaData;
-using Flink.MetaData.Ports;
-using Flink.MetaData.Repositories;
-using Flink.MetaData.Services;
-using Flink.UnitTests.TestSupport;
-using Flink.UnitTests.TestSupport.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
-
 namespace Flink.UnitTests.MetaData;
 /*
 public class ScrapingBackgroundServiceTests {

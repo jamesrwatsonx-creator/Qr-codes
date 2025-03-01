@@ -9,9 +9,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
-
+  
   <ItemGroup>
-
     <PackageReference Include="QRCoder-ImageSharp" Version="0.10.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
@@ -29,6 +28,7 @@
 
     <!-- Open API -->
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.0.18" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 
     <!-- Open Telemetry -->
@@ -49,10 +49,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Flink.Domain\Flink.Domain.csproj" />
     <ProjectReference Include="..\Flink.Shared\Flink.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="WebUI\static\flink-logo.png" />
   </ItemGroup>
 
   <ItemGroup>

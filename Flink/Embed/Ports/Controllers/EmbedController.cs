@@ -18,12 +18,18 @@ public class EmbedController(IMetaDataRepository metaDataRepository, IShortLinkR
     .WithImage("/static/flink-logo.png", "flink logo")
     .WithDescription("Flink is experiencing a problem. The link preview did not work");
 
-  [HttpGet("/embed/{id}")]
-  public async Task<IActionResult> GetEmbed(string id) {
-    var shortLinkResult = await shortLinkRepository.GetAsync(id);
+  /// <summary>
+  /// Render a Link Preview for any (previously created) shortlink
+  /// </summary>
+  /// <param name="shortLinkId">The id of the previously created shortlink</param>
+  /// <returns></returns>
+  [HttpGet("/embed/{shortLinkId}", Name = "GetEmbed")]
+  [Produces("text/html")]
+  public async Task<IActionResult> GetEmbed(string shortLinkId) {
+    var shortLinkResult = await shortLinkRepository.GetAsync(shortLinkId);
     if (shortLinkResult.IsFailure) return Content(_500Embed.Build(), "text/html");
     if (shortLinkResult is { IsSuccess: true, Value.HasNoValue: true }) return Content(_404Embed.Build(), "text/html");
-    var metaDataResult = await metaDataRepository.GetAsync(id);
+    var metaDataResult = await metaDataRepository.GetAsync(shortLinkId);
     if (metaDataResult.IsFailure) return Content(_500Embed.Build(), "text/html");
     if (metaDataResult is { IsSuccess: true, Value.HasNoValue: true }) return Content(_404Embed.Build(), "text/html");
 

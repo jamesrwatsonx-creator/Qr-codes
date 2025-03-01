@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
@@ -15,26 +16,36 @@ public class ShortLinkController(
   IScrapingQueue scrapingQueue,
   ShortLinkMetricsRegistry metrics)
   : ControllerBase {
-  [HttpGet("/to/{id}")]
-  [ProducesResponseType(typeof(RedirectResult), 301, "application/json")]
-  [ProducesResponseType(typeof(ActionResult), 404, "application/json")]
-  [ProducesResponseType(typeof(ActionResult), 500, "application/json")]
-  public Task<ActionResult> Get(string id) {
-    logger.LogDebug("Requesting Short Link with {Id}", id);
+  
+  /// <summary>
+  /// Get redirected to the URL of the ShortLink
+  /// </summary>
+  /// <param name="shortLinkId">The id of the previously created shortlink</param>
+  /// <returns></returns>
+  [HttpGet("/to/{shortLinkId}", Name = "GetShortLink")]
+  [ProducesResponseType((int)HttpStatusCode.Redirect)]
+  [ProducesResponseType((int)HttpStatusCode.NotFound)]
+  [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+  public Task<ActionResult> Get(string shortLinkId) {
+    logger.LogDebug("Requesting Short Link with {Id}", shortLinkId);
 
     return shortLinkRepository
-      .GetAsync(id)
-      .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", id, e))
+      .GetAsync(shortLinkId)
+      .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
       .Match(maybeLink => maybeLink
-        .TapSome(_ => metrics.Ok(id))
-        .TapNone(() => metrics.NotFound(id))
-        .Match(l => (ActionResult)Redirect(l.Uri), NotFound), _ => Problem());
+        .TapSome(_ => metrics.Ok(shortLinkId))
+        .TapNone(() => metrics.NotFound(shortLinkId))
+        .Match(ActionResult (l) => Redirect(l.Uri), NotFound), _ => Problem());
   }
 
-  [HttpPost("/to")]
-  [ProducesResponseType(typeof(ActionResult<ShortenedLink>), 201, "application/json")]
-  [ProducesResponseType(typeof(ActionResult), 400, "application/json")]
-  [ProducesResponseType(typeof(ActionResult), 500, "application/json")]
+  /// <summary>
+  /// Create a new flinkified shortlink
+  /// </summary>
+  /// <param name="shortLinkRequest">information about the new shortlink</param>
+  /// <returns>the shortened link</returns>
+  [HttpPost("/to", Name = "CreateNewShortLink")]
+  [ProducesResponseType(typeof(ShortenedLink), 201, "application/json")]
+  [ProducesResponseType((int)HttpStatusCode.BadRequest)]
   public Task<ActionResult> Add(ShortLinkRequest shortLinkRequest) {
     var shortenedLink = new ShortenedLink {
       Id = shortLinkRequest.PreferredId ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
@@ -50,6 +61,6 @@ public class ShortLinkController(
       .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
-      .Match(shortLink => (ActionResult)Created($"/to/{shortLink.Id}", shortLink), BadRequest);
+      .Match(ActionResult (shortLink) => Created($"/to/{shortLink.Id}", shortLink), BadRequest);
   }
 }

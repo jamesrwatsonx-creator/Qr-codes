@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.MetaData.Ports;
+using Flink.Metrics.Ports.Models;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
+using Microsoft.Extensions.Options;
 
 namespace Flink.ShortLinks.Ports.Controllers;
 
@@ -14,8 +16,31 @@ public class ShortLinkController(
   IShortLinkRepository shortLinkRepository,
   ILogger<ShortLinkController> logger,
   IScrapingQueue scrapingQueue,
-  ShortLinkMetricsRegistry metrics)
+  ShortLinkMetricsRegistry metrics,
+  IOptions<MetricsConfiguration> metricsConfiguration)
   : ControllerBase {
+
+  private readonly string[] _forbiddenShortLinkIds = [
+    "",
+    " ",
+    "metrics",
+    "to",
+    "scalar",
+    "swagger",
+    "index",
+    "meta",
+    "embed",
+    "proxy",
+    "image",
+    "/",
+    "index.html",
+    "info",
+    "image",
+    "qr",
+    "metadata",
+    "embeds",
+    metricsConfiguration.Value.MetricsEndpointPath,
+  ];
   
   /// <summary>
   /// Get redirected to the URL of the ShortLink
@@ -23,6 +48,7 @@ public class ShortLinkController(
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns></returns>
   [HttpGet("/to/{shortLinkId}", Name = "GetShortLink")]
+  [HttpGet("/{shortLinkId}", Name="GetShortLinkRoot")]
   [ProducesResponseType((int)HttpStatusCode.Redirect)]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -47,8 +73,12 @@ public class ShortLinkController(
   [ProducesResponseType(typeof(ShortenedLink), 201, "application/json")]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
   public Task<ActionResult> Add(ShortLinkRequest shortLinkRequest) {
+    var sanitizedId = shortLinkRequest.PreferredId?.Trim().ToLower();
+    if (sanitizedId != null && _forbiddenShortLinkIds.Any(forbiddenShortLinkId => sanitizedId == forbiddenShortLinkId)) 
+      return Task.FromResult<ActionResult>(BadRequest());
+    
     var shortenedLink = new ShortenedLink {
-      Id = shortLinkRequest.PreferredId ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
+      Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow

@@ -45,6 +45,10 @@ Docker-compose - alternatively podman-compose - are simple container orchestrati
 
 ### docker-compose with PostgreSQL
 
+| Time to set up | Production-readiness |
+|:---------------|:---------------------|
+| < 5m           | ★★★★★                |
+
 ```yaml
 version: '3.9'
 
@@ -76,3 +80,75 @@ services:
 volumes:
   pgdata:
 ```
+
+## Kubernetes
+
+### Kubernetes Deployment with SQLite
+
+| Time to set up | Production-readiness |
+|:---------------|:---------------------|
+| < 15m           | ★★★★★               |
+
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flink
+  labels:
+    app: flink
+    sourcerepository: quay.io
+    app.kubernetes.io/name: flink
+    app.kubernetes.io/instance: flinkURLShortener
+    app.kubernetes.io/version: latest
+    app.kubernetes.io/component: webapp
+    app.kubernetes.io/part-of: flink
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flink
+  template:
+    metadata:
+      labels:
+        app: flink
+    spec:
+      containers:
+      - name: flink
+        image: quay.io/rtraceio/flink:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        env:
+        - name: DBCONFIGURATION__DBTYPE
+          value: "Sqlite"
+        - name: DBCONFIGURATION__SQLITECONNECTIONSTRING
+          value: "Data Source=/app/data/flink-live.sqlite;"
+        resources:
+          limits:
+            memory: "256Mi"
+        volumeMounts:
+        - mountPath: /app/data
+          name: flink-vol
+      volumes:
+      - name: flink-vol
+        persistentVolumeClaim:
+          claimName: <your-pvc-name>
+```
+
+- Add PVC
+- Add Service (Loadbalancer, ClusterIP)
+- Add Ingress Resource

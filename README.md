@@ -73,33 +73,21 @@ curl -X "POST" \
 3. navigate to [/qr/awesomeblog](http://localhost:8080/qr/awesomeblog) and `flink` will give you the URL encoded as QRcode
 4. navigate to [/meta/awesomeblog](http://localhost:8080/meta/awesomeblog) and `flink` will give you the Meta Data of the site it has crawled
 5. navigate to [/embed/awesomeblog](http://localhost:8080/embed/awesomeblog) and `flink` will show you a nice link preview (that you can embed as iframe on your website)
-6. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana)
+6. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana) (Username: `flink`, Password: `flink`)
 7. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser
 8. navigate to [/swagger/v1/swagger.json](http://localhost:5206/swagger/v1/swagger.json) to get the OpenAPI definition of `flink`
 
-### Flink Configuration
+## Flink Documentation
 
-all configurations are optional. Flink works out-of-the-box and is configured with secure and reliable defaults.
+- **[🚀 Install Guide](/docs/install/install.md)**
+    - [docker (default settings)](/docs/install/install.md?ref_type=heads#docker-default-settings)
+    - [docker (default with volume for SQLite database)](/docs/install/install.md?ref_type=heads#docker-with-volume-for-database)
+    - [docker-compose (with PostgreSQL)](/docs/install/install.md?ref_type=heads#docker-compose-with-postgresql)
+    - [Kubernetes Deployment (with SQLite)](/docs/install/install.md?ref_type=heads#kubernetes-deployment-with-sqlite)
+- **[⚙️ Configuration](/docs/config/config.md)**
+    - [Database Configuration](/docs/config/config.md?ref_type=heads#database-configuration)
+    - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
 
-#### Database Configuration
-
-| Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
-|:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
-| DBCONFIGURATION__DBTYPE                   | DbConfiguration:DbType                   | which database type shall be used (enum, either `Postgres`, `MySql` or `Sqlite`)  | Sqlite                  |
-| DBCONFIGURATION__SQLITECONNECTIONSTRING   | DbConfiguration:SqliteConnectionString   | format: `Data Source=flink.sqlite`                                                | `Data Source=flink.db ` |
-| DBCONFIGURATION__POSTGRESCONNECTIONSTRING | DbConfiguration:PostgresConnectionString | format: `Server=localhost;Port=5432;Database=flink;User Id=flink;Password=flink;` | null                    |
-
-#### Metrics Configuration
-
-| Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
-|:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
-| METRICSCONFIGURATION__ENABLEMETRICS       | MetricsConfiguration:EnableMetrics       | whether to enable the metrics endpoint or not                                     | true                    |
-| METRICSCONFIGURATION__REQUIREBASICAUTH    | MetricsConfiguration:RequireBasicAuth    | whether HTTP BASIC authentication with Username + Password is needed to query     | true                    |
-| METRICSCONFIGURATION__BASICAUTHUSERNAME   | MetricsConfiguration:BasicAuthUsername   | the Username that is allowed to query data from the metrics endpoint              | flink                   |
-| METRICSCONFIGURATION__BASICAUTHPASSWORD   | MetricsConfiguration:BasicAuthPassword   | the  password for the above given username that is allowed to query               | flink                   |
-| METRICSCONFIGURATION__METRICSENDPOINTPATH | MetricsConfiguration:MetricsEndpointPath | the URL segment the metrics endpoint is accessible from                           | /metrics                |
-
-**NOTE**: When `RequireBasicAuth` is set to true `BasicAuthUsername` and `BasicAuthPassword` MUST be provided. If `RequireBasicAuth` is set to false, the values in `BasicAuthUsername` and `BasicAuthPassword` are ignored. Please refer to [Prometheus Scrape Configuration Manual](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config) to allow Prometheus to query from `Flink`. 
 
 ## Roadmap
 

@@ -152,3 +152,6 @@ spec:
 - Add PVC
 - Add Service (Loadbalancer, ClusterIP)
 - Add Ingress Resource
+
+**Warning**: Using SQLite as database it is NOT recommended to scale the `ReplicaCount` to > 1. There is a (high!) chance 2 `Flink` instances will concurrently write to the
+Database and thus corrupt the SQLite file. SQLite is NOT made for multi-session access.

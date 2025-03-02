@@ -87,7 +87,7 @@ volumes:
 
 | Time to set up | Production-readiness |
 |:---------------|:---------------------|
-| < 15m           | ★★★★★               |
+| < 15m          | ★★★★☆                |
 
 
 ```yaml

@@ -79,12 +79,12 @@ curl -X "POST" \
 
 ## Flink Documentation
 
-- [🚀 Install Guide](/docs/install/install.md)
+- **[🚀 Install Guide](/docs/install/install.md)**
     - [docker (default settings)](/docs/install/install.md?ref_type=heads#docker-default-settings)
     - [docker (default with volume for SQLite database)](/docs/install/install.md?ref_type=heads#docker-with-volume-for-database)
     - [docker-compose (with PostgreSQL)](/docs/install/install.md?ref_type=heads#docker-compose-with-postgresql)
     - [Kubernetes Deployment (with SQLite)](/docs/install/install.md?ref_type=heads#kubernetes-deployment-with-sqlite)
-- [⚙️ Configuration](/docs/config/config.md)
+- **[⚙️ Configuration](/docs/config/config.md)**
     - [Database Configuration](/docs/config/config.md?ref_type=heads#database-configuration)
     - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
 

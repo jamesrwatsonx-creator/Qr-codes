@@ -19,5 +19,9 @@ public class ShortLinkRepositoryCachingProxy(IMemoryCache cache, IShortLinkRepos
   }
 
   public Task<Result<List<ShortenedLink>>> GetAll() => proxiedRepo.GetAll();
-  public Task<Result> DeleteAsync(string shortLinkId) => proxiedRepo.DeleteAsync(shortLinkId);
+
+  public Task<Result> DeleteAsync(string shortLinkId) {
+    cache.Remove(shortLinkId);
+    return proxiedRepo.DeleteAsync(shortLinkId);
+  }
 }

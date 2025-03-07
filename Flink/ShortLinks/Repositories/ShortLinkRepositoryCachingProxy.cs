@@ -10,13 +10,14 @@ public class ShortLinkRepositoryCachingProxy(IMemoryCache cache, IShortLinkRepos
     .AddAsync(shortenedLink)
     .Tap(_ => cache.Set(shortenedLink.Id, shortenedLink, DateTimeOffset.UtcNow.AddHours(24)));
 
-  public Task<Result<Maybe<ShortenedLink>>> GetAsync(string id) {
-    if (cache.TryGetValue(id, out ShortenedLink? cachedObject) && cachedObject != null)
+  public Task<Result<Maybe<ShortenedLink>>> GetAsync(string shortLinkId) {
+    if (cache.TryGetValue(shortLinkId, out ShortenedLink? cachedObject) && cachedObject != null)
       return Task.FromResult(Result.Success(Maybe<ShortenedLink>.From(cachedObject)));
     return proxiedRepo
-      .GetAsync(id)
-      .Tap(shortenedLink => cache.Set(id, shortenedLink, DateTimeOffset.UtcNow.AddHours(24)));
+      .GetAsync(shortLinkId)
+      .Tap(shortenedLink => cache.Set(shortLinkId, shortenedLink, DateTimeOffset.UtcNow.AddHours(24)));
   }
 
   public Task<Result<List<ShortenedLink>>> GetAll() => proxiedRepo.GetAll();
+  public Task<Result> DeleteAsync(string shortLinkId) => proxiedRepo.DeleteAsync(shortLinkId);
 }

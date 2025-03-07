@@ -13,16 +13,16 @@ public class DbShortLinkRepository(FlinkDbContext dbContext) : IShortLinkReposit
       await dbContext.SaveChangesAsync();
       return Result.Success(shortenedLink);
     } catch {
-      return Result.Failure<ShortenedLink>("Could not insert into Database");
+      return Result.Failure<ShortenedLink>($"Could not insert {shortenedLink.Id} into database");
     }
   }
 
-  public async Task<Result<Maybe<ShortenedLink>>> GetAsync(string id) {
+  public async Task<Result<Maybe<ShortenedLink>>> GetAsync(string shortLinkId) {
     try {
-      var result = await dbContext.ShortenedLinks.FindAsync(id);
+      var result = await dbContext.ShortenedLinks.FindAsync(shortLinkId);
       return Result.Success(result == null ? Maybe<ShortenedLink>.None : Maybe.From(result));
     } catch {
-      return Result.Failure<Maybe<ShortenedLink>>("Could not query from database");
+      return Result.Failure<Maybe<ShortenedLink>>($"Could not query {shortLinkId} from database");
     }
   }
 
@@ -31,6 +31,18 @@ public class DbShortLinkRepository(FlinkDbContext dbContext) : IShortLinkReposit
       return Result.Success(await dbContext.ShortenedLinks.ToListAsync());
     } catch {
       return Result.Failure<List<ShortenedLink>>("Could not query from database");
+    }
+  }
+
+  public async Task<Result> DeleteAsync(string shortLinkId) {
+    try {
+      var entity = await dbContext.ShortenedLinks.FindAsync(shortLinkId);
+      if (entity == null) return Result.Success();
+      dbContext.ShortenedLinks.Remove(entity);
+      await dbContext.SaveChangesAsync();
+      return Result.Success();
+    } catch {
+      return Result.Failure("Could not delete from database");
     }
   }
 }

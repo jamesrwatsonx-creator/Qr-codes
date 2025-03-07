@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Repositories;
@@ -28,5 +29,36 @@ public class ShortLinkRepositoryCachingProxyTests {
     getResult.Value.Value.Should().BeEquivalentTo(shortLink);
 
     implMock.Verify(impl => impl.GetAsync(shortLink.Id), Times.Never);
+  }
+  
+  [Fact]
+  public async Task DeleteShortLink_CachedEntryDoesNotExist_DoesNotThrow() {
+    // Arrange
+    var cache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+    var implMock = new Mock<IShortLinkRepository>();
+    implMock.Setup(x => x.DeleteAsync(It.IsAny<string>())).ReturnsAsync(Result.Success());
+    var cachingProxy = new ShortLinkRepositoryCachingProxy(cache, implMock.Object);
+    
+    // Act
+    var deleteResult = await cachingProxy.DeleteAsync("xxxxxx");
+
+    // Assert
+    deleteResult.IsSuccess.Should().BeTrue();
+  }
+  
+  [Fact]
+  public async Task PreviouslyCachedShortLink_Delete_IsNotInCacheAnymore() {
+    // Arrange
+    var cache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+    var implMock = new Mock<IShortLinkRepository>();
+    var shortLink = new ShortenedLink { Creator = "ruffy", CreationDate = DateTime.UtcNow, Id = "Gulasch", Uri = "https://gula.sh" };
+    var cachingProxy = new ShortLinkRepositoryCachingProxy(cache, implMock.Object);
+    await cachingProxy.AddAsync(shortLink);
+    
+    // Act
+    await cachingProxy.DeleteAsync(shortLink.Id);
+
+    // Assert
+    cache.TryGetValue(shortLink.Id, out _).Should().BeFalse();
   }
 }

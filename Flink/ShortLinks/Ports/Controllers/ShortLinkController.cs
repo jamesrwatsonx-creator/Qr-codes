@@ -76,7 +76,7 @@ public class ShortLinkController(
     var sanitizedId = shortLinkRequest.PreferredId?.Trim().ToLower();
     if (sanitizedId != null && _forbiddenShortLinkIds.Any(forbiddenShortLinkId => sanitizedId == forbiddenShortLinkId)) 
       return Task.FromResult<ActionResult>(BadRequest());
-    
+ 
     var shortenedLink = new ShortenedLink {
       Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
       Creator = shortLinkRequest.Creator,
@@ -92,5 +92,19 @@ public class ShortLinkController(
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
       .Match(ActionResult (shortLink) => Created($"/to/{shortLink.Id}", shortLink), BadRequest);
+  }
+
+  /// <summary>
+  /// Delete a (previously flinkified) shortlink
+  /// </summary>
+  /// <param name="shortLinkId">Id of the shortlink to remove</param>
+  [HttpDelete("/to/{shortLinkId}", Name = "RemoveShortLink")]
+  [ProducesResponseType((int)HttpStatusCode.OK)]
+  [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+  public Task<ActionResult> Delete(string shortLinkId) {
+    return shortLinkRepository.DeleteAsync(shortLinkId)
+      .Tap(() => logger.LogInformation("Deleted Shortened Link {Id}", shortLinkId))
+      .TapError(f => logger.LogError("Could not delete Shortened Link {Id}, because {Error}", shortLinkId, f))
+      .Match(Ok, ActionResult (f) => BadRequest(f));
   }
 }

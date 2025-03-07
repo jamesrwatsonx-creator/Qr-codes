@@ -89,6 +89,8 @@ curl -X "POST" \
     - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
 
 
+![Flink Deployment](/docs/assets/flink-setup.drawio.svg)
+
 ## Roadmap
 
 - [x] In-Memory caching to improve performance and load-reduction on the sqlite database

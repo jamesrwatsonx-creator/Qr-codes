@@ -2,6 +2,8 @@
 
 Flink is a C# / ASP.NET WebAPI packaged as multiple executable artifacts, so it can be run virtually everywhere. This page lists the recommended installation methods of `Flink`.
 
+![Flink Deployment](../assets/flink-setup.drawio.svg)
+
 ## Docker
 
 Docker is a simple and popular method to spin up and operate workloads. The following installation guide assumes you have `docker` installed. If you have not, please refer to the [Docker Install Manual](https://docs.docker.com/engine/install/). While Docker is fully supported, `Flink` recommends [Podman](https://podman.io/) over Docker. The commands below will use the docker CLI, however the CLIs of docker and podman can be used interchangeably. You can download and install podman from the [Podman Installation Docs](https://podman.io/docs/installation)

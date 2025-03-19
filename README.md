@@ -87,6 +87,9 @@ curl -X "POST" \
 - **[⚙️ Configuration](/docs/config/config.md)**
     - [Database Configuration](/docs/config/config.md?ref_type=heads#database-configuration)
     - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
+- **[❤️ Community](/docs/community/install-guides.md)**
+    - [Flink Setup with Docker & Nginx Proxy Manager](/docs/guides/install-guides.md?ref_type=heads#flink-setup-with-docker--nginx-proxy-manager)
+    - [How To Install Flink on Your Synology NAS](/docs/guides/install-guides.md?ref_type=heads#blogs)
 
 
 ## Roadmap

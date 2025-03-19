@@ -14,7 +14,7 @@ public class MetaDataController(IMetaDataRepository metaDataRepository, ILogger<
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns>Metadata of the shortlink, 404 if the shortlink does not (yet) exist</returns>
-  [HttpGet("/meta/{shortLinkId}", Name="GetMetaData")]
+  [HttpGet("/links/{shortLinkId}/meta", Name="GetMetaData")]
   [ProducesResponseType(typeof(ShortLinkMetaData), 200, "application/json")]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]

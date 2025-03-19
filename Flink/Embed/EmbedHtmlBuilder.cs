@@ -49,7 +49,7 @@ public class EmbedHtmlBuilder {
               <title>{_title}</title>
             </head>
             <body class="primary-background-color">
-              <a id="short-link" href="/to/{_shortLinkId}" class="link-preview-container" target="_blank">
+              <a id="short-link" href="/{_shortLinkId}" class="link-preview-container" target="_blank">
                 <div class="link-preview primary-background-color">
                   {_imageHtml}
                   <div class="link-content">

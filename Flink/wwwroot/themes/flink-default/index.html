@@ -2,38 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🦔 flink URL shortener</title>
+  <title>flink URL shortener</title>
 
   <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon-16x16.png">
-  
-  
-  <link rel="stylesheet" href="/static/index.css"/>
+
+
+  <link rel="stylesheet" href="/themes/flink-default/index.css"/>
 </head>
 <body>
-  <nav>
-      <a href="/scalar">📎 scalar</a>
-      <a href="/swagger">📜 swagger</a>
-      <a href="/metrics">📈 metrics</a>
-      <a href="https://gitlab.com/rtraceio/web/Flink" class="small">⌨️ source</a>
-  </nav>
-  <div class="flink-form">
-    <img class="flink-logo-img" src="/static/flink-logo.png" alt="Flink Logo"/>
-    <section class="input-area">
-      <input id="input-url" class="url-textbox" type="url" minlength="11" maxlength="1000" placeholder="enter URL to shorten">
-      <button id="shorten-action">🦔 flinkify</button>
-    </section>
-    
-    <p id="status-text" class="status-text"></p>
-    <input id="output-url" class="url-textbox" type="url" style="display: none;" readonly/>
-    
-    <section class="output-area">
-      <img id="output-qr-code" src="" style="display: none;" alt="QR Code for your URL">
-      <div id="embed-loader" class="loader" style="display: none;"></div>
-      <iframe id="embed-output" style="display: none;"></iframe>
-    </section>
-  </div>
-<script src="/static/flink.js"></script>
+<nav>
+  <a href="/scalar">📎 scalar</a>
+  <a href="/swagger">📜 swagger</a>
+  <a href="/metrics">📈 metrics</a>
+  <a href="https://gitlab.com/rtraceio/web/Flink" class="small">⌨️ source</a>
+</nav>
+<div class="flink-form">
+  <img class="flink-logo-img" src="/static/img/flink-logo.png" alt="Flink Logo"/>
+  <section class="input-area">
+    <input id="input-url" class="url-textbox" type="url" minlength="11" maxlength="1000"
+           placeholder="enter URL to shorten">
+    <button id="shorten-action">🦔 flinkify</button>
+  </section>
+
+  <p id="status-text" class="status-text"></p>
+  <input id="output-url" class="url-textbox" type="url" style="display: none;" readonly/>
+
+  <section class="output-area">
+    <img id="output-qr-code" src="" style="display: none;" alt="QR Code for your URL">
+    <div id="embed-loader" class="loader" style="display: none;"></div>
+    <iframe id="embed-output" style="display: none;"></iframe>
+  </section>
+</div>
+
+<!-- UI JS -->
+<script src="/static/flink-core-api.js"></script>
+<script src="/static/flink-core-ui.js"></script>
+<script src="/themes/flink-default/flink-default.js"></script>
 </body>
 </html>

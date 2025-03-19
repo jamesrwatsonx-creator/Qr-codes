@@ -17,7 +17,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
   public async Task FlinkIsRunningWithoutAnyScrapedMetaData_MetaDataForNonExistingUrlIsRequested_Returns404() {
     var r = await webApplicationFactory
       .CreateClient()
-      .GetAsync($"/meta/{Guid.NewGuid()}-{Guid.NewGuid()}-Non-Existing");
+      .GetAsync($"/links/{Guid.NewGuid()}-{Guid.NewGuid()}-Non-Existing/meta");
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
@@ -34,11 +34,11 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/to", payload);
+    await httpClient.PostAsync($"/links", payload);
 
     // Act
     await Task.Delay(TimeSpan.FromSeconds(2));
-    var metaRequest = await httpClient.GetAsync($"/meta/{shortLinkId}");
+    var metaRequest = await httpClient.GetAsync($"/links/{shortLinkId}/meta");
 
     // Assert
     metaRequest.StatusCode.Should().Be(HttpStatusCode.OK);

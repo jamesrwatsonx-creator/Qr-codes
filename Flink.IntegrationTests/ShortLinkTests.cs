@@ -20,7 +20,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
   [Theory]
   [InlineData("")]
-  [InlineData("/to")]
+  [InlineData("/links")]
   public async Task GetShortLinkRequest_WhenRequestedShortLinkDoesNotExist_Returns404(string shortLinkPrefix) {
     var r = await webApplicationFactory
       .CreateClient()
@@ -39,7 +39,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     var r = await webApplicationFactory
       .CreateClient()
-      .PostAsync($"/to", payload);
+      .PostAsync($"/links", payload);
 
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
@@ -54,14 +54,14 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     var r = await webApplicationFactory
       .CreateClient()
-      .PostAsync($"/to", payload);
+      .PostAsync($"/links", payload);
 
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
 
   [Theory]
   [InlineData("")]
-  [InlineData("/to")]
+  [InlineData("/links")]
   public async Task GetExistingShortLinkRequest_WhenRequestedUriExists_Returns302(string shortLinkPrefix) {
     // Arrange
     var id = Guid.NewGuid().ToString();
@@ -73,7 +73,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
       PreferredId = id,
       Uri = Uri,
     }), Encoding.UTF8, "application/json");
-    await httpClient.PostAsync($"/to", payload);
+    await httpClient.PostAsync($"/links", payload);
 
     // Act
     var r = await httpClient.GetAsync($"{shortLinkPrefix}/{id}");
@@ -93,10 +93,10 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/to", payload);
+    await httpClient.PostAsync($"/links", payload);
     
     // Act
-    var r = await httpClient.PostAsync($"/to", payload);
+    var r = await httpClient.PostAsync($"/links", payload);
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -127,7 +127,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     // Act
     var httpClient = webApplicationFactory.CreateClient();
-    var r = await httpClient.PostAsync($"/to", payload);
+    var r = await httpClient.PostAsync($"/links", payload);
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -138,7 +138,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Arrange
     var httpClient = webApplicationFactory.CreateClient();
     // Act
-    var r = await httpClient.DeleteAsync($"/to/{Guid.NewGuid().ToString()}-delete");
+    var r = await httpClient.DeleteAsync($"/links/{Guid.NewGuid().ToString()}-delete");
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
@@ -154,11 +154,11 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     }), Encoding.UTF8, "application/json");
     
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/to", payload);
-    await httpClient.DeleteAsync($"/to/{id}");
+    await httpClient.PostAsync($"/links", payload);
+    await httpClient.DeleteAsync($"/links/{id}");
    
     // Act
-    var r = await httpClient.GetAsync($"/to/{id}");
+    var r = await httpClient.GetAsync($"/links/{id}");
     
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);

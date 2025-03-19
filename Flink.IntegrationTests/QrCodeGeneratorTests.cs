@@ -18,10 +18,10 @@ public class QrCodeGeneratorTests(FlinkWebApplicationFactory webApplicationFacto
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/to", payload);
+    await httpClient.PostAsync($"/links", payload);
 
     // Act
-    var r = await httpClient.GetAsync($"/qr/blog");
+    var r = await httpClient.GetAsync($"/links/blog/qr");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -32,7 +32,7 @@ public class QrCodeGeneratorTests(FlinkWebApplicationFactory webApplicationFacto
   public async Task GetQrCodeRequest_NonExistingShortLink_Returns404() {
     var r = await webApplicationFactory
       .CreateClient()
-      .GetAsync($"/qr/{Guid.NewGuid()}-surely-not-existing");
+      .GetAsync($"/links/{Guid.NewGuid()}-surely-not-existing/qr");
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
     r.Content.Headers.ContentType?.MediaType.Should().Be("application/json");

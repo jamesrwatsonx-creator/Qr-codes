@@ -1,15 +1,11 @@
 # Guides
 
-
 ## Video Guides
 
 ### Flink Setup with Docker & Nginx Proxy Manager
 
-[SYNACK Time](https://www.youtube.com/@synacktime)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Zj5NljyUwaE?si=diOzwAROETycpC9-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
+[![](https://img.youtube.com/vi/Zj5NljyUwaE/0.jpg)](https://www.youtube.com/watch?v=Zj5NljyUwaE "Flink Setup with Docker & Nginx Proxy Manager")
+by [SYNACK Time](https://www.youtube.com/@synacktime)
 
 ## Blogs
 

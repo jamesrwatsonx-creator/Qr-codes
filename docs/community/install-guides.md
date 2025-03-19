@@ -2,7 +2,7 @@
 
 ## Video Guides
 
-### Flink Setup with Docker & Nginx Proxy Manager
+### Flink Setup with Docker & Nginx Proxy Manager (2025-02-21)
 
 by [SYNACK Time](https://www.youtube.com/@synacktime)
 
@@ -11,4 +11,6 @@ by [SYNACK Time](https://www.youtube.com/@synacktime)
 
 ## Blogs
 
-- [How To Install Flink on Your Synology NAS](https://mariushosting.com/how-to-install-flink-on-your-synology-nas/) by [Marius Bogdan Lixandru](https://mariushosting.com/about-me/)
+- [How To Install Flink on Your Synology NAS](https://mariushosting.com/how-to-install-flink-on-your-synology-nas/) by [Marius Bogdan Lixandru](https://mariushosting.com/about-me/) (2025-02-15)
+
+- [🇫🇷 Installer Flink avec Docker](https://belginux.com/installer-flink-avec-docker/) by [zarev](https://belginux.com/author/zarev/) (2025-02-14)

@@ -1,6 +1,6 @@
 namespace Flink.Embed;
 
-public class EmbedHtmlBuilder {
+public class EmbedHtmlBuilder(string defaultTheme) {
   private string _title = "";
   private string _titleHtml = "";
   private string _shortLinkId = "";
@@ -45,7 +45,7 @@ public class EmbedHtmlBuilder {
             <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <link rel="stylesheet" href="/static/embed.css"/>
+              <link rel="stylesheet" href="/themes/{defaultTheme}/embed.css"/>
               <title>{_title}</title>
             </head>
             <body class="primary-background-color">

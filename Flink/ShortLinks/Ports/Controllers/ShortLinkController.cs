@@ -43,7 +43,7 @@ public class ShortLinkController(
   ];
   
   /// <summary>
-  /// Get redirected to the URL of the ShortLink
+  /// Get redirected to the URL of the shortLink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns></returns>

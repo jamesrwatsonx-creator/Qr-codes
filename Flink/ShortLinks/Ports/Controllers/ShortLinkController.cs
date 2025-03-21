@@ -39,6 +39,7 @@ public class ShortLinkController(
     "qr",
     "metadata",
     "embeds",
+    "links",
     metricsConfiguration.Value.MetricsEndpointPath,
   ];
   

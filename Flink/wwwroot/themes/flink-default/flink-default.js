@@ -90,7 +90,6 @@ function copyURLToClipboard(statusElement, url) {
           .then(_ => {
             embedLoader.style.display = 'none';
             embedIframe.src = flinkApi.getEmbedHref(data.id);
-            //embedIframe.contentWindow.document.location.href = flinkApi.getEmbedHref(data.id);
             embedIframe.style.display = 'block';
           })
 

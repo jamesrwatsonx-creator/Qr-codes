@@ -69,10 +69,10 @@ curl -X "POST" \
 ### Exploring flink with your browser
 
 1. navigate to [/](http://localhost:8080/) and you'll see the `flink` UI
-2. navigate to [/to/awesomeblog](http://localhost:8080/to/awesomeblog) and `flink` does what it does best: redirecting you
-3. navigate to [/qr/awesomeblog](http://localhost:8080/qr/awesomeblog) and `flink` will give you the URL encoded as QRcode
-4. navigate to [/meta/awesomeblog](http://localhost:8080/meta/awesomeblog) and `flink` will give you the Meta Data of the site it has crawled
-5. navigate to [/embed/awesomeblog](http://localhost:8080/embed/awesomeblog) and `flink` will show you a nice link preview (that you can embed as iframe on your website)
+2. navigate to [/awesomeblog](http://localhost:8080/awesomeblog) and `flink` does what it does best: redirecting you
+3. navigate to [/links/awesomeblog/qr](http://localhost:8080/links/awesomeblog/qr) and `flink` will give you the URL encoded as QRcode
+4. navigate to [/links/awesomeblog/meta](http://localhost:8080/links/awesomeblog/meta) and `flink` will give you the Meta Data of the site it has crawled
+5. navigate to [/links/awesomeblog/embed](http://localhost:8080/links/awesomeblog/embed) and `flink` will show you a nice link preview (that you can embed as iframe on your website)
 6. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana) (Username: `flink`, Password: `flink`)
 7. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser
 8. navigate to [/swagger/v1/swagger.json](http://localhost:5206/swagger/v1/swagger.json) to get the OpenAPI definition of `flink`

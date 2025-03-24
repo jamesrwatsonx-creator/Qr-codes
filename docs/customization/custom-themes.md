@@ -13,15 +13,42 @@ First, create a new folder to store all the necessary files for your Flink theme
 theme_directory="$HOME/Documents/my-flink-theme"
 mkdir -p $theme_directory
 
-# spin up docker / podman and mount the newly created directory in the wwwroot 
+# spin up docker / podman and mount the newly created directory in the wwwroot
 docker run \
   --rm \
   --name flink-theme-dev \
   -e WebUiConfiguration__DefaultTheme=my-flink-theme \
   -p 8080:8080 \
-  -v "$theme_directory:/app/wwwroot/themes/" \
+  -v "$theme_directory:/app/wwwroot/themes/my-flink-theme" \
   "quay.io/rtraceio/flink:latest"
 ```
+
+#### Pitfall with Volume Mounts
+
+On Ubuntu/Debian-based distributions (especially when using AppArmor), you need to pass `:U` as parameter to the Volume Mount to properly handle permissions.
+
+```bash
+docker run \
+  --rm \
+  --name flink-theme-dev \
+  -e WebUiConfiguration__DefaultTheme=my-flink-theme \
+  -p 8080:8080 \
+  -v "$theme_directory:/app/wwwroot/themes/my-flink-theme:U" \
+  "quay.io/rtraceio/flink:latest"
+```
+
+On RHEL-based distributions (especially when using SELinux), you need to pass `:Z` as parameter to the Volume Mount to properly handle permissions.
+
+```bash
+docker run \
+  --rm \
+  --name flink-theme-dev \
+  -e WebUiConfiguration__DefaultTheme=my-flink-theme \
+  -p 8080:8080 \
+  -v "$theme_directory:/app/wwwroot/themes/my-flink-theme:Z" \
+  "quay.io/rtraceio/flink:latest"
+```
+
 
 With the environment-variable `WebUiConfiguration__DefaultTheme` we tell Flink to use the `my-flink-theme` as the default theme whevever Flink is visited. Now our development environment is set up, and we can start working on the theme. 
 

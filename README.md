@@ -57,13 +57,13 @@ Flink defaults to using Sqlite unless specified.
 curl -X "POST" \
     -H "Content-Type: application/json" \
     -d '{ "uri": "https://blog.rtrace.io", "creator": "ruffy", "preferredId": "awesomeblog" }' \
-    'http://localhost:8080/to'
+    'http://localhost:8080/links'
 
 # create a short link pointing to blog.rtrace.io with a random 4-character id
 curl -X "POST" \
     -H "Content-Type: application/json" \
     -d '{ "uri": "https://blog.rtrace.io", "creator": "ruffy", "preferredIdLength": 4 }' \
-    'http://localhost:8080/to'
+    'http://localhost:8080/links'
 ```
 
 ### Exploring flink with your browser

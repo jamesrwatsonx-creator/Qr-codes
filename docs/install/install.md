@@ -30,7 +30,7 @@ docker run --name flink -p 8080:8080 quay.io/rtraceio/flink:latest
 host_directory="/home/flink/flink_data"
 mkdir -p $host_directory
 
-docker run --name flink -p 8080:8080 -v "$host_direcetory/flink.db:/app/flink.db" \ --env-file docker.env quay.io/rtraceio/flink:latest
+docker run --name flink -p 8080:8080 -v "$host_directory/flink.db:/app/flink.db" \ --env-file docker.env quay.io/rtraceio/flink:latest
 ```
 
 **NOTE**: The [.env File](/docs/install/docker.env) defaults to the name `flink.db` for the SQLite database. If you change it in the `.env` file you will need to change it here too.

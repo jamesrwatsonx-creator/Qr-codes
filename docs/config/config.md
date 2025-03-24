@@ -22,7 +22,7 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 
 **NOTE**: When `RequireBasicAuth` is set to true `BasicAuthUsername` and `BasicAuthPassword` MUST be provided. If `RequireBasicAuth` is set to false, the values in `BasicAuthUsername` and `BasicAuthPassword` are ignored. Please refer to [Prometheus Scrape Configuration Manual](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config) to allow Prometheus to query from `Flink`. 
 
-#### Web UI Configuration
+#### WebUI Configuration
 
 | Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|

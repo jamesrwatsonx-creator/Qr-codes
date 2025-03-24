@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\static\flink-logo.png" />
+    <EmbeddedResource Include="wwwroot\static\img\flink-logo.png" />
   </ItemGroup>
 
 </Project>

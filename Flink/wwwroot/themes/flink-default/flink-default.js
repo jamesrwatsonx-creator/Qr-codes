@@ -1,8 +1,3 @@
-function isURL(str) {
-  const urlRegex = /(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(?:\/[^\s?#]*)*(\?[^\s#]*)?(#[^\s]*)?/;
-  return new RegExp(urlRegex, 'i').test(str);
-}
-
 function setStatus(element, text) {
   element.innerHTML = text;
 }
@@ -24,27 +19,10 @@ function copyURLToClipboard(statusElement, url) {
     .catch(() => console.error('Could not write to clipboard.'));
 }
 
-function retryHttpGetCallUntil200(url, interval, callback) {
-  const intervalId = setInterval(() => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          clearInterval(intervalId);
-          callback();
-        }
-        if (xhr.status !== 404) {
-          clearInterval(intervalId);
-        }
-      }
-    };
-    xhr.send();
-  }, interval);
-}
-
 (function() {
+  const flinkUi = new FlinkUi();
+  const flinkApi = new FlinkApiClient();
+
   const status = document.getElementById("status-text");
   const inputUrl = document.getElementById("input-url");
   const outputUrl = document.getElementById("output-url");
@@ -62,7 +40,7 @@ function retryHttpGetCallUntil200(url, interval, callback) {
     clearInputError(inputUrl, status);
 
     inputDebounceTimer = setTimeout(() => {
-    isURL(inputUrl.value)
+    flinkUi.isValidURL(inputUrl.value)
       ? clearInputError(inputUrl, status)
       : setInputError(inputUrl, status);
     }, 1000);
@@ -90,49 +68,33 @@ function retryHttpGetCallUntil200(url, interval, callback) {
     outputUrl.style.display = "none";
     outputUrl.value = "";
 
-    if(!isURL(inputUrl.value)) {
+    if(!flinkUi.isValidURL(inputUrl.value)) {
       setInputError(inputUrl, status);
       return;
     }
 
-    const hasSchemaPrefix = [
-      inputUrl.value.startsWith("http://"),
-      inputUrl.value.startsWith("https://")
-    ].reduce((acc, val) => acc || val, false);
-    inputUrl.value = hasSchemaPrefix ? inputUrl.value : `https://${inputUrl.value}`;
-
-    const r = new XMLHttpRequest();
-    r.open('POST', '/to', true);
-    r.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    r.onload = function() {
-      if (r.status === 201) {
+    flinkApi
+      .postLink(flinkUi.sanitizeUrl(inputUrl.value), "flink-ui", null, 4)
+      .then(data => {
         clearInputError(inputUrl, status);
         embedIframe.style.display = 'none';
-        const data = JSON.parse(r.responseText);
-        console.log("Created ShortLink", data);
         // Display the shortened URL
-        outputUrl.value = `${document.URL}${data['id']}`;
+        outputUrl.value = flinkApi.getShortLinkHref(data['id']);
         outputUrl.style.display = "block";
         // Display the QR code
-        outputQrCode.src = `${document.URL}qr/${data['id']}?height=202`;
+        outputQrCode.src = flinkApi.getQrCodeHref(data['id'], 202);
         outputQrCode.style.display = "block";
         // set the iframe
         embedLoader.style.display = 'block';
-        retryHttpGetCallUntil200(`${document.URL}meta/${data['id']}`, 300, () => {
-          embedLoader.style.display = 'none';
-          embedIframe.src = `${document.URL}embed/${data['id']}`;
-          embedIframe.contentWindow.document.location.href=`${document.URL}embed/${data['id']}`;
-          embedIframe.style.display = 'block';
-        });
+        flinkApi.retryGetMeta(data.id, 300)
+          .then(_ => {
+            embedLoader.style.display = 'none';
+            embedIframe.src = flinkApi.getEmbedHref(data.id);
+            //embedIframe.contentWindow.document.location.href = flinkApi.getEmbedHref(data.id);
+            embedIframe.style.display = 'block';
+          })
 
         setStatus(status, "✅ URL successfully shortened")
-      }
-    };
-
-    r.send(JSON.stringify({
-      "uri": inputUrl.value,
-      "creator": "webui",
-      "preferredIdLength": 4
-    }));
+      });
   })
 })();

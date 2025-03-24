@@ -15,7 +15,7 @@ public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeC
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <param name="height">the height of the QR Code in px</param>
   /// <returns>QR Code as Portable Network Graphic (*.png) if the shortlink exists - else 404</returns>
-  [HttpGet("/qr/{shortLinkId}", Name = "GetQRCode")]
+  [HttpGet("/links/{shortLinkId}/qr", Name = "GetQRCode")]
   [ProducesResponseType(typeof(byte[]), (int)HttpStatusCode.OK, "image/png")]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]

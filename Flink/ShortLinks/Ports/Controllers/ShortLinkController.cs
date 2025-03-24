@@ -39,16 +39,17 @@ public class ShortLinkController(
     "qr",
     "metadata",
     "embeds",
+    "links",
     metricsConfiguration.Value.MetricsEndpointPath,
   ];
   
   /// <summary>
-  /// Get redirected to the URL of the ShortLink
+  /// Get redirected to the URL of the shortLink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns></returns>
-  [HttpGet("/to/{shortLinkId}", Name = "GetShortLink")]
   [HttpGet("/{shortLinkId}", Name="GetShortLinkRoot")]
+  [HttpGet("/links/{shortLinkId}", Name = "GetShortLink")]
   [ProducesResponseType((int)HttpStatusCode.Redirect)]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -69,7 +70,7 @@ public class ShortLinkController(
   /// </summary>
   /// <param name="shortLinkRequest">information about the new shortlink</param>
   /// <returns>the shortened link</returns>
-  [HttpPost("/to", Name = "CreateNewShortLink")]
+  [HttpPost("/links", Name = "CreateNewShortLink")]
   [ProducesResponseType(typeof(ShortenedLink), 201, "application/json")]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
   public Task<ActionResult> Add(ShortLinkRequest shortLinkRequest) {
@@ -98,7 +99,7 @@ public class ShortLinkController(
   /// Delete a (previously flinkified) shortlink
   /// </summary>
   /// <param name="shortLinkId">Id of the shortlink to remove</param>
-  [HttpDelete("/to/{shortLinkId}", Name = "RemoveShortLink")]
+  [HttpDelete("/links/{shortLinkId}", Name = "RemoveShortLink")]
   [ProducesResponseType((int)HttpStatusCode.OK)]
   [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
   public Task<ActionResult> Delete(string shortLinkId) {

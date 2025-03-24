@@ -11,6 +11,7 @@ using Flink.QRCodes.Ports.IoC;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
+using Flink.Themes.Ports.IoC;
 using Flink.WebUI.Ports.IoC;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
@@ -61,7 +62,8 @@ builder.Services
   .RegisterMetaDataDomain()
   .RegisterQrCodeDomain()
   .RegisterProxyDomain()
-  .RegisterWebUi();
+  .RegisterWebUi()
+  .RegisterThemeManager();
 
 builder.Services.AddOpenTelemetry()
   .ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName))

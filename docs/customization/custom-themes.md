@@ -106,7 +106,7 @@ So far, we have created a simple HTML file and some rudimentary styling for it. 
 And this is exactly what we'll be working on in this step. Let's create a new file called `my-flink-theme.js` (you're free to name it however you like, just be sure to remember it to link it into our index.html later).
 
 ```js
-const flinkApi = new FlinkApi();
+const flinkApi = new FlinkApiClient();
 
 const input = document.getElementById('long-link-input');
 const button = document.getElementById('flinify-button');

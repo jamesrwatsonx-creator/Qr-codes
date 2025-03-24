@@ -21,3 +21,9 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 | METRICSCONFIGURATION__METRICSENDPOINTPATH | MetricsConfiguration:MetricsEndpointPath | the URL segment the metrics endpoint is accessible from                           | /metrics                |
 
 **NOTE**: When `RequireBasicAuth` is set to true `BasicAuthUsername` and `BasicAuthPassword` MUST be provided. If `RequireBasicAuth` is set to false, the values in `BasicAuthUsername` and `BasicAuthPassword` are ignored. Please refer to [Prometheus Scrape Configuration Manual](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config) to allow Prometheus to query from `Flink`. 
+
+#### WebUI Configuration
+
+| Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
+|:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
+| WEBUICONFIGURATION__DEFAULTTHEME          | WebUiConfiguration:DefaultTheme          | which Theme to use in case in case query parameter ?theme is not providing theme  | flink-default           |

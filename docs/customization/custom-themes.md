@@ -10,7 +10,7 @@ First, create a new folder to store all the necessary files for your Flink theme
 
 ```bash
 # create an empty directory that stores the theme files
-theme_directory="~/Documents/my-flink-theme"
+theme_directory="$HOME/Documents/my-flink-theme"
 mkdir -p $theme_directory
 
 # spin up docker / podman and mount the newly created directory in the wwwroot 

@@ -87,6 +87,7 @@ curl -X "POST" \
 - **[⚙️ Configuration](/docs/config/config.md)**
     - [Database Configuration](/docs/config/config.md?ref_type=heads#database-configuration)
     - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
+    - [WebUI Configuration](/docs/config/config.md?ref_type=heads#webui-configuration)
 - **[😎 Customization](/docs/customization/custom-themes.md)**
     - [Ceate your own Flink theme](/docs/customization/custom-themes.md)
 - **[❤️ Community](/docs/community/install-guides.md)**

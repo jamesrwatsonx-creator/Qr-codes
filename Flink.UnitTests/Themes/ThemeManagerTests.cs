@@ -1,4 +1,5 @@
 using Flink.Themes;
+using Flink.WebUI.Ports.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
@@ -15,7 +16,7 @@ public class ThemeManagerTests {
     var webHostEnvironment = new Mock<IWebHostEnvironment>();
     webHostEnvironment.Setup(x => x.WebRootPath).Returns(_webRoot);
     
-    var themeManager = new ThemeManager(webHostEnvironment.Object, Options.Create(new ThemeConfiguration { DefaultTheme = "flink-default"}));
+    var themeManager = new ThemeManager(webHostEnvironment.Object, Options.Create(new WebUiConfiguration { DefaultTheme = "flink-default"}));
     var dirs = Directory.GetDirectories(Path.Combine(_webRoot, "themes"));
     // Act
     var themes = themeManager.AvailableThemes();
@@ -31,7 +32,7 @@ public class ThemeManagerTests {
     var webHostEnvironment = new Mock<IWebHostEnvironment>();
     webHostEnvironment.Setup(x => x.WebRootPath).Returns(_webRoot);
     
-    var themeManager = new ThemeManager(webHostEnvironment.Object, Options.Create(new ThemeConfiguration { DefaultTheme = "flink-default"}));
+    var themeManager = new ThemeManager(webHostEnvironment.Object, Options.Create(new WebUiConfiguration { DefaultTheme = "flink-default"}));
 
     // Act
     var theme = themeManager.GetFile("index.html", "flink-default");

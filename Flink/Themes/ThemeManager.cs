@@ -1,8 +1,9 @@
+using Flink.WebUI.Ports.Models;
 using Microsoft.Extensions.Options;
 
 namespace Flink.Themes;
 
-public class ThemeManager(IWebHostEnvironment webHostEnvironment, IOptions<ThemeConfiguration> themeConfiguration) : IThemeManager {
+public class ThemeManager(IWebHostEnvironment webHostEnvironment, IOptions<WebUiConfiguration> themeConfiguration) : IThemeManager {
   public string[] AvailableThemes() => 
     Directory.GetDirectories($"{webHostEnvironment.WebRootPath}/themes/")
       .Select(x => x.Replace($"{webHostEnvironment.WebRootPath}/themes/", string.Empty))

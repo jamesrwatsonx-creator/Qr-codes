@@ -13,6 +13,7 @@ using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
 using Flink.Themes.Ports.IoC;
 using Flink.WebUI.Ports.IoC;
+using Flink.WebUI.Ports.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
@@ -55,6 +56,16 @@ var metricsConfiguration = builder.Configuration
   .GetSection(nameof(MetricsConfiguration))
   .Get<MetricsConfiguration>()
   .ValidateConfiguration();
+
+builder.Configuration
+  .GetSection(nameof(WebUiConfiguration))
+  .Get<WebUiConfiguration>()
+  .ValidateConfiguration();
+
+builder.Services
+  .Configure<MetricsConfiguration>(builder.Configuration.GetSection(nameof(MetricsConfiguration)))
+  .Configure<DbConfiguration>(builder.Configuration.GetSection(nameof(DbConfiguration)))
+  .Configure<WebUiConfiguration>(builder.Configuration.GetSection(nameof(WebUiConfiguration)));
 
 builder.Services
   .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))

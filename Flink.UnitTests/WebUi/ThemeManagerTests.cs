@@ -1,4 +1,5 @@
 using Flink.Themes;
+using Flink.WebUI;
 using Flink.WebUI.Ports.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;

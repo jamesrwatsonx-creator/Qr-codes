@@ -20,11 +20,13 @@ docker pull quay.io/rtraceio/flink:latest
 docker run \
   --rm \
   --name flink-theme-dev \
-  -e WebUiConfiguration__DefaultTheme=my-flink-theme \
+  -e WEBUICONFIGURATION__DEFAULTHEME=my-flink-theme \
+  -e WEBUICONFIGURATION__THEMECACHEDURATION=0 \
   -p 8080:8080 \
   -v "$theme_directory:/app/wwwroot/themes/my-flink-theme" \
   "quay.io/rtraceio/flink:latest"
 ```
+
 
 #### Pitfall with Volume Mounts
 
@@ -34,7 +36,8 @@ On Ubuntu/Debian-based distributions (especially when using AppArmor), you need 
 docker run \
   --rm \
   --name flink-theme-dev \
-  -e WebUiConfiguration__DefaultTheme=my-flink-theme \
+  -e WEBUICONFIGURATION__DEFAULTHEME=my-flink-theme \
+  -e WEBUICONFIGURATION__THEMECACHEDURATION=0 \
   -p 8080:8080 \
   -v "$theme_directory:/app/wwwroot/themes/my-flink-theme:U" \
   "quay.io/rtraceio/flink:latest"
@@ -46,14 +49,17 @@ On RHEL-based distributions (especially when using SELinux), you need to pass `:
 docker run \
   --rm \
   --name flink-theme-dev \
-  -e WebUiConfiguration__DefaultTheme=my-flink-theme \
+  -e WEBUICONFIGURATION__DEFAULTHEME=my-flink-theme \
+  -e WEBUICONFIGURATION__THEMECACHEDURATION=0 \
   -p 8080:8080 \
   -v "$theme_directory:/app/wwwroot/themes/my-flink-theme:Z" \
   "quay.io/rtraceio/flink:latest"
 ```
 
 
-With the environment-variable `WebUiConfiguration__DefaultTheme` we tell Flink to use the `my-flink-theme` as the default theme whevever Flink is visited. Now our development environment is set up, and we can start working on the theme. 
+With the environment-variable `WEBUICONFIGURATION__DEFAULTHEME` we tell Flink to use the `my-flink-theme` as the default theme whevever Flink is visited. With the environment-variable `WEBUICONFIGURATION__THEMECACHEDURATION` we tell Flink not to cache the theme in-memory and always read the latest version of the theme from disk. In a production environment you should
+not set this variable to `0` (seconds) - for our theming development environment `0` (seconds) is fine, so we don't have to wait until the cache expires to see our changes in action. 
+Now our development environment is set up, and we can start working on the theme. 
 
 ### Step 2 - Creating the HTML structure
 

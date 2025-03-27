@@ -1,4 +1,4 @@
-namespace Flink.Themes;
+namespace Flink.WebUI;
 
 public interface IThemeManager {
   public string[] AvailableThemes();

@@ -1,7 +1,7 @@
 using Flink.WebUI.Ports.Models;
 using Microsoft.Extensions.Options;
 
-namespace Flink.Themes;
+namespace Flink.WebUI;
 
 public class ThemeManager(IWebHostEnvironment webHostEnvironment, IOptions<WebUiConfiguration> themeConfiguration) : IThemeManager {
   public string[] AvailableThemes() => 

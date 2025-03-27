@@ -27,3 +27,4 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 | Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
 | WEBUICONFIGURATION__DEFAULTTHEME          | WebUiConfiguration:DefaultTheme          | which Theme to use in case in case query parameter ?theme is not providing theme  | flink-default           |
+| WEBUICONFIGURATION__THEMECACHEDURATION    | WebUiConfiguration:ThemeCacheDuration    | mumber of seconds a theme shall be cached in memory (in seconds)                  | 300                     |

@@ -1,14 +1,16 @@
+using Flink.WebUI.Ports.Models;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
-namespace Flink.Themes;
+namespace Flink.WebUI;
 
-public class CachingThemeManager(IMemoryCache memoryCache, IThemeManager proxiedThemeManager) : IThemeManager {
+public class InMemoryCachingThemeManager(IMemoryCache memoryCache, IThemeManager proxiedThemeManager, IOptions<WebUiConfiguration> webUiConfig) : IThemeManager {
   public string[] AvailableThemes() {
     if (memoryCache.TryGetValue("::AvailableThemes", out string[]? cachedThemes))
       return cachedThemes!;
 
     var themes = proxiedThemeManager.AvailableThemes();
-    memoryCache.Set("::AvailableThemes", themes, DateTimeOffset.Now.AddMinutes(1));
+    memoryCache.Set("::AvailableThemes", themes, DateTimeOffset.Now.AddSeconds(webUiConfig.Value.ThemeCacheDuration));
     return themes;
   }
 
@@ -18,7 +20,7 @@ public class CachingThemeManager(IMemoryCache memoryCache, IThemeManager proxied
       return cachedFile!;
 
     var file = proxiedThemeManager.GetFile(fileName, theme);
-    memoryCache.Set(cacheKey, file, DateTimeOffset.Now.AddMinutes(1));
+    memoryCache.Set(cacheKey, file, DateTimeOffset.Now.AddSeconds(webUiConfig.Value.ThemeCacheDuration));
     return file;
   }
 }

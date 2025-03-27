@@ -10,7 +10,7 @@ public class InMemoryCachingThemeManager(IMemoryCache memoryCache, IThemeManager
       return cachedThemes!;
 
     var themes = proxiedThemeManager.AvailableThemes();
-    memoryCache.Set("::AvailableThemes", themes, DateTimeOffset.Now.AddMinutes(webUiConfig.Value.ThemeCacheDuration));
+    memoryCache.Set("::AvailableThemes", themes, DateTimeOffset.Now.AddSeconds(webUiConfig.Value.ThemeCacheDuration));
     return themes;
   }
 
@@ -20,7 +20,7 @@ public class InMemoryCachingThemeManager(IMemoryCache memoryCache, IThemeManager
       return cachedFile!;
 
     var file = proxiedThemeManager.GetFile(fileName, theme);
-    memoryCache.Set(cacheKey, file, DateTimeOffset.Now.AddMinutes(webUiConfig.Value.ThemeCacheDuration));
+    memoryCache.Set(cacheKey, file, DateTimeOffset.Now.AddSeconds(webUiConfig.Value.ThemeCacheDuration));
     return file;
   }
 }

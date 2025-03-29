@@ -33,6 +33,25 @@
   <link rel="stylesheet" href="/themes/flink-default/stats.css"/>
 </head>
 <body>
+<nav>
+  <a href="/scalar">📎 scalar</a>
+  <a href="/swagger">📜 swagger</a>
+  <a href="/stats">📈 stats</a>
+  <a href="https://gitlab.com/rtraceio/web/Flink" class="small">⌨️ source</a>
+</nav>
+<h1>📈 Stats</h1>
+<div class="note-block">
+  Flink provides a Prometheus-compatible <a href="/metrics">metrics endpoint</a> that exposes real-time measurements,
+  which can be collected by Prometheus. As the industry-standard time-series database, Prometheus enables the 
+  aggregation of multiple point-in-time metrics into time-series data. These time-series can then be visualized 
+  using Grafana, a powerful tool for creating charts, dashboards, and alerts.
+  
+  The <a href="/stats">Stats page</a> offers a lightweight alternative to what Prometheus and Grafana can provide.
+  Since Flink does not persist the metrics data from the <a href="/metrics">metrics endpoint</a>, 
+  this page only displays interactions recorded since the last restart of the Flink instance.
+</div>
+
+<h2>🌟 Recently visited</h2>
 <div class="block-container" id="metrics"></div>
 <script src="/themes/flink-default/stats.js"></script>
 </body>

@@ -26,7 +26,7 @@ public class ImageProxyController(IMetaDataRepository metaDataRepository, IForwa
     if (r is { IsSuccess: true, Value.HasNoValue: true })
       return NotFound($"The given ShortLink MetaData fo the Id '{shortLinkId}' does not (yet) exist");
     if (r is { IsSuccess: true, Value: { HasValue: true, Value.Image: null } })
-      return Redirect($"/qr/{shortLinkId}?height=512");
+      return Redirect($"/links/{shortLinkId}/qr?height=512");
 
     return await forwardProxy.Proxy(r.Value.Value.Image!)
       .Match(fileContentResult => fileContentResult, IActionResult (f) => BadRequest(f));

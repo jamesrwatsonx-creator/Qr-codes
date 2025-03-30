@@ -117,6 +117,8 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
   [InlineData("info")]
   [InlineData("Info")]
   [InlineData("qr")]
+  [InlineData("stats")]
+  [InlineData("spam-protection")]
   public async Task AddForbiddenShortLinkId_ToShortLinks_Returns400(string shortLinkId) {
     // Arrange
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {

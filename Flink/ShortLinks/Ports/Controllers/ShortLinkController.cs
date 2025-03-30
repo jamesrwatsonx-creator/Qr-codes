@@ -6,6 +6,7 @@ using Flink.MetaData.Ports;
 using Flink.Metrics.Ports.Models;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
+using Flink.SpamProtection.Ports.Repositories;
 using Microsoft.Extensions.Options;
 
 namespace Flink.ShortLinks.Ports.Controllers;
@@ -16,6 +17,7 @@ public class ShortLinkController(
   IShortLinkRepository shortLinkRepository,
   ILogger<ShortLinkController> logger,
   IScrapingQueue scrapingQueue,
+  IForbiddenDomainRepository forbiddenDomainRepository,
   ShortLinkMetricsRegistry metrics,
   IOptions<MetricsConfiguration> metricsConfiguration)
   : ControllerBase {
@@ -40,7 +42,9 @@ public class ShortLinkController(
     "metadata",
     "embeds",
     "links",
-    metricsConfiguration.Value.MetricsEndpointPath,
+    "stats",
+    "spam-protection",
+    metricsConfiguration.Value.MetricsEndpointPath.Replace("/", ""),
   ];
   
   /// <summary>
@@ -76,8 +80,10 @@ public class ShortLinkController(
   public Task<ActionResult> Add(ShortLinkRequest shortLinkRequest) {
     var sanitizedId = shortLinkRequest.PreferredId?.Trim().ToLower();
     if (sanitizedId != null && _forbiddenShortLinkIds.Any(forbiddenShortLinkId => sanitizedId == forbiddenShortLinkId)) 
-      return Task.FromResult<ActionResult>(BadRequest());
- 
+      return Task.FromResult<ActionResult>(BadRequest("Reserved ShortLinkId must not be used"));
+    if (forbiddenDomainRepository.ContainsDomain(new Uri(shortLinkRequest.Uri).Host))
+      return Task.FromResult<ActionResult>(BadRequest("The given URL is considered spam."));
+
     var shortenedLink = new ShortenedLink {
       Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
       Creator = shortLinkRequest.Creator,

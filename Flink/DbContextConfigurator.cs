@@ -6,7 +6,7 @@ namespace Flink;
 public enum SupportedDatabases {
   Sqlite,
   Postgres,
-  MySql,
+  MySql
 }
 
 public class DbConfiguration {

@@ -9,7 +9,8 @@ namespace Flink.Embed.Ports.Controllers;
 
 [ApiController]
 [Produces("text/html")]
-public class EmbedController(IOptions<WebUiConfiguration> webUiConfig, IMetaDataRepository metaDataRepository, IShortLinkRepository shortLinkRepository) : ControllerBase {
+public class EmbedController(IOptions<WebUiConfiguration> webUiConfig, IMetaDataRepository metaDataRepository, IShortLinkRepository shortLinkRepository)
+  : ControllerBase {
   private readonly EmbedHtmlBuilder _404Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
     .WithTitle("404 / Not Found")
     .WithImage("/static/img/flink-logo.png", "flink logo")
@@ -21,7 +22,7 @@ public class EmbedController(IOptions<WebUiConfiguration> webUiConfig, IMetaData
     .WithDescription("Flink is experiencing a problem. The link preview did not work");
 
   /// <summary>
-  /// Render a Link Preview for any (previously created) shortlink
+  ///   Render a Link Preview for any (previously created) shortlink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns></returns>
@@ -34,8 +35,8 @@ public class EmbedController(IOptions<WebUiConfiguration> webUiConfig, IMetaData
     var metaDataResult = await metaDataRepository.GetAsync(shortLinkId);
     if (metaDataResult.IsFailure) return Content(_500Embed.Build(), "text/html");
     if (metaDataResult is { IsSuccess: true, Value.HasNoValue: true }) return Content(_404Embed.Build(), "text/html");
-    
-    
+
+
     var embedHtml = metaDataResult.Value
       .ToResult(string.Empty)
       .Match(v => new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)

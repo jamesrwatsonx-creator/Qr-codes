@@ -4,10 +4,11 @@ using Microsoft.Extensions.Options;
 namespace Flink.WebUI;
 
 public class ThemeManager(IWebHostEnvironment webHostEnvironment, IOptions<WebUiConfiguration> themeConfiguration) : IThemeManager {
-  public string[] AvailableThemes() => 
-    Directory.GetDirectories($"{webHostEnvironment.WebRootPath}/themes/")
+  public string[] AvailableThemes() {
+    return Directory.GetDirectories($"{webHostEnvironment.WebRootPath}/themes/")
       .Select(x => x.Replace($"{webHostEnvironment.WebRootPath}/themes/", string.Empty))
       .ToArray();
+  }
 
   public string GetFile(string fileName, string? theme) {
     var actualTheme = AvailableThemes().Contains(theme) ? theme : themeConfiguration.Value.DefaultTheme;

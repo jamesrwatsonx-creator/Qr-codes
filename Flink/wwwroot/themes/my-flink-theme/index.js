@@ -14,12 +14,12 @@ const linkPrefixLength = 4;
 // ... show the shortened URL from the flink backend in the output textbox
 
 button.addEventListener('click', () => {
-    const longUrl = input.value.trim();
-    
-    flinkApi
-      .postLink(longUrl, "my-flink-theme", null, linkPrefixLength)
-      .then(data => {
-        const flinkifiedUrl = flinkApi.getShortLinkHref(data['id']);
-        output.value = flinkifiedUrl;
-      });
+  const longUrl = input.value.trim();
+
+  flinkApi
+    .postLink(longUrl, "my-flink-theme", null, linkPrefixLength)
+    .then(data => {
+      const flinkifiedUrl = flinkApi.getShortLinkHref(data['id']);
+      output.value = flinkifiedUrl;
+    });
 });

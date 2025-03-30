@@ -2,7 +2,7 @@ class FlinkUi {
   urlRegex = /(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(?:\/[^\s?#]*)*(\?[^\s#]*)?(#[^\s]*)?/;
   recursionDetectionRegexes = [
     new RegExp(`${window.location.host}/[0-9a-zA-Z]+$`, 'i'),
-    new RegExp(`${window.location.host}/links/[0-9a-zA-Z]+$`,'i')
+    new RegExp(`${window.location.host}/links/[0-9a-zA-Z]+$`, 'i')
   ];
 
   constructor(removeUtmQueryParams, removeTrackingQueryParams) {

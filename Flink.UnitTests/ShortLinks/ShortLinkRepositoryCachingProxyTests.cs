@@ -30,7 +30,7 @@ public class ShortLinkRepositoryCachingProxyTests {
 
     implMock.Verify(impl => impl.GetAsync(shortLink.Id), Times.Never);
   }
-  
+
   [Fact]
   public async Task DeleteShortLink_CachedEntryDoesNotExist_DoesNotThrow() {
     // Arrange
@@ -38,14 +38,14 @@ public class ShortLinkRepositoryCachingProxyTests {
     var implMock = new Mock<IShortLinkRepository>();
     implMock.Setup(x => x.DeleteAsync(It.IsAny<string>())).ReturnsAsync(Result.Success());
     var cachingProxy = new ShortLinkRepositoryCachingProxy(cache, implMock.Object);
-    
+
     // Act
     var deleteResult = await cachingProxy.DeleteAsync("xxxxxx");
 
     // Assert
     deleteResult.IsSuccess.Should().BeTrue();
   }
-  
+
   [Fact]
   public async Task PreviouslyCachedShortLink_Delete_IsNotInCacheAnymore() {
     // Arrange
@@ -54,7 +54,7 @@ public class ShortLinkRepositoryCachingProxyTests {
     var shortLink = new ShortenedLink { Creator = "ruffy", CreationDate = DateTime.UtcNow, Id = "Gulasch", Uri = "https://gula.sh" };
     var cachingProxy = new ShortLinkRepositoryCachingProxy(cache, implMock.Object);
     await cachingProxy.AddAsync(shortLink);
-    
+
     // Act
     await cachingProxy.DeleteAsync(shortLink.Id);
 

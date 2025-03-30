@@ -2,9 +2,9 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
+using Flink.ShortLinks.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Flink.ShortLinks.Models;
 
 namespace Flink.IntegrationTests;
 
@@ -28,7 +28,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-  
+
   [Fact]
   public async Task AddShortLinkRequest_WhenProvidedPreferredUrlDoesNotYetExist_Returns201() {
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
@@ -39,12 +39,13 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     var r = await webApplicationFactory
       .CreateClient()
-      .PostAsync($"/links", payload);
+      .PostAsync("/links", payload);
 
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
 
-  [Theory, MemberData(nameof(SerializerSettings))]
+  [Theory]
+  [MemberData(nameof(SerializerSettings))]
   public async Task AddPreviouslyNonExistingShortLinkRequest_WithDifferentSerializationFormats_Returns201(JsonSerializerOptions opts) {
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
       Creator = Guid.NewGuid().ToString(),
@@ -54,7 +55,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     var r = await webApplicationFactory
       .CreateClient()
-      .PostAsync($"/links", payload);
+      .PostAsync("/links", payload);
 
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
@@ -71,9 +72,9 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
       Creator = Guid.NewGuid().ToString(),
       PreferredId = id,
-      Uri = Uri,
+      Uri = Uri
     }), Encoding.UTF8, "application/json");
-    await httpClient.PostAsync($"/links", payload);
+    await httpClient.PostAsync("/links", payload);
 
     // Act
     var r = await httpClient.GetAsync($"{shortLinkPrefix}/{id}");
@@ -93,10 +94,10 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/links", payload);
-    
+    await httpClient.PostAsync("/links", payload);
+
     // Act
-    var r = await httpClient.PostAsync($"/links", payload);
+    var r = await httpClient.PostAsync("/links", payload);
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -117,6 +118,8 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
   [InlineData("info")]
   [InlineData("Info")]
   [InlineData("qr")]
+  [InlineData("stats")]
+  [InlineData("spam-protection")]
   public async Task AddForbiddenShortLinkId_ToShortLinks_Returns400(string shortLinkId) {
     // Arrange
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
@@ -127,12 +130,12 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
 
     // Act
     var httpClient = webApplicationFactory.CreateClient();
-    var r = await httpClient.PostAsync($"/links", payload);
+    var r = await httpClient.PostAsync("/links", payload);
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
   }
-  
+
   [Fact]
   public async Task FlinkSetup_AttemptDeleteNotExisting_Returns200() {
     // Arrange
@@ -152,14 +155,14 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
       PreferredId = id,
       Uri = "https://flink.rtrace.io/"
     }), Encoding.UTF8, "application/json");
-    
+
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/links", payload);
+    await httpClient.PostAsync("/links", payload);
     await httpClient.DeleteAsync($"/links/{id}");
-   
+
     // Act
     var r = await httpClient.GetAsync($"/links/{id}");
-    
+
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }

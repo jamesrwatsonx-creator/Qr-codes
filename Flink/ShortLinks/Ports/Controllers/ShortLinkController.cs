@@ -1,11 +1,12 @@
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.MetaData.Ports;
 using Flink.Metrics.Ports.Models;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
+using Flink.SpamProtection.Ports.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace Flink.ShortLinks.Ports.Controllers;
@@ -16,10 +17,10 @@ public class ShortLinkController(
   IShortLinkRepository shortLinkRepository,
   ILogger<ShortLinkController> logger,
   IScrapingQueue scrapingQueue,
+  IForbiddenDomainRepository forbiddenDomainRepository,
   ShortLinkMetricsRegistry metrics,
   IOptions<MetricsConfiguration> metricsConfiguration)
   : ControllerBase {
-
   private readonly string[] _forbiddenShortLinkIds = [
     "",
     " ",
@@ -40,15 +41,17 @@ public class ShortLinkController(
     "metadata",
     "embeds",
     "links",
-    metricsConfiguration.Value.MetricsEndpointPath,
+    "stats",
+    "spam-protection",
+    metricsConfiguration.Value.MetricsEndpointPath.Replace("/", "")
   ];
-  
+
   /// <summary>
-  /// Get redirected to the URL of the shortLink
+  ///   Get redirected to the URL of the shortLink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns></returns>
-  [HttpGet("/{shortLinkId}", Name="GetShortLinkRoot")]
+  [HttpGet("/{shortLinkId}", Name = "GetShortLinkRoot")]
   [HttpGet("/links/{shortLinkId}", Name = "GetShortLink")]
   [ProducesResponseType((int)HttpStatusCode.Redirect)]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -66,7 +69,7 @@ public class ShortLinkController(
   }
 
   /// <summary>
-  /// Create a new flinkified shortlink
+  ///   Create a new flinkified shortlink
   /// </summary>
   /// <param name="shortLinkRequest">information about the new shortlink</param>
   /// <returns>the shortened link</returns>
@@ -75,9 +78,11 @@ public class ShortLinkController(
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
   public Task<ActionResult> Add(ShortLinkRequest shortLinkRequest) {
     var sanitizedId = shortLinkRequest.PreferredId?.Trim().ToLower();
-    if (sanitizedId != null && _forbiddenShortLinkIds.Any(forbiddenShortLinkId => sanitizedId == forbiddenShortLinkId)) 
-      return Task.FromResult<ActionResult>(BadRequest());
- 
+    if (sanitizedId != null && _forbiddenShortLinkIds.Any(forbiddenShortLinkId => sanitizedId == forbiddenShortLinkId))
+      return Task.FromResult<ActionResult>(BadRequest("Reserved ShortLinkId must not be used"));
+    if (forbiddenDomainRepository.ContainsDomain(new Uri(shortLinkRequest.Uri).Host))
+      return Task.FromResult<ActionResult>(BadRequest("The given URL is considered spam."));
+
     var shortenedLink = new ShortenedLink {
       Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
       Creator = shortLinkRequest.Creator,
@@ -96,7 +101,7 @@ public class ShortLinkController(
   }
 
   /// <summary>
-  /// Delete a (previously flinkified) shortlink
+  ///   Delete a (previously flinkified) shortlink
   /// </summary>
   /// <param name="shortLinkId">Id of the shortlink to remove</param>
   [HttpDelete("/links/{shortLinkId}", Name = "RemoveShortLink")]

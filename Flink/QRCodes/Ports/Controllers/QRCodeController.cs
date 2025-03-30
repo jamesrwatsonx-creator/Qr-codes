@@ -10,7 +10,7 @@ namespace Flink.QRCodes.Ports.Controllers;
 [Produces("application/json")]
 public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeCache qrCodeCache, ILogger<QrCodeController> logger) : ControllerBase {
   /// <summary>
-  /// Get the QR Code for a (previously created) shortlink
+  ///   Get the QR Code for a (previously created) shortlink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <param name="height">the height of the QR Code in px</param>
@@ -22,7 +22,7 @@ public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeC
   public Task<ActionResult> Get(string shortLinkId, [FromQuery] int height = 512) {
     if (height <= 32)
       return Task.FromResult<ActionResult>(BadRequest());
-    
+
     logger.LogInformation("Requesting Short Link with {Id}", shortLinkId);
     return shortLinkRepository
       .GetAsync(shortLinkId)

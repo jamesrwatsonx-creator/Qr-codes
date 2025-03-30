@@ -1,12 +1,12 @@
 namespace Flink.Embed;
 
 public class EmbedHtmlBuilder(string defaultTheme) {
+  private string _descriptionHtml = "";
+  private string _imageHtml = "";
+  private string _originalUrlHtml = "";
+  private string _shortLinkId = "";
   private string _title = "";
   private string _titleHtml = "";
-  private string _shortLinkId = "";
-  private string _originalUrlHtml = "";
-  private string _imageHtml = "";
-  private string _descriptionHtml = "";
 
   public EmbedHtmlBuilder WithTitle(string? title) {
     if (title == null) return this;

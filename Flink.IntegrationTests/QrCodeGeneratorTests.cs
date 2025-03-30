@@ -18,10 +18,10 @@ public class QrCodeGeneratorTests(FlinkWebApplicationFactory webApplicationFacto
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/links", payload);
+    await httpClient.PostAsync("/links", payload);
 
     // Act
-    var r = await httpClient.GetAsync($"/links/blog/qr");
+    var r = await httpClient.GetAsync("/links/blog/qr");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -28,3 +28,16 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
 | WEBUICONFIGURATION__DEFAULTTHEME          | WebUiConfiguration:DefaultTheme          | which Theme to use in case in case query parameter ?theme is not providing theme  | flink-default           |
 | WEBUICONFIGURATION__THEMECACHEDURATION    | WebUiConfiguration:ThemeCacheDuration    | mumber of seconds a theme shall be cached in memory (in seconds)                  | 300                     |
+
+
+#### Spam Protection Configuration
+
+| Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
+|:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
+| SPAMPROTECTIONCONFIGURATION__ENABLED      | SpamProtectionConfiguration:Enabled      | boolean, indicating whether Flink Spam Protection is enabled                      | true                    |
+| SPAMPROTECTIONCONFIGURATION__BLOCKLISTS   | SpamProtectionConfiguration:BlockLists   | AdblockPlus2.0 compliant blocklist URLs (e.g. easylist)                           | see Block List defaults |
+
+##### Default Block Lists
+
+- [EasyList](https://easylist.to/easylist/easylist.txt)
+- [Fanboy-Annoyance](https://secure.fanboy.co.nz/fanboy-annoyance.txt)

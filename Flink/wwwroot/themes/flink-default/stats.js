@@ -1,4 +1,4 @@
-(function() {
+(function () {
   const shortLinkMetricsMap = new Map();
   const fetchAndRender = () => {
     fetchShortLinkMetrics().then(shortLinkMetrics => {
@@ -40,7 +40,7 @@ function parseShortLinkMetrics(metricsData) {
       const tags = m[1];
       const count = m[2];
       const idMatch = tags.match(/id="([^"]+)"/);
-      return { 'id': idMatch ? idMatch[1] : 'Unknown', 'count': count };
+      return {'id': idMatch ? idMatch[1] : 'Unknown', 'count': count};
     });
 }
 

@@ -6,11 +6,11 @@ namespace Flink.ShortLinks.Ports;
 public class ShortLinkMetricsRegistry {
   public const string MeterName = "shortlinks";
   private const string Unit = "requests";
-  private readonly Counter<long> _okShortLinkGets;
-  private readonly Counter<long> _notFoundShortLinkGets;
-  private readonly Counter<long> _totalShortLinkGets;
-  private readonly Counter<long> _createShortLinkPosts;
   private readonly Counter<long> _alreadyExistsShortLinkPosts;
+  private readonly Counter<long> _createShortLinkPosts;
+  private readonly Counter<long> _notFoundShortLinkGets;
+  private readonly Counter<long> _okShortLinkGets;
+  private readonly Counter<long> _totalShortLinkGets;
   private readonly Counter<long> _totalShortLinkPosts;
 
   public ShortLinkMetricsRegistry(IMeterFactory meterFactory) {

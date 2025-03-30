@@ -4,7 +4,8 @@ using Microsoft.Extensions.Options;
 
 namespace Flink.WebUI;
 
-public class InMemoryCachingThemeManager(IMemoryCache memoryCache, IThemeManager proxiedThemeManager, IOptions<WebUiConfiguration> webUiConfig) : IThemeManager {
+public class InMemoryCachingThemeManager(IMemoryCache memoryCache, IThemeManager proxiedThemeManager, IOptions<WebUiConfiguration> webUiConfig)
+  : IThemeManager {
   public string[] AvailableThemes() {
     if (memoryCache.TryGetValue("::AvailableThemes", out string[]? cachedThemes))
       return cachedThemes!;
@@ -15,7 +16,7 @@ public class InMemoryCachingThemeManager(IMemoryCache memoryCache, IThemeManager
   }
 
   public string GetFile(string fileName, string? theme) {
-    var cacheKey = $"__{fileName}::{theme??"default"}__";
+    var cacheKey = $"__{fileName}::{theme ?? "default"}__";
     if (memoryCache.TryGetValue(cacheKey, out string? cachedFile))
       return cachedFile!;
 

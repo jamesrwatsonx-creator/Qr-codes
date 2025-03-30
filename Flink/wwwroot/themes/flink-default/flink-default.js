@@ -11,6 +11,7 @@ function clearInputError(inputUrlElement, statusElement) {
   inputUrlElement.classList.remove("error-glow");
   setStatus(statusElement, "");
 }
+
 function copyURLToClipboard(statusElement, url) {
   console.debug("Clipboard")
   navigator.clipboard
@@ -19,7 +20,7 @@ function copyURLToClipboard(statusElement, url) {
     .catch(() => console.error('Could not write to clipboard.'));
 }
 
-(function() {
+(function () {
   const flinkUi = new FlinkUi();
   const flinkApi = new FlinkApiClient();
 
@@ -40,9 +41,9 @@ function copyURLToClipboard(statusElement, url) {
     clearInputError(inputUrl, status);
 
     inputDebounceTimer = setTimeout(() => {
-    flinkUi.isValidURL(inputUrl.value)
-      ? clearInputError(inputUrl, status)
-      : setInputError(inputUrl, status);
+      flinkUi.isValidURL(inputUrl.value)
+        ? clearInputError(inputUrl, status)
+        : setInputError(inputUrl, status);
     }, 1000);
   });
 
@@ -57,7 +58,7 @@ function copyURLToClipboard(statusElement, url) {
   outputUrl.addEventListener('dblclick', () => copyURLToClipboard(outputUrl.value));
 
   shortenAction.addEventListener('click', () => {
-    if(flinkifyButtonLocked === true)
+    if (flinkifyButtonLocked === true)
       return;
 
     flinkifyButtonLocked = true;
@@ -68,7 +69,7 @@ function copyURLToClipboard(statusElement, url) {
     outputUrl.style.display = "none";
     outputUrl.value = "";
 
-    if(!flinkUi.isValidURL(inputUrl.value)) {
+    if (!flinkUi.isValidURL(inputUrl.value)) {
       setInputError(inputUrl, status);
       return;
     }

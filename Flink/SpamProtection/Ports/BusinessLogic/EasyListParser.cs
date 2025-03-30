@@ -1,0 +1,44 @@
+using CSharpFunctionalExtensions;
+using Flink.SpamProtection.Models;
+
+namespace Flink.SpamProtection.Ports.BusinessLogic;
+
+public static class EasyListParser {
+  public static Result<EasyListSource> ParseHeader(string source, string easyListTxt) {
+    try {
+      var headerLines = easyListTxt
+        .Split('\n')
+        .SkipWhile(l => !l.StartsWith("! "))
+        .TakeWhile(l => l.StartsWith("! "))
+        .ToArray();
+
+      var title = headerLines
+        .Single(l => l.StartsWith("! Title: ")).Replace("! Title: ", "");
+      var version = headerLines
+        .Single(l => l.StartsWith("! Version: ")).Replace("! Version: ", "");
+      var lastModifiedString = headerLines
+        .Single(l => l.StartsWith("! Last modified: "))
+        .Replace("! Last modified: ", "")
+        .Replace("UTC", "")
+        .Trim();
+      var lastModifiedDateTime = DateTime.Parse(lastModifiedString);
+      return Result.Success(new EasyListSource {
+        Title = title,
+        Source = source,
+        Version = Convert.ToUInt64(version),
+        LastModified = lastModifiedDateTime
+      });
+    } catch (Exception exc) {
+      return Result.Failure<EasyListSource>(exc.Message);
+    }
+  }
+
+  public static string[] ParseForbiddenDomains(string easyListTxt) {
+    var domainLines = easyListTxt.Split('\n')
+      .Where(l => !l.StartsWith("! ")) // ignore Comments
+      .Where(l => l.StartsWith("||") && l.EndsWith('^')) // filter for lines with Domain Name anchors
+      .Select(l => l.Replace("||", "").Replace("^", "")) // extract domain string
+      .ToArray();
+    return domainLines;
+  }
+}

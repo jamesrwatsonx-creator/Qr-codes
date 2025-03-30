@@ -18,7 +18,8 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 🖥️ runs on Linux, Windows, Mac
 - 🐳 deployable as container (podman and docker), support for Kubernetes
 - 📈 keep track of how often short links are visited through built-in Prometheus support
-- 🌐 a simple, minimalistic Web UI
+- 🌐 simple default-theme, with the possibility to create custom themes
+- 🐟 spam-protection
 - 💾 supports Sqlite, PostgreSQL and MariaDB/MySQL
 
 ![Flink UI Demo image](flink-ui-sample.png)
@@ -88,6 +89,7 @@ curl -X "POST" \
     - [Database Configuration](/docs/config/config.md?ref_type=heads#database-configuration)
     - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
     - [WebUI Configuration](/docs/config/config.md?ref_type=heads#webui-configuration)
+    - [Spam Protection Configuration](/docs/config/config.md?ref_type=heads#spam-protection-configuration)
 - **[😎 Customization](/docs/customization/custom-themes.md)**
     - [Ceate your own Flink theme](/docs/customization/custom-themes.md)
 - **[❤️ Community](/docs/community/install-guides.md)**
@@ -106,6 +108,7 @@ curl -X "POST" \
 - [x] implement MetaData extractor (opengraph, twitter:cards, etc. ...)
 - [x] implement rudimentary short link embeds
 - [ ] Scalability through Federation (ActivityPub)
+- [ ] Create full website snapshots (similar to the wayback machine)
 - [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
 - [ ] Optional authentication for creating short links (to prevent potential abuse)
 

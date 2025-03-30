@@ -9,35 +9,35 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="QRCoder-ImageSharp" Version="0.10.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageReference Include="QRCoder-ImageSharp" Version="0.10.0"/>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.72"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0"/>
 
     <!-- Database -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12"/>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11"/>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
     <!-- Open API -->
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.0.18" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5"/>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.0.18"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
 
     <!-- Open Telemetry -->
-    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.8.0-rc.1" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.10.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.0"/>
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.0"/>
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.8.0-rc.1"/>
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.0"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.10.0"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -47,12 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Flink.Domain\Flink.Domain.csproj" />
-    <ProjectReference Include="..\Flink.Shared\Flink.Shared.csproj" />
+    <ProjectReference Include="..\Flink.Domain\Flink.Domain.csproj"/>
+    <ProjectReference Include="..\Flink.Shared\Flink.Shared.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\static\img\flink-logo.png" />
+    <EmbeddedResource Include="wwwroot\static\img\flink-logo.png"/>
   </ItemGroup>
 
 </Project>

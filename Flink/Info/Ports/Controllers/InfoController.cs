@@ -7,7 +7,7 @@ namespace Flink.Info.Ports.Controllers;
 [Produces("application/json")]
 public class InfoController : ControllerBase {
   /// <summary>
-  /// Return information about this flink instance
+  ///   Return information about this flink instance
   /// </summary>
   /// <returns></returns>
   [HttpGet("/info", Name = "GetInstanceInfo")]

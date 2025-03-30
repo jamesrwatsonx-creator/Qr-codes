@@ -8,7 +8,7 @@ namespace Flink.Proxy.Ports.Controllers;
 [ApiController]
 public class ImageProxyController(IMetaDataRepository metaDataRepository, IForwardProxy forwardProxy) : ControllerBase {
   /// <summary>
-  /// Get a proxied and cached preview image/thumbnail for a shortlink
+  ///   Get a proxied and cached preview image/thumbnail for a shortlink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
   /// <returns>The preview image with its original content-type headers, a QR code if no image was identified, or 404 if the shortlink is unknown</returns>

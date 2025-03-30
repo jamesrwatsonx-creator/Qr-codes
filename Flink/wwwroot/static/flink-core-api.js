@@ -38,7 +38,7 @@ class FlinkApiClient {
     return `${location.protocol}//${location.host}/links/${shortLinkId}/meta`;
   }
 
-  getQrCodeHref(shortLinkId, height=null) {
+  getQrCodeHref(shortLinkId, height = null) {
     const heightQueryParam = height !== null ? `?height=${height}` : '';
     return `${location.protocol}//${location.host}/links/${shortLinkId}/qr${heightQueryParam}`;
   }
@@ -101,33 +101,33 @@ class FlinkApiClient {
     });
   }
 
-    async getMeta(shortLinkId) {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', this.getMetaHref(shortLinkId), true);
-        xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-        xhr.responseType = "json";
+  async getMeta(shortLinkId) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', this.getMetaHref(shortLinkId), true);
+      xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+      xhr.responseType = "json";
 
-        xhr.onload = () => {
-          if (xhr.status === 200) {
-            resolve(new ShortLinkMeta(
-              xhr.response.id,
-              xhr.response.title,
-              xhr.response.description,
-              xhr.response.author,
-              xhr.response.image,
-              xhr.response.httpStatusCode,
-              xhr.response.documentSize,
-              xhr.response.lastUpdate));
-          } else {
-            reject(new Error(`Request failed with status ${xhr.status}`));
-          }
-        };
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          resolve(new ShortLinkMeta(
+            xhr.response.id,
+            xhr.response.title,
+            xhr.response.description,
+            xhr.response.author,
+            xhr.response.image,
+            xhr.response.httpStatusCode,
+            xhr.response.documentSize,
+            xhr.response.lastUpdate));
+        } else {
+          reject(new Error(`Request failed with status ${xhr.status}`));
+        }
+      };
 
-        xhr.onerror = () => reject(new Error("Network error"));
-        xhr.send();
-      });
-    }
+      xhr.onerror = () => reject(new Error("Network error"));
+      xhr.send();
+    });
+  }
 
   async retryGetMeta(shortLinkId, interval = 300) {
     while (true) {

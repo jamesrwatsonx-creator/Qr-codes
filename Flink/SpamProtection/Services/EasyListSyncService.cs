@@ -11,17 +11,16 @@ public class EasyListSyncService(
   HttpClient httpClient,
   IOptions<SpamProtectionConfiguration> spamProtectionOptions,
   IForbiddenDomainRepository repo) : BackgroundService {
-  
   private async Task<string> FetchEasyList(string url) {
     var r = await httpClient.GetAsync(url);
     var body = await r.Content.ReadAsStringAsync();
     return body;
   }
-  
+
   protected override async Task ExecuteAsync(CancellationToken cancellationToken) {
     if (!spamProtectionOptions.Value.Enabled)
       return;
-    
+
     repo.AddForbiddenDomains(spamProtectionOptions.Value.CustomBlockedDomains);
 
     while (!cancellationToken.IsCancellationRequested) {

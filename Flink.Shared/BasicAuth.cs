@@ -18,9 +18,9 @@ public static class BasicAuth {
     TimeSpan.FromSeconds(1));
 
   private static readonly Dictionary<string, Func<string, bool>> UsernamePasswordCriteriaCatalog = new() {
-    { "Not null, not empty", (u) => !string.IsNullOrEmpty(u) },
-    { "Maximum Length", (u) => u.Length < 200 },
-    { "Minimum Length", (u) => u.Length >= 3 }
+    { "Not null, not empty", u => !string.IsNullOrEmpty(u) },
+    { "Maximum Length", u => u.Length < 200 },
+    { "Minimum Length", u => u.Length >= 3 }
   };
 
   public static Result<Credential> GetCredential(string? authorizationHeaderValue) {

@@ -33,11 +33,11 @@ public class ForbiddenDomainsRepositoryTest {
     };
     // Act
     repo.AddDefinition(source);
-    
+
     // Assert
     repo.UsedEasyListSources.Should().ContainEquivalentOf(source);
   }
-  
+
   [Fact]
   public void NoDefinitionSetup_TwiceInserted_ReflectsOnceInList() {
     // Arrange
@@ -73,7 +73,7 @@ public class ForbiddenDomainsRepositoryTest {
       Version = 1
     };
     repo.AddDefinition(sourceNewer);
-    
+
     // Act
     repo.AddDefinition(sourceOlder);
 

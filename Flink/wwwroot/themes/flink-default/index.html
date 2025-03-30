@@ -4,54 +4,58 @@
   <meta charset="UTF-8">
   <title>Flink URL shortener</title>
 
-  <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon-16x16.png">
+  <link href="/static/img/favicon.ico" rel="icon" type="image/x-icon">
+  <link href="/static/img/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+  <link href="/static/img/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+  <link href="/static/img/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
 
-  <meta name="keywords" content="Flink, URL Shortener, Link Shortener, Shortener, Flinkify, Shorten Links, Bit.ly Alternative, FLOSS, QR Codes, Metadata, Embeds, iframes">
-  <meta name="description" content="Flink is a F(L)OSS URL shortener built with ASP.NET, offering powerful link management with QR code generation, detailed analytics, and customizable embeds for rich link previews. Shorten, track, and share your links effortlessly. Try Flink today!">
-  <meta name="author" content="Flink Team">
-  <meta name="robots" content="index, follow">
-  <meta name="rating" content="general">
+  <meta content="Flink, URL Shortener, Link Shortener, Shortener, Flinkify, Shorten Links, Bit.ly Alternative, FLOSS, QR Codes, Metadata, Embeds, iframes"
+        name="keywords">
+  <meta content="Flink is a F(L)OSS URL shortener built with ASP.NET, offering powerful link management with QR code generation, detailed analytics, and customizable embeds for rich link previews. Shorten, track, and share your links effortlessly. Try Flink today!"
+        name="description">
+  <meta content="Flink Team" name="author">
+  <meta content="index, follow" name="robots">
+  <meta content="general" name="rating">
 
-  <meta property="og:title" content="Flink URL shortener" />
-  <meta property="og:description" content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews." />
-  <meta property="og:image" content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" />
-  <meta property="og:url" content="https://gitlab.com/rtraceio/web/flink" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Flink" />
-  <meta property="og:locale" content="en_US" />
+  <meta content="Flink URL shortener" property="og:title"/>
+  <meta content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews."
+        property="og:description"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" property="og:image"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink" property="og:url"/>
+  <meta content="website" property="og:type"/>
+  <meta content="Flink" property="og:site_name"/>
+  <meta content="en_US" property="og:locale"/>
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Flink URL Shortener" />
-  <meta name="twitter:description" content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews." />
-  <meta name="twitter:image" content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" />
-  <meta name="twitter:url" content="https://gitlab.com/rtraceio/web/flink" />
-  
-  <link rel="stylesheet" href="/themes/flink-default/index.css"/>
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="Flink URL Shortener" name="twitter:title"/>
+  <meta content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews."
+        name="twitter:description"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" name="twitter:image"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink" name="twitter:url"/>
+
+  <link href="/themes/flink-default/index.css" rel="stylesheet"/>
 </head>
 <body>
 <nav>
   <a href="/scalar">📎 scalar</a>
   <a href="/swagger">📜 swagger</a>
   <a href="/stats">📈 stats</a>
-  <a href="https://gitlab.com/rtraceio/web/Flink" class="small">⌨️ source</a>
+  <a class="small" href="https://gitlab.com/rtraceio/web/Flink">⌨️ source</a>
 </nav>
 <div class="flink-form">
-  <img class="flink-logo-img" src="/static/img/flink-logo.png" alt="Flink Logo"/>
+  <img alt="Flink Logo" class="flink-logo-img" src="/static/img/flink-logo.png"/>
   <section class="input-area">
-    <input id="input-url" class="url-textbox" type="url" minlength="11" maxlength="1000"
-           placeholder="enter URL to shorten">
+    <input class="url-textbox" id="input-url" maxlength="1000" minlength="11" placeholder="enter URL to shorten"
+           type="url">
     <button id="shorten-action">🦔 flinkify</button>
   </section>
 
-  <p id="status-text" class="status-text"></p>
-  <input id="output-url" class="url-textbox" type="url" style="display: none;" readonly/>
+  <p class="status-text" id="status-text"></p>
+  <input class="url-textbox" id="output-url" readonly style="display: none;" type="url"/>
 
   <section class="output-area">
-    <img id="output-qr-code" src="" style="display: none;" alt="QR Code for your URL">
-    <div id="embed-loader" class="loader" style="display: none;"></div>
+    <img alt="QR Code for your URL" id="output-qr-code" src="" style="display: none;">
+    <div class="loader" id="embed-loader" style="display: none;"></div>
     <iframe id="embed-output" style="display: none;"></iframe>
   </section>
 </div>

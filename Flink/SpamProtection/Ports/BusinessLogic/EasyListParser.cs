@@ -1,4 +1,3 @@
-using System.Globalization;
 using CSharpFunctionalExtensions;
 using Flink.SpamProtection.Models;
 

@@ -41,7 +41,7 @@ public class MetricsTests {
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.EnableMetrics)}", "true" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.RequireBasicAuth)}", "true" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthPassword)}", "gulasch" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthUsername)}", "gulasch" },
+      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthUsername)}", "gulasch" }
     };
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
@@ -58,7 +58,7 @@ public class MetricsTests {
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.EnableMetrics)}", "true" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.RequireBasicAuth)}", "true" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthPassword)}", "flnk" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthUsername)}", "flnk" },
+      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthUsername)}", "flnk" }
     };
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()
@@ -75,7 +75,7 @@ public class MetricsTests {
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.EnableMetrics)}", "true" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.RequireBasicAuth)}", "true" },
       { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthPassword)}", "flnk" },
-      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthUsername)}", "flnk" },
+      { $"{nameof(MetricsConfiguration)}:{nameof(MetricsConfiguration.BasicAuthUsername)}", "flnk" }
     };
     var r = await new FlinkWebApplicationFactory(appSettingOverrides)
       .CreateClient()

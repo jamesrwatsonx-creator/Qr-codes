@@ -33,7 +33,7 @@ unit-test:
       coverage_report:
         coverage_format: cobertura
         path: $CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml
-      
+
 integration-test:
   stage: test
   dependencies:

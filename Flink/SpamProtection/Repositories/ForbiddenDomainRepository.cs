@@ -7,16 +7,15 @@ namespace Flink.SpamProtection.Repositories;
 public class ForbiddenDomainRepository : IForbiddenDomainRepository {
   private readonly ConcurrentBag<string> _forbiddenDomains = [];
   private readonly ConcurrentBag<EasyListSource> _sources = [];
-  public EasyListSource[] UsedEasyListSources => _sources.ToArray();
-  public int BlockedDomainCount => _forbiddenDomains.Count;
 
-  private void AddForbiddenDomain(string domain) {
-    var sanitizedDomain = domain.Trim().ToLower();
-    if (_forbiddenDomains.Contains(sanitizedDomain))
-      return;
-    _forbiddenDomains.Add(sanitizedDomain);
+  public EasyListSource[] UsedEasyListSources {
+    get => _sources.ToArray();
   }
-  
+
+  public int BlockedDomainCount {
+    get => _forbiddenDomains.Count;
+  }
+
   public void AddForbiddenDomains(IEnumerable<string> domains) {
     domains.ToList().ForEach(AddForbiddenDomain);
   }
@@ -29,7 +28,14 @@ public class ForbiddenDomainRepository : IForbiddenDomainRepository {
   public void AddDefinition(EasyListSource source) {
     if (_sources.Where(x => x.Source == source.Source).Any(x => x.Version >= source.Version))
       return;
-    
+
     _sources.Add(source);
+  }
+
+  private void AddForbiddenDomain(string domain) {
+    var sanitizedDomain = domain.Trim().ToLower();
+    if (_forbiddenDomains.Contains(sanitizedDomain))
+      return;
+    _forbiddenDomains.Add(sanitizedDomain);
   }
 }

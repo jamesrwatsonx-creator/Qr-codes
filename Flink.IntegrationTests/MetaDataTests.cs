@@ -34,7 +34,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync($"/links", payload);
+    await httpClient.PostAsync("/links", payload);
 
     // Act
     await Task.Delay(TimeSpan.FromSeconds(2));

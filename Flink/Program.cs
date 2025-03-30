@@ -62,7 +62,7 @@ builder.Services
   .RegisterWebUi();
 
 builder.Services.AddOpenTelemetry()
-  .ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName))
+  .ConfigureResource(resource => resource.AddService(builder.Environment.ApplicationName))
   .WithMetrics(metrics => metrics
     .AddAspNetCoreInstrumentation()
     .AddMeter("Microsoft.AspNetCore.Hosting")

@@ -9,22 +9,21 @@ namespace Flink.SpamProtection.Ports.Controllers;
 [ApiController]
 [Produces("application/json")]
 public class SpamProtectionController(IForbiddenDomainRepository forbiddenDomainRepository) : ControllerBase {
-  
   /// <summary>
-  /// Receive statistics about spam protection
+  ///   Receive statistics about spam protection
   /// </summary>
   /// <returns></returns>
   [HttpGet("/spam-protection")]
   [ProducesResponseType((int)HttpStatusCode.OK)]
   public SpamProtectionStatistics GetStatistics() {
-    return new SpamProtectionStatistics() {
+    return new SpamProtectionStatistics {
       BlockedDomainsCount = forbiddenDomainRepository.BlockedDomainCount,
       SpamProtectionSources = forbiddenDomainRepository.UsedEasyListSources.Length
     };
   }
-  
+
   /// <summary>
-  /// Return sources used for spam protection
+  ///   Return sources used for spam protection
   /// </summary>
   /// <returns></returns>
   [HttpGet("/spam-protection/sources")]
@@ -32,5 +31,4 @@ public class SpamProtectionController(IForbiddenDomainRepository forbiddenDomain
   public EasyListSource[] GetSources() {
     return forbiddenDomainRepository.UsedEasyListSources;
   }
-  
 }

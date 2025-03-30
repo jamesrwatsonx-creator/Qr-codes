@@ -8,9 +8,10 @@ using Flink.Metrics.Ports.Models;
 using Flink.Migrations;
 using Flink.Proxy.Ports.IoC;
 using Flink.QRCodes.Ports.IoC;
-using Flink.Shared.Extensions;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
+using Flink.SpamProtection.Ports.IoC;
+using Flink.SpamProtection.Ports.Models;
 using Flink.WebUI.Ports.IoC;
 using Flink.WebUI.Ports.Models;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,6 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-  .AddJsonFile("appsettings.defaults.json", true, true)
   .AddJsonFile("appsettings.json", false, true)
   .AddCommandLine(args)
   .AddEnvironmentVariables();
@@ -46,29 +46,16 @@ builder.Services.AddSwaggerGen(o => {
   o.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
 });
 
-var dbConfiguration = builder.Configuration
-  .GetSection(nameof(DbConfiguration))
-  .Get<DbConfiguration>()
-  .ValidateConfiguration();
-
-var metricsConfiguration = builder.Configuration
-  .GetSection(nameof(MetricsConfiguration))
-  .Get<MetricsConfiguration>()
-  .ValidateConfiguration();
-
-builder.Configuration
-  .GetSection(nameof(WebUiConfiguration))
-  .Get<WebUiConfiguration>()
-  .ValidateConfiguration();
-
-builder.Services
-  .Configure<MetricsConfiguration>(builder.Configuration.GetSection(nameof(MetricsConfiguration)))
-  .Configure<DbConfiguration>(builder.Configuration.GetSection(nameof(DbConfiguration)))
-  .Configure<WebUiConfiguration>(builder.Configuration.GetSection(nameof(WebUiConfiguration)));
+builder
+  .ValidateAndConfigure<DbConfiguration>(out var dbConfiguration)
+  .ValidateAndConfigure<MetricsConfiguration>(out var metricsConfiguration)
+  .ValidateAndConfigure<WebUiConfiguration>()
+  .ValidateAndConfigure<SpamProtectionConfiguration>();
 
 builder.Services
   .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))
   .RegisterShortLinksDomain()
+  .RegisterSpamProtection()
   .RegisterMetaDataDomain()
   .RegisterQrCodeDomain()
   .RegisterProxyDomain()

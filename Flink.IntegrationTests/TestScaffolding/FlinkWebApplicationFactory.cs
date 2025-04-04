@@ -1,4 +1,5 @@
 using Flink.Metrics.Ports.Models;
+using Flink.SpamProtection.Ports.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -27,13 +28,23 @@ public class FlinkWebApplicationFactory : WebApplicationFactory<Program> {
     });
 
     builder.ConfigureServices(services => {
-      if (_appSettingsOverrides.Any()) {
-        var configuration = new ConfigurationBuilder()
-          .AddInMemoryCollection(_appSettingsOverrides!)
-          .Build();
-        services.AddSingleton<IOptions<MetricsConfiguration>>(_ =>
-          Options.Create(configuration.GetSection(nameof(MetricsConfiguration)).Get<MetricsConfiguration>()!));
-      }
+      if (_appSettingsOverrides.Count == 0)
+        return;
+
+      var configuration = new ConfigurationBuilder()
+        .AddInMemoryCollection(_appSettingsOverrides!)
+        .Build();
+
+      var spamProtectionConfiguration = Options.Create(new SpamProtectionConfiguration() {
+        Enabled = false,
+        BlockLists = [],
+        CustomBlockedDomains = [],
+        RefreshIntervalInHours = 0
+      });
+
+      services.AddSingleton<IOptions<MetricsConfiguration>>(_ =>
+        Options.Create(configuration.GetSection(nameof(MetricsConfiguration)).Get<MetricsConfiguration>()!));
+      services.AddSingleton<IOptions<SpamProtectionConfiguration>>(_ => spamProtectionConfiguration);
     });
   }
 }

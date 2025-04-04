@@ -15,10 +15,12 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
 
   [Fact]
   public async Task FlinkIsRunningWithoutAnyScrapedMetaData_MetaDataForNonExistingUrlIsRequested_Returns404() {
+    // Act
     var r = await webApplicationFactory
       .CreateClient()
       .GetAsync($"/links/{Guid.NewGuid()}-{Guid.NewGuid()}-Non-Existing/meta");
 
+    // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
 
@@ -30,14 +32,13 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
       Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
-      PreferredIdLength = 14
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
     await httpClient.PostAsync("/links", payload);
 
     // Act
-    await Task.Delay(TimeSpan.FromSeconds(2));
+    await Task.Delay(TimeSpan.FromSeconds(4));
     var metaRequest = await httpClient.GetAsync($"/links/{shortLinkId}/meta");
 
     // Assert

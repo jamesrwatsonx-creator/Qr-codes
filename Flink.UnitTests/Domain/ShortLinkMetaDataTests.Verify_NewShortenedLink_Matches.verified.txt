@@ -1,0 +1,10 @@
+{
+  Id: Guid_Empty,
+  Title: awesome title,
+  Description: awesome pawesome,
+  Author: ruffy,
+  Image: awesomeimage,
+  HttpStatusCode: 200,
+  DocumentSize: 3403030,
+  LastUpdate: 3
+}

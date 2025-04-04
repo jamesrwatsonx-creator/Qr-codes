@@ -36,4 +36,39 @@ public class BasicAuthTests {
     var cred = BasicAuth.GetCredential(basicAuthHeader);
     cred.IsSuccess.Should().BeFalse();
   }
+
+  [Fact]
+  public void SameCredential_Compare_ReturnsTrue() {
+    // Arrange
+    var c1 = new Credential {
+      Password = "password",
+      Username = "username"
+    };
+    
+    // Act
+    var result = c1.Equals(c1);
+    
+    // Assert
+    result.Should().BeTrue();
+  }
+  
+  [Fact]
+  public void EqualCredentials_Compared_ReturnsTrue() {
+    // Arrange
+    var c1 = new Credential {
+      Password = "password",
+      Username = "username"
+    };
+    
+    var c2 = new Credential {
+      Password = "password",
+      Username = "username"
+    };
+    
+    // Act
+    var result = c1.Equals(c2);
+    
+    // Arrange
+    result.Should().BeTrue();
+  }
 }

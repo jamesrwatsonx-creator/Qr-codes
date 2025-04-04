@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Flink.Embed.ActionFilter;
 using Flink.MetaData.Repositories;
 using Flink.ShortLinks.Ports;
 using Flink.WebUI.Ports.Models;
@@ -9,6 +10,7 @@ namespace Flink.Embed.Ports.Controllers;
 
 [ApiController]
 [Produces("text/html")]
+[EmbedSecurityHeadersActionFilter]
 public class EmbedController(IOptions<WebUiConfiguration> webUiConfig, IMetaDataRepository metaDataRepository, IShortLinkRepository shortLinkRepository)
   : ControllerBase {
   private readonly EmbedHtmlBuilder _404Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)

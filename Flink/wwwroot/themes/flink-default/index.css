@@ -222,3 +222,7 @@ input:hover {
     transform: rotate(360deg);
   }
 }
+
+.invisible {
+  display: none !important;
+}

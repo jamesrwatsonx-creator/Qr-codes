@@ -11,7 +11,7 @@ public class WebUiSecurityHeadersActionFilterAttribute : ActionFilterAttribute {
     headers.ContentSecurityPolicy = "default-src 'self';";
     headers.XXSSProtection = "1; mode=block";
     
-    headers["Cross-Origin-Embedder-Policy"] = "require-corp";
+    headers["Cross-Origin-Embedder-Policy"] = "same-origin";
     headers["Cross-Origin-Opener-Policy"] = "same-origin";
     headers["Cross-Origin-Resource-Policy"] = "same-origin";
     

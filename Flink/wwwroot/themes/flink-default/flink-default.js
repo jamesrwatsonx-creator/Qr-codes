@@ -60,14 +60,11 @@ function copyURLToClipboard(statusElement, url) {
   shortenAction.addEventListener('click', () => {
     if (flinkifyButtonLocked === true)
       return;
-
     flinkifyButtonLocked = true;
-    // Hide the QR code
-    outputQrCode.style.display = "none";
-    outputQrCode.src = "";
-    // Hide the output field
-    outputUrl.style.display = "none";
-    outputUrl.value = "";
+
+    outputQrCode.classList.add("invisible");
+    embedIframe.classList.add("invisible");
+    outputUrl.classList.add("invisible");
 
     if (!flinkUi.isValidURL(inputUrl.value)) {
       setInputError(inputUrl, status);
@@ -78,23 +75,18 @@ function copyURLToClipboard(statusElement, url) {
       .postLink(flinkUi.sanitizeUrl(inputUrl.value), "flink-ui", null, 4)
       .then(data => {
         clearInputError(inputUrl, status);
-        embedIframe.style.display = 'none';
-        // Display the shortened URL
         outputUrl.value = flinkApi.getShortLinkHref(data['id']);
-        outputUrl.style.display = "block";
-        // Display the QR code
+        outputUrl.classList.remove("invisible");
         outputQrCode.src = flinkApi.getQrCodeHref(data['id'], 202);
-        outputQrCode.style.display = "block";
-        // set the iframe
-        embedLoader.style.display = 'block';
+        outputQrCode.classList.remove("invisible");
+        embedLoader.classList.remove("invisible");
         flinkApi.retryGetMeta(data.id, 300)
           .then(_ => {
-            embedLoader.style.display = 'none';
+            embedLoader.classList.add("invisible");
             embedIframe.src = flinkApi.getEmbedHref(data.id);
-            embedIframe.style.display = 'block';
-          })
-
-        setStatus(status, "✅ URL successfully shortened")
+            embedIframe.classList.remove("invisible");
+            setStatus(status, "✅ URL successfully shortened");
+          });
       });
   })
 })();

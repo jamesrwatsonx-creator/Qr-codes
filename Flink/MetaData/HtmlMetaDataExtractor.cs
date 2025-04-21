@@ -14,15 +14,16 @@ public static class HtmlMetaDataExtractor {
     try {
       var doc = new HtmlDocument();
       doc.LoadHtml(htmlBody);
+      
       var metaDict = doc.DocumentNode
-        .SelectNodes("//head//meta")
+        .SelectNodes("//head//meta")!
         .Select(ToKeyValuePair)
         .Where(kvp => kvp != null)
         .Select(kvp => kvp!.Value)
         .Where(kvp => MetaDataKeysOfInterest.Contains(kvp.Key))
         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-      metaDict["title"] = doc.DocumentNode.SelectSingleNode("//head//title").InnerText;
+      metaDict["title"] = doc.DocumentNode.SelectSingleNode("//head//title")!.InnerText;
       return metaDict;
     } catch {
       return new Dictionary<string, string>();

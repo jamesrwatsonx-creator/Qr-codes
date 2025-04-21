@@ -6,7 +6,7 @@ stages:
 build:
   stage: build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:8.0
+    name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
     - dotnet build
 
@@ -15,7 +15,7 @@ unit-test:
   dependencies:
     - build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:8.0
+    name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.UnitTests/
@@ -39,7 +39,7 @@ integration-test:
   dependencies:
     - build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:8.0
+    name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.IntegrationTests/
@@ -79,7 +79,7 @@ build-executables:
     - unit-test
     - integration-test
   image:
-    name: mcr.microsoft.com/dotnet/sdk:8.0
+    name: mcr.microsoft.com/dotnet/sdk:9.0
   only:
     - tags
   script:

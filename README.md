@@ -81,20 +81,20 @@ curl -X "POST" \
 ## Flink Documentation
 
 - **[🚀 Install Guide](/docs/install/install.md)**
-    - [docker (default settings)](/docs/install/install.md?ref_type=heads#docker-default-settings)
-    - [docker (default with volume for SQLite database)](/docs/install/install.md?ref_type=heads#docker-with-volume-for-database)
-    - [docker-compose (with PostgreSQL)](/docs/install/install.md?ref_type=heads#docker-compose-with-postgresql)
-    - [Kubernetes Deployment (with SQLite)](/docs/install/install.md?ref_type=heads#kubernetes-deployment-with-sqlite)
+    - [docker (default settings)](/docs/install/install.md#docker-default-settings)
+    - [docker (default with volume for SQLite database)](/docs/install/install.md#docker-with-volume-for-database)
+    - [docker-compose (with PostgreSQL)](/docs/install/install.md#docker-compose-with-postgresql)
+    - [Kubernetes Deployment (with SQLite)](/docs/install/install.md#kubernetes-deployment-with-sqlite)
 - **[⚙️ Configuration](/docs/config/config.md)**
-    - [Database Configuration](/docs/config/config.md?ref_type=heads#database-configuration)
-    - [Metrics Configuration](/docs/config/config.md?ref_type=heads#metrics-configuration)
-    - [WebUI Configuration](/docs/config/config.md?ref_type=heads#webui-configuration)
-    - [Spam Protection Configuration](/docs/config/config.md?ref_type=heads#spam-protection-configuration)
+    - [Database Configuration](/docs/config/config.md#database-configuration)
+    - [Metrics Configuration](/docs/config/config.md#metrics-configuration)
+    - [WebUI Configuration](/docs/config/config.md#webui-configuration)
+    - [Spam Protection Configuration](/docs/config/config.md#spam-protection-configuration)
 - **[😎 Customization](/docs/customization/custom-themes.md)**
     - [Ceate your own Flink theme](/docs/customization/custom-themes.md)
 - **[❤️ Community](/docs/community/install-guides.md)**
-    - [Flink Setup with Docker & Nginx Proxy Manager](/docs/guides/install-guides.md?ref_type=heads#flink-setup-with-docker--nginx-proxy-manager)
-    - [How To Install Flink on Your Synology NAS](/docs/guides/install-guides.md?ref_type=heads#blogs)
+    - [Flink Setup with Docker & Nginx Proxy Manager](/docs/guides/install-guides.md#flink-setup-with-docker--nginx-proxy-manager-2025-02-21)
+    - [How To Install Flink on Your Synology NAS](/docs/guides/install-guides.md#blogs)
 
 
 ![Flink Deployment](/docs/assets/flink-setup.drawio.svg)

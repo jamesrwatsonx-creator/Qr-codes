@@ -109,12 +109,19 @@ curl -X "POST" \
 - [x] implement rudimentary short link embeds
 - [ ] Scalability through Federation (ActivityPub)
 - [ ] Create full website snapshots (similar to the wayback machine)
-- [ ] Load/Performance tests (unscientific test of `flink` on a Raspberry PI 4B, handles ~15.000 requests/s)
+- [ ] Load/Performance tests
 - [ ] Optional authentication for creating short links (to prevent potential abuse)
 
 ## Contributing
 
 Contributions to `flink` are welcome! If you have any ideas for improvements or new features, feel free to open an issue or submit a pull request.
+
+## Support
+
+if you have any questions, feedback or just want to stay in the loop when it comes to `Flink` make sure to stay in touch...
+
+- [Matrix Chatroom](https://matrix.to/#/#flinkify:matrix.org)
+- [E-Mail](https://flink@rtrace.io)
 
 ## License
 

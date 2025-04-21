@@ -16,6 +16,7 @@ using Flink.WebUI.Ports.IoC;
 using Flink.WebUI.Ports.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -91,7 +92,7 @@ try {
 
 app.UseSwagger(x => {
   x.RouteTemplate = "/openapi/{documentName}.json";
-  x.SerializeAsV2 = true;
+  x.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
 });
 app.UseSwaggerUI(x => {
   x.SwaggerEndpoint("/openapi/v1.json", "v1");

@@ -56,7 +56,7 @@ version: '3.9'
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:16
     container_name: postgres
     environment:
       POSTGRES_USER: flink

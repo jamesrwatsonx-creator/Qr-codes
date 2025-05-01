@@ -73,8 +73,8 @@ services:
     ports:
       - '8080:8080'
     environment:
-      - DbConfiguration__DbType=Postgres
-      - DbConfiguration__PostgresConnectionString=Host=postgres;Port=5432;Database=flinkdb;Username=flink;Password=flink
+      DbConfiguration__DbType: Postgres
+      DbConfiguration__PostgresConnectionString: Host=postgres;Port=5432;Database=flinkdb;Username=flink;Password=flink
     depends_on:
       - postgres
     restart: unless-stopped

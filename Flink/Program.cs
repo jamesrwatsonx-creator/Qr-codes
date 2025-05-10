@@ -9,6 +9,7 @@ using Flink.Metrics.Ports.Middleware;
 using Flink.Metrics.Ports.Models;
 using Flink.Migrations;
 using Flink.Proxy.Ports.IoC;
+using Flink.QRCodes.Ports;
 using Flink.QRCodes.Ports.IoC;
 using Flink.ShortLinks.Ports;
 using Flink.ShortLinks.Ports.IoC;
@@ -75,6 +76,7 @@ builder.Services.AddOpenTelemetry()
     .AddMeter(ScrapingQueueMetricsRegistry.MeterName)
     .AddMeter(MetaDataMetricsRegistry.MeterName)
     .AddMeter(EmbedMetricsRegistry.MeterName)
+    .AddMeter(QrCodeMetricsRegistry.MeterName)
     .AddPrometheusExporter())
   .WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();

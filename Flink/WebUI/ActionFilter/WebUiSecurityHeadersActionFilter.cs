@@ -10,11 +10,11 @@ public class WebUiSecurityHeadersActionFilterAttribute : ActionFilterAttribute {
     headers.XFrameOptions = "DENY";
     headers.ContentSecurityPolicy = "default-src 'self';";
     headers.XXSSProtection = "1; mode=block";
-    
+
     headers["Cross-Origin-Embedder-Policy"] = "same-origin";
     headers["Cross-Origin-Opener-Policy"] = "same-origin";
     headers["Cross-Origin-Resource-Policy"] = "same-origin";
-    
+
     headers["Referrer-Policy"] = "no-referrer";
     headers["Permissions-Policy"] =
       "accelerometer=(), " +

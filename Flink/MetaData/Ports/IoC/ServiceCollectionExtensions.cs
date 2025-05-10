@@ -1,3 +1,4 @@
+using Flink.Embed.Ports;
 using Flink.MetaData.Repositories;
 using Flink.MetaData.Services;
 
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions {
 
     return serviceCollection
       .AddSingleton<ScrapingQueueMetricsRegistry>()
+      .AddSingleton<EmbedMetricsRegistry>()
       .AddScoped<IMetaDataRepository, DbMetaDataRepository>()
       .AddSingleton<IScrapingQueue, InMemoryScrapingQueue>()
       .AddTransient<IMetaDataScraper, MetaDataScraper>()

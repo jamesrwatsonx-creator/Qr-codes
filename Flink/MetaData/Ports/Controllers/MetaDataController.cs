@@ -1,6 +1,7 @@
 using System.Net;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
+using Flink.Embed.Ports;
 using Flink.MetaData.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,8 @@ namespace Flink.MetaData.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class MetaDataController(IMetaDataRepository metaDataRepository, ILogger<MetaDataController> logger) : ControllerBase {
+public class MetaDataController(IMetaDataRepository metaDataRepository, ILogger<MetaDataController> logger, EmbedMetricsRegistry metricsRegistry)
+  : ControllerBase {
   /// <summary>
   ///   Query the crawled/scraped metadata for any given shortlink
   /// </summary>
@@ -21,6 +23,7 @@ public class MetaDataController(IMetaDataRepository metaDataRepository, ILogger<
   public Task<ActionResult> Get(string shortLinkId) {
     return metaDataRepository.GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not get MetaData for {Id}, because {Error}", shortLinkId, e))
+      .Tap(e => e.Execute(m => metricsRegistry.Success(m.Id)))
       .Match(maybeMetaData => maybeMetaData.HasValue ? (ActionResult)Ok(maybeMetaData.Value) : NotFound(), BadRequest);
   }
 }

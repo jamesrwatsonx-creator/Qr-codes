@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using Flink;
+using Flink.Embed.Ports;
+using Flink.Embed.Ports.IoC;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
 using Flink.Metrics.Ports.Middleware;
@@ -60,6 +62,7 @@ builder.Services
   .RegisterMetaDataDomain()
   .RegisterQrCodeDomain()
   .RegisterProxyDomain()
+  .RegisterEmbedDomain()
   .RegisterWebUi();
 
 builder.Services.AddOpenTelemetry()
@@ -70,6 +73,8 @@ builder.Services.AddOpenTelemetry()
     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
     .AddMeter(ShortLinkMetricsRegistry.MeterName)
     .AddMeter(ScrapingQueueMetricsRegistry.MeterName)
+    .AddMeter(MetaDataMetricsRegistry.MeterName)
+    .AddMeter(EmbedMetricsRegistry.MeterName)
     .AddPrometheusExporter())
   .WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();

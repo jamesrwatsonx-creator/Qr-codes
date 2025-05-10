@@ -51,7 +51,7 @@ public class EasyListParserTests {
   public void ValidEasyListHeader_ParseHeader_SuccessfulParseResults(string lines) {
     // Act
     var parseResult = EasyListParser.ParseHeader("", lines);
-    
+
     // Assert
     parseResult.IsSuccess.Should().BeTrue();
   }
@@ -63,7 +63,7 @@ public class EasyListParserTests {
   public void ValidEasyListExcerpt_ParseDomains_ReturnsDomainsFromExcerpt(string input, string expectedDomain) {
     // Act
     var parseResult = EasyListParser.ParseForbiddenDomains(input);
-    
+
     // Assert
     parseResult.Should().Contain(expectedDomain);
   }

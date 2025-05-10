@@ -5,7 +5,7 @@ namespace Flink.UnitTests.Domain;
 public class ShortLinkMetaDataTests {
   [Fact]
   public Task Verify_NewShortenedLink_Matches() {
-    var meta = new ShortLinkMetaData() {
+    var meta = new ShortLinkMetaData {
       Id = Guid.Empty.ToString(),
       Author = "ruffy",
       Description = "awesome pawesome",

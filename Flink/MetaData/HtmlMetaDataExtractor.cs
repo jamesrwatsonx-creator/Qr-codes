@@ -14,7 +14,7 @@ public static class HtmlMetaDataExtractor {
     try {
       var doc = new HtmlDocument();
       doc.LoadHtml(htmlBody);
-      
+
       var metaDict = doc.DocumentNode
         .SelectNodes("//head//meta")!
         .Select(ToKeyValuePair)

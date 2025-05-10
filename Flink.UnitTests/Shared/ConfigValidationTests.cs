@@ -4,9 +4,8 @@ using FluentAssertions;
 
 namespace Flink.UnitTests.Shared;
 
-public class TestClass() {
-  [Range(0, 10)]
-  public int Value { get; init; }
+public class TestClass {
+  [Range(0, 10)] public int Value { get; init; }
 }
 
 public class ConfigValidationTests {
@@ -17,7 +16,7 @@ public class ConfigValidationTests {
 
     // Act & Assert
     try {
-      ConfigValidationExtensions.ValidateConfiguration(configModel);
+      configModel.ValidateConfiguration();
     } catch (Exception ex) {
       ex.Should().BeOfType<ArgumentNullException>();
       return;
@@ -25,7 +24,7 @@ public class ConfigValidationTests {
 
     true.Should().BeFalse();
   }
-  
+
   [Theory]
   [InlineData(-1)]
   [InlineData(11)]
@@ -47,7 +46,7 @@ public class ConfigValidationTests {
 
     // Act 
     var model = configModel.ValidateConfiguration();
-    
+
     // Assert
     model.Should().BeEquivalentTo(configModel);
   }

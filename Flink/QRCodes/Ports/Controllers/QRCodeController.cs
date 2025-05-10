@@ -8,7 +8,7 @@ namespace Flink.QRCodes.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeCache qrCodeCache, ILogger<QrCodeController> logger) : ControllerBase {
+public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeCache qrCodeCache, QrCodeMetricsRegistry metricsRegistry, ILogger<QrCodeController> logger) : ControllerBase {
   /// <summary>
   ///   Get the QR Code for a (previously created) shortlink
   /// </summary>
@@ -32,6 +32,7 @@ public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeC
       .Match(uri => qrCodeCache.Retrieve(uri, height)
           .Map(maybeQrCode => maybeQrCode.GetValueOrDefault(QrCodeGenerator.CreateUriQrCode(uri, height)))
           .Bind(qrCode => qrCodeCache.Cache(shortLinkId, height, qrCode))
+          .Tap(_ => metricsRegistry.Success(shortLinkId))
           .Match(ActionResult (qrCode) => File(qrCode, "image/png"), _ => Problem())
         , e => e);
   }

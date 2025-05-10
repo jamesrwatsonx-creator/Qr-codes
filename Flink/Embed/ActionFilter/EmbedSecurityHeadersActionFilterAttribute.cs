@@ -9,11 +9,11 @@ public class EmbedSecurityHeadersActionFilterAttribute : ActionFilterAttribute {
     headers.XContentTypeOptions = "nosniff";
     headers.ContentSecurityPolicy = "default-src 'self'; frame-ancestors *;";
     headers.XXSSProtection = "1; mode=block";
-    
+
     headers["Cross-Origin-Embedder-Policy"] = "unsafe-none";
     headers["Cross-Origin-Opener-Policy"] = "unsafe-none";
     headers["Cross-Origin-Resource-Policy"] = "cross-origin";
-    
+
     headers["Referrer-Policy"] = "no-referrer";
     headers["Permissions-Policy"] =
       "accelerometer=(), " +

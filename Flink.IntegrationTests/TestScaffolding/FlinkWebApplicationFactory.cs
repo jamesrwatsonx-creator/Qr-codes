@@ -35,7 +35,7 @@ public class FlinkWebApplicationFactory : WebApplicationFactory<Program> {
         .AddInMemoryCollection(_appSettingsOverrides!)
         .Build();
 
-      var spamProtectionConfiguration = Options.Create(new SpamProtectionConfiguration() {
+      var spamProtectionConfiguration = Options.Create(new SpamProtectionConfiguration {
         Enabled = false,
         BlockLists = [],
         CustomBlockedDomains = [],

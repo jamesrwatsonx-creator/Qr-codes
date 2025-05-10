@@ -12,7 +12,6 @@ public class EmbedTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     "Cross-Origin-Embedder-Policy",
     "Cross-Origin-Opener-Policy",
     "Cross-Origin-Resource-Policy"
-    
   }.ToList();
 
   [Theory]

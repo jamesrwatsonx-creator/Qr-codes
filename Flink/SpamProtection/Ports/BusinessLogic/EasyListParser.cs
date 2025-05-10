@@ -15,13 +15,20 @@ public static class EasyListParser {
       var title = headerLines
         .Single(l => l.StartsWith("! Title: ")).Replace("! Title: ", "");
       var version = headerLines
-        .Single(l => l.StartsWith("! Version: ")).Replace("! Version: ", "");
+        .FirstOrDefault(l => l.StartsWith("! Version: "))?.Replace("! Version: ", "") ?? "0";
       var lastModifiedString = headerLines
-        .Single(l => l.StartsWith("! Last modified: "))
-        .Replace("! Last modified: ", "")
-        .Replace("UTC", "")
-        .Trim();
-      var lastModifiedDateTime = DateTime.Parse(lastModifiedString);
+                                 .FirstOrDefault(l => l.StartsWith("! Last modified: "))?
+                                 .Replace("! Last modified: ", "")?
+                                 .Replace("UTC", "")?
+                                 .Trim()
+                               ?? headerLines
+                                 .FirstOrDefault(l => l.StartsWith("! Updated: "))?
+                                 .Replace("! Updated: ", "")?
+                                 .Trim();
+
+      var lastModifiedDateTime = lastModifiedString != null 
+        ? DateTime.Parse(lastModifiedString)
+        : DateTime.UtcNow;
       return Result.Success(new EasyListSource {
         Title = title,
         Source = source,

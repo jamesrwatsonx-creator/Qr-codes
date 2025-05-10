@@ -4,7 +4,7 @@ using FluentAssertions;
 
 namespace Flink.IntegrationTests;
 
-public class OpenApiFrontendTests(FlinkWebApplicationFactory webApplicationFactory) : IClassFixture<FlinkWebApplicationFactory> {
+public class OpenApiFrontendTests {
   [Theory]
   [InlineData("/scalar")]
   [InlineData("/scalar/v1")]

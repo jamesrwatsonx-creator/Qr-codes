@@ -11,7 +11,7 @@ public class TagTests {
   public void KeyAndValue_CreateTag_ReturnsSetKeyAndValue(object? v) {
     // Act
     var kvp = Tag.Create("k", v);
-    
+
     // Assert
     kvp.Key.Should().Be("k");
     kvp.Value.Should().Be(v);

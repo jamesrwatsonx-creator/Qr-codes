@@ -9,7 +9,7 @@ public class AsyncExtensionTests {
     var tasks = new List<Task<int>> {
       Task.FromResult(0),
       Task.FromResult(1),
-      Task.FromResult(2),
+      Task.FromResult(2)
     };
 
     var results = await tasks.AwaitAll();

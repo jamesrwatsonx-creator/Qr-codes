@@ -14,7 +14,6 @@ public class WebUiTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     "Cross-Origin-Embedder-Policy",
     "Cross-Origin-Opener-Policy",
     "Cross-Origin-Resource-Policy"
-    
   }.ToList();
 
   [Theory]
@@ -29,7 +28,7 @@ public class WebUiTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
-  
+
   [Theory]
   [InlineData("/")]
   [InlineData("/stats")]

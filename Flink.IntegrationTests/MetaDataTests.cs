@@ -31,7 +31,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
       Creator = "ruffy",
       PreferredId = shortLinkId,
-      Uri = "https://blog.rtrace.io/",
+      Uri = "https://blog.rtrace.io/"
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();

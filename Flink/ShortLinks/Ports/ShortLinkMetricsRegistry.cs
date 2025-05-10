@@ -16,14 +16,14 @@ public class ShortLinkMetricsRegistry {
   public ShortLinkMetricsRegistry(IMeterFactory meterFactory) {
     var meter = meterFactory.Create(MeterName, "1.0.0");
     _okShortLinkGets = meter
-      .CreateCounter<long>("ok_get", Unit, "number of successful (HTTP 200) HTTP GET requests /to/{id}");
+      .CreateCounter<long>("ok_get", Unit, "number of successful (HTTP 200) HTTP GET requests for shortlinks");
     _notFoundShortLinkGets = meter
-      .CreateCounter<long>("notfound_get", Unit, "number of not found (HTTP 404) HTTP GET requests /to/{id}");
+      .CreateCounter<long>("notfound_get", Unit, "number of not found (HTTP 404) HTTP GET requests for shortlinks");
     _totalShortLinkGets = meter
-      .CreateCounter<long>("total_get", Unit, "total number of HTTP GET (successful, not found or failed) requests /to/{id}");
+      .CreateCounter<long>("total_get", Unit, "total number of HTTP GET (successful, not found or failed) requests for shortlinks");
 
     _createShortLinkPosts = meter
-      .CreateCounter<long>("create_post", Unit, "number of successful (HTTP 201) HTTP POST create requests /to");
+      .CreateCounter<long>("create_post", Unit, "number of successful (HTTP 201) HTTP POST create requests");
     _alreadyExistsShortLinkPosts = meter
       .CreateCounter<long>("alreadyexists_post", Unit, "number of successful (HTTP 400) HTTP POST create requests /to");
     _totalShortLinkPosts = meter

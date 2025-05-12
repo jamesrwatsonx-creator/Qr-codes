@@ -1,5 +1,6 @@
 stages:
   - build
+  - lint
   - test
   - publish
 
@@ -9,6 +10,16 @@ build:
     name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
     - dotnet build
+
+hadolint:
+  stage: lint
+  image: alpine:latest
+  before_script:
+  - wget -qO - https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint
+  - chmod +x /usr/local/bin/hadolint
+  script:
+  - hadolint ./Flink/Dockerfile
+
 
 unit-test:
   stage: test

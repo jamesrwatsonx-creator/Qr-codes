@@ -166,4 +166,46 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
+
+  [Fact]
+  public async Task NewResourceCreated_NotYetActiveShortLink_Returns404() {
+    // Arrange
+    var id = $"{Guid.NewGuid()}-{nameof(NewResourceCreated_NotYetActiveShortLink_Returns404)}";
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = Guid.NewGuid().ToString(),
+      PreferredId = id,
+      Uri = "https://flink.rtrace.io/",
+      ActiveFrom = DateTime.UtcNow.AddMinutes(1)
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.PostAsync("/links", payload);
+
+    // Act
+    var r = await httpClient.GetAsync($"/links/{id}");
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
+  }
+  
+  [Fact]
+  public async Task NewResourceCreated_AlreadyExpiredShortLink_Returns404() {
+    // Arrange
+    var id = $"{Guid.NewGuid()}-{nameof(NewResourceCreated_AlreadyExpiredShortLink_Returns404)}";
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = Guid.NewGuid().ToString(),
+      PreferredId = id,
+      Uri = "https://flink.rtrace.io/",
+      ActiveUntil = DateTime.UtcNow.AddMinutes(-1)
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient();
+    var x = await httpClient.PostAsync("/links", payload);
+
+    // Act
+    var r = await httpClient.GetAsync($"/links/{id}");
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
+  }
 }

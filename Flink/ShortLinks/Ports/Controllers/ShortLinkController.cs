@@ -19,7 +19,8 @@ public class ShortLinkController(
   IScrapingQueue scrapingQueue,
   IForbiddenDomainRepository forbiddenDomainRepository,
   ShortLinkMetricsRegistry metrics,
-  IOptions<MetricsConfiguration> metricsConfiguration)
+  IOptions<MetricsConfiguration> metricsConfiguration,
+  TimeProvider timeProvider)
   : ControllerBase {
   private readonly string[] _forbiddenShortLinkIds = [
     "",
@@ -63,6 +64,7 @@ public class ShortLinkController(
       .GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
       .Match(maybeLink => maybeLink
+        .NoneIf(s => timeProvider.GetUtcNow() > s.ActiveUntil || timeProvider.GetUtcNow() < s.ActiveFrom)
         .TapSome(_ => metrics.Ok(shortLinkId))
         .TapNone(() => metrics.NotFound(shortLinkId))
         .Match(ActionResult (l) => Redirect(l.Uri), NotFound), _ => Problem());
@@ -87,7 +89,9 @@ public class ShortLinkController(
       Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
-      CreationDate = DateTime.UtcNow
+      CreationDate = DateTime.UtcNow,
+      ActiveFrom = shortLinkRequest.ActiveFrom?.DateTime ?? DateTime.MinValue.AddMonths(1),
+      ActiveUntil = shortLinkRequest.ActiveUntil?.DateTime ?? DateTime.MaxValue.AddMonths(-1)
     };
 
     return shortLinkRepository

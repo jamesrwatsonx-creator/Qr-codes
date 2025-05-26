@@ -158,8 +158,6 @@ build-executables:
 create-release:
   stage: publish
   image: alpine:latest
-  only:
-    - tags
   needs:
     - job: build-executables
       artifacts: true

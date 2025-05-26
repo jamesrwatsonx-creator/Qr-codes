@@ -2,11 +2,11 @@ stages:
   - build
   - lint
   - test
-  - publish
+  - publish-multiarch
+  - publish-manifest
 
 variables:
   IMAGE_NAME: quay.io/rtraceio/flink
-  IMAGE_TAG: $CI_COMMIT_TAG
 
 build:
   stage: build
@@ -23,7 +23,6 @@ hadolint:
   - chmod +x /usr/local/bin/hadolint
   script:
   - hadolint ./Flink/Dockerfile
-
 
 unit-test:
   stage: test
@@ -73,9 +72,46 @@ integration-test:
         coverage_format: cobertura
         path: $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml
 
-podman-publish:
-  stage: publish
+podman-pub-arm64:
+  stage: publish-multiarch
   dependencies:
+    - unit-test
+    - integration-test
+  image:
+    name: quay.io/podman/stable
+  tags:
+    - saas-linux-small-arm64
+    - saas-linux-medium-arm64
+    - saas-linux-large-arm64
+  only:
+    - tags
+  script:
+    - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
+    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch arm64 -t $IMAGE_NAME:$CI_COMMIT_TAG-arm64 -f Flink/Dockerfile .
+    - podman push $IMAGE_NAME:$CI_COMMIT_TAG-arm64
+
+podman-pub-amd64:
+  stage: publish-multiarch
+  dependencies:
+    - unit-test
+    - integration-test
+  image:
+    name: quay.io/podman/stable
+  tags:
+    - saas-linux-small-amd64
+    - saas-linux-medium-amd64
+    - saas-linux-large-amd64
+  only:
+    - tags
+  script:
+    - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
+    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch amd64 -t $IMAGE_NAME:$CI_COMMIT_TAG-amd64 -f Flink/Dockerfile .
+    - podman push $IMAGE_NAME:$CI_COMMIT_TAG-amd64
+
+podman-publish-manifest:
+  stage: publish-manifest
+  dependencies:
+    - publish-multiarch
     - unit-test
     - integration-test
   image:
@@ -84,14 +120,11 @@ podman-publish:
     - tags
   script:
     - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
-    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch amd64 -t $IMAGE_NAME:amd64 -f Flink/Dockerfile .
-    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch arm64 -t $IMAGE_NAME:arm64 -f Flink/Dockerfile .
-    - podman push $IMAGE_NAME:amd64
-    - podman push $IMAGE_NAME:arm64
-    - podman manifest create $IMAGE_NAME:$IMAGE_TAG
-    - podman manifest add $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:amd64
-    - podman manifest add $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:arm64
-    - podman manifest push $IMAGE_NAME:$IMAGE_TAG
+    - podman manifest create $IMAGE_NAME:$CI_COMMIT_TAG
+    - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-amd64
+    - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-arm64
+    - podman manifest push $IMAGE_NAME:$CI_COMMIT_TAG
+
 
 build-executables:
   stage: publish

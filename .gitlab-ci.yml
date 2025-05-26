@@ -112,7 +112,10 @@ podman-publish-manifest:
     - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-amd64
     - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-arm64
     - podman manifest push $IMAGE_NAME:$CI_COMMIT_TAG
-
+    - podman manifest create $IMAGE_NAME:latest
+    - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-amd64
+    - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-arm64
+    - podman manifest push $IMAGE_NAME:latest
 
 build-executables:
   stage: publish

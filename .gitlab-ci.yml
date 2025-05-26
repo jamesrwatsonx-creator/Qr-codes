@@ -83,8 +83,6 @@ podman-publish:
   only:
     - tags
   script:
-    - apk add --no-cache qemu-user-static
-    - podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
     - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
     - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch amd64 -t $IMAGE_NAME:amd64 -f Flink/Dockerfile .
     - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch arm64 -t $IMAGE_NAME:arm64 -f Flink/Dockerfile .

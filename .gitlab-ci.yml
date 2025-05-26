@@ -99,11 +99,9 @@ podman-pub-amd64:
 
 podman-publish-manifest:
   stage: publish
-  dependencies:
+  needs:
     - podman-pub-arm64
     - podman-pub-amd64
-    - unit-test
-    - integration-test
   image:
     name: quay.io/podman/stable
   only:
@@ -118,9 +116,6 @@ podman-publish-manifest:
 
 build-executables:
   stage: publish
-  dependencies:
-    - unit-test
-    - integration-test
   image:
     name: mcr.microsoft.com/dotnet/sdk:9.0
   only:

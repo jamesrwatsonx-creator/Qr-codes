@@ -77,8 +77,6 @@ podman-pub-arm64:
     name: quay.io/podman/stable
   tags:
     - saas-linux-small-arm64
-    - saas-linux-medium-arm64
-    - saas-linux-large-arm64
   only:
     - tags
   script:
@@ -92,8 +90,6 @@ podman-pub-amd64:
     name: quay.io/podman/stable
   tags:
     - saas-linux-small-amd64
-    - saas-linux-medium-amd64
-    - saas-linux-large-amd64
   only:
     - tags
   script:

@@ -117,7 +117,7 @@ podman-publish-manifest:
     - podman manifest add $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_TAG-arm64
     - podman manifest push $IMAGE_NAME:latest
 
-build-executables:
+release-executables:
   stage: publish
   image:
     name: mcr.microsoft.com/dotnet/sdk:9.0
@@ -154,17 +154,6 @@ build-executables:
       - $CI_PROJECT_DIR/release/linux-arm.zip
       - $CI_PROJECT_DIR/release/linux-musl-x64.zip
       - $CI_PROJECT_DIR/release/osx-x64.zip
-
-create-release:
-  stage: publish
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  only:
-    - tags
-  needs:
-    - job: build-executables
-      artifacts: true
-  script:
-    - echo "Creating GitLab Release for $CI_COMMIT_TAG"
   release:
     name: "$CI_COMMIT_TAG"
     tag_name: "$CI_COMMIT_TAG"
@@ -173,14 +162,16 @@ create-release:
     assets:
       links:
         - name: "Windows x86"
-          filepath: "release/win-x86.zip"
+          url: "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/release/win-x86.zip"
         - name: "Windows x64"
-          filepath: "release/win-x64.zip"
+          url: "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/release/win-x64.zip"
         - name: "Linux x64"
-          filepath: "release/linux-x64.zip"
+          url: "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/release/linux-x64.zip"
         - name: "Linux ARM"
-          filepath: "release/linux-arm.zip"
+          url: "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/release/linux-arm.zip"
         - name: "Linux musl x64"
-          filepath: "release/linux-musl-x64.zip"
+          url: "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/release/linux-musl-x64.zip"
         - name: "macOS x64"
-          filepath: "release/osx-x64.zip"
+          url: "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/release/osx-x64.zip"
+        - name: "Docker Image"
+          url: "https://quay.io/repository/rtraceio/flink"

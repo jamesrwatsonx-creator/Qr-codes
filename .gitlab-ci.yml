@@ -2,8 +2,7 @@ stages:
   - build
   - lint
   - test
-  - publish-multiarch
-  - publish-manifest
+  - publish
 
 variables:
   IMAGE_NAME: quay.io/rtraceio/flink
@@ -73,10 +72,7 @@ integration-test:
         path: $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml
 
 podman-pub-arm64:
-  stage: publish-multiarch
-  dependencies:
-    - unit-test
-    - integration-test
+  stage: publish
   image:
     name: quay.io/podman/stable
   tags:
@@ -91,10 +87,7 @@ podman-pub-arm64:
     - podman push $IMAGE_NAME:$CI_COMMIT_TAG-arm64
 
 podman-pub-amd64:
-  stage: publish-multiarch
-  dependencies:
-    - unit-test
-    - integration-test
+  stage: publish
   image:
     name: quay.io/podman/stable
   tags:
@@ -109,9 +102,10 @@ podman-pub-amd64:
     - podman push $IMAGE_NAME:$CI_COMMIT_TAG-amd64
 
 podman-publish-manifest:
-  stage: publish-manifest
+  stage: publish
   dependencies:
-    - publish-multiarch
+    - podman-pub-arm64
+    - podman-pub-amd64
     - unit-test
     - integration-test
   image:

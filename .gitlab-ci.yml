@@ -4,6 +4,10 @@ stages:
   - test
   - publish
 
+variables:
+  IMAGE_NAME: quay.io/rtraceio/flink
+  IMAGE_TAG: $CI_COMMIT_TAG
+
 build:
   stage: build
   image:
@@ -79,10 +83,17 @@ podman-publish:
   only:
     - tags
   script:
+    - apk add --no-cache qemu-user-static
+    - podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset -p yes
     - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
-    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" -t "quay.io/rtraceio/flink:latest" -t "quay.io/rtraceio/flink:$CI_COMMIT_TAG" -f Flink/Dockerfile .
-    - podman push "quay.io/rtraceio/flink:latest"
-    - podman push "quay.io/rtraceio/flink:$CI_COMMIT_TAG"
+    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch amd64 -t $IMAGE_NAME:amd64 -f Flink/Dockerfile .
+    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch arm64 -t $IMAGE_NAME:arm64 -f Flink/Dockerfile .
+    - podman push $IMAGE_NAME:amd64
+    - podman push $IMAGE_NAME:arm64
+    - podman manifest create $IMAGE_NAME:$IMAGE_TAG
+    - podman manifest add $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:amd64
+    - podman manifest add $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:arm64
+    - podman manifest push $IMAGE_NAME:$IMAGE_TAG
 
 build-executables:
   stage: publish

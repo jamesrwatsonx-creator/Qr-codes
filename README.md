@@ -121,7 +121,7 @@ Contributions to `flink` are welcome! If you have any ideas for improvements or 
 if you have any questions, feedback or just want to stay in the loop when it comes to `Flink` make sure to stay in touch...
 
 - [Matrix Chatroom](https://matrix.to/#/#flinkify:matrix.org)
-- [E-Mail](https://flink@rtrace.io)
+- [E-Mail](mailto:flink@rtrace.io)
 
 ## License
 

@@ -41,3 +41,4 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 
 - [EasyList](https://easylist.to/easylist/easylist.txt)
 - [Fanboy-Annoyance](https://secure.fanboy.co.nz/fanboy-annoyance.txt)
+- [Malware-Filter Phishing List](https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt)

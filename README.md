@@ -93,8 +93,9 @@ curl -X "POST" \
 - **[😎 Customization](/docs/customization/custom-themes.md)**
     - [Ceate your own Flink theme](/docs/customization/custom-themes.md)
 - **[❤️ Community](/docs/community/install-guides.md)**
-    - [Flink Setup with Docker & Nginx Proxy Manager](/docs/guides/install-guides.md#flink-setup-with-docker--nginx-proxy-manager-2025-02-21)
-    - [How To Install Flink on Your Synology NAS](/docs/guides/install-guides.md#blogs)
+    - [Flink Setup with Docker & Nginx Proxy Manager](https://gitlab.com/rtraceio/web/flink/-/blob/main/docs/community/install-guides.md?ref_type=heads#flink-setup-with-docker--nginx-proxy-manager-2025-02-21)
+    - [How To Install Flink on Your Synology NAS](https://gitlab.com/rtraceio/web/flink/-/blob/main/docs/community/install-guides.md?ref_type=heads#blogs)
+    - [🇫🇷 Installer Flink avec Docker](https://gitlab.com/rtraceio/web/flink/-/blob/main/docs/community/install-guides.md?ref_type=heads#blogs)
 
 
 ![Flink Deployment](/docs/assets/flink-setup.drawio.svg)
@@ -121,7 +122,7 @@ Contributions to `flink` are welcome! If you have any ideas for improvements or 
 if you have any questions, feedback or just want to stay in the loop when it comes to `Flink` make sure to stay in touch...
 
 - [Matrix Chatroom](https://matrix.to/#/#flinkify:matrix.org)
-- [E-Mail](https://flink@rtrace.io)
+- [E-Mail](mailto:flink@rtrace.io)
 
 ## License
 

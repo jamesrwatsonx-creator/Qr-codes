@@ -4,6 +4,25 @@ Flink is a C# / ASP.NET WebAPI packaged as multiple executable artifacts, so it 
 
 ![Flink Deployment](../assets/flink-setup.drawio.svg)
 
+## Native Installation (Linux, Win, macOS)
+
+
+| Time to set up | Production-readiness |
+|:---------------|:---------------------|
+| < 10m           | ★★★☆☆                |
+
+Flink is built as native exectuable for different Operating Systems and CPU Architectures.
+
+- 🪟 Windows (x86)
+- 🪟 Windows (x64)
+- 🍏 macOS (x64)
+- 🐧 Linux (x64)
+- 🐧 Linux musl / µLibC (x64)
+- 🐧 Linux (ARM)
+
+First, head over to the [Flink Release Page](https://gitlab.com/rtraceio/web/flink/-/releases), ideally pick one of the latest stable releases, and download the *.zip package for your Operating System and Architecture. Flink is built self-contained, which means that it ships with all dependencies and frameworks it needs. Extract the *.zip package, navigate in the folder and locate the relevant exectuable. On Windows, you're looking for `Flink.exe`. On Linux and macOS the executable file is called `Flink` without extension. In the same directory you will find `appsettings.json` which you can use to (optionally) change configuration/settings of Flink. Start the executable and Flink will be listening to TCP-Port 5000. Open your browser and navigate to [localhost:5000/](http://localhost:5000).
+
+
 ## Docker
 
 Docker is a simple and popular method to spin up and operate workloads. The following installation guide assumes you have `docker` installed. If you have not, please refer to the [Docker Install Manual](https://docs.docker.com/engine/install/). While Docker is fully supported, `Flink` recommends [Podman](https://podman.io/) over Docker. The commands below will use the docker CLI, however the CLIs of docker and podman can be used interchangeably. You can download and install podman from the [Podman Installation Docs](https://podman.io/docs/installation)
@@ -29,10 +48,10 @@ docker run --name flink -p 8080:8080 quay.io/rtraceio/flink:latest
 
 ```bash
 # Create a directory on your host where the SQLite Database shall be stored
-host_directory="/home/flink/flink_data"
+host_directory="/home/flink/flink_data/"
 mkdir -p $host_directory
 
-docker run --name flink -p 8080:8080 -v "$host_directory/flink.db:/app/flink.db" \ --env-file docker.env quay.io/rtraceio/flink:latest
+docker run --name flink -p 8080:8080 -v "$host_directory:/app/flink_data/:Z,U" --env-file docker.env quay.io/rtraceio/flink:latest
 ```
 
 **NOTE**: The [.env File](/docs/install/docker.env) defaults to the name `flink.db` for the SQLite database. If you change it in the `.env` file you will need to change it here too.
@@ -60,7 +79,7 @@ services:
     container_name: postgres
     environment:
       POSTGRES_USER: flink
-      POSTGRES_PASSWORD: flink
+      POSTGRES_PASSWORD: myflinkpassword
       POSTGRES_DB: flinkdb
     ports:
       - '5432:5432'
@@ -74,7 +93,7 @@ services:
       - '8080:8080'
     environment:
       DbConfiguration__DbType: Postgres
-      DbConfiguration__PostgresConnectionString: Host=postgres;Port=5432;Database=flinkdb;Username=flink;Password=flink
+      DbConfiguration__PostgresConnectionString: Host=postgres;Port=5432;Database=flinkdb;Username=flink;Password=myflinkpassword
     depends_on:
       - postgres
     restart: unless-stopped
@@ -82,6 +101,8 @@ services:
 volumes:
   pgdata:
 ```
+
+**NOTE**: make sure to change `POSTGRES_PASSWORD` for the PostgreSQL database, and adapt it in `DbConfiguration__PostgresConnectionString` too
 
 ## Kubernetes
 

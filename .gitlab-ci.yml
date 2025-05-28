@@ -124,36 +124,15 @@ build-executables:
   only:
     - tags
   script:
-    - apt-get update -y && apt-get install zip -y
-    - mkdir -p $CI_PROJECT_DIR/release
-    - echo "Building Win-x86"
-    - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r win-x86 -o $CI_PROJECT_DIR/release/win-x86 $CI_PROJECT_DIR/Flink/Flink.csproj
-    - zip -r $CI_PROJECT_DIR/release/win-x86.zip $CI_PROJECT_DIR/release/win-x86/
-    - echo "Building Win-x64"
-    - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r win-x64 -o $CI_PROJECT_DIR/release/win-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
-    - zip -r $CI_PROJECT_DIR/release/win-x64.zip $CI_PROJECT_DIR/release/win-x64/
-    - echo "Building Linux-x64"
-    - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r linux-x64 -o $CI_PROJECT_DIR/release/linux-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
-    - zip -r $CI_PROJECT_DIR/release/linux-x64.zip $CI_PROJECT_DIR/release/linux-x64/
-    - echo "Building Linux-ARM"
-    - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r linux-arm -o $CI_PROJECT_DIR/release/linux-arm $CI_PROJECT_DIR/Flink/Flink.csproj
-    - zip -r $CI_PROJECT_DIR/release/linux-arm.zip $CI_PROJECT_DIR/release/linux-arm/
-    - echo "Building Linux-musl-x64"
-    - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r linux-musl-x64 -o $CI_PROJECT_DIR/release/linux-musl-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
-    - zip -r $CI_PROJECT_DIR/release/linux-musl-x64.zip $CI_PROJECT_DIR/release/linux-musl-x64/
-    - echo "Building MacOSX-x64"
-    - dotnet publish --self-contained -c Release /p:Version=$CI_COMMIT_TAG -r osx-x64 -o $CI_PROJECT_DIR/release/osx-x64 $CI_PROJECT_DIR/Flink/Flink.csproj
-    - zip -r $CI_PROJECT_DIR/release/osx-x64.zip $CI_PROJECT_DIR/release/osx-x64/
+    - chmod +x ./build-executables.sh
+    - ./build-executables.sh
   artifacts:
     expire_in: never
     when: always
     paths:
-      - $CI_PROJECT_DIR/release/win-x86.zip
-      - $CI_PROJECT_DIR/release/win-x64.zip
-      - $CI_PROJECT_DIR/release/linux-x64.zip
-      - $CI_PROJECT_DIR/release/linux-arm.zip
-      - $CI_PROJECT_DIR/release/linux-musl-x64.zip
-      - $CI_PROJECT_DIR/release/osx-x64.zip
+      - $CI_PROJECT_DIR/release/*.zip
+      - $CI_PROJECT_DIR/release/*.sha256
+      - $CI_PROJECT_DIR/release/*.sha512
 
 create-release:
   stage: publish
@@ -166,4 +145,4 @@ create-release:
   script:
     - glab auth login --job-token $CI_JOB_TOKEN
     - echo "Creating GitLab Release for $CI_COMMIT_TAG"
-    - glab release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --name "$CI_COMMIT_TAG" --notes "Automated release for tag $CI_COMMIT_TAG" release/*.zip
+    - glab release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --name "$CI_COMMIT_TAG" --notes "Automated release for tag $CI_COMMIT_TAG" release/*.{zip,sha256,sha512}

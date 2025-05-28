@@ -60,11 +60,12 @@ public class ShortLinkController(
   public Task<ActionResult> Get(string shortLinkId) {
     logger.LogDebug("Requesting Short Link with {Id}", shortLinkId);
 
+    var now = timeProvider.GetUtcNow();
     return shortLinkRepository
       .GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
       .Match(maybeLink => maybeLink
-        .NoneIf(s => timeProvider.GetUtcNow() > s.ActiveUntil || timeProvider.GetUtcNow() < s.ActiveFrom)
+        .NoneIf(s => !(now < s.ActiveUntil && now > s.ActiveFrom))
         .TapSome(_ => metrics.Ok(shortLinkId))
         .TapNone(() => metrics.NotFound(shortLinkId))
         .Match(ActionResult (l) => Redirect(l.Uri), NotFound), _ => Problem());
@@ -90,8 +91,8 @@ public class ShortLinkController(
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow,
-      ActiveFrom = shortLinkRequest.ActiveFrom?.DateTime ?? DateTime.MinValue.AddMonths(1),
-      ActiveUntil = shortLinkRequest.ActiveUntil?.DateTime ?? DateTime.MaxValue.AddMonths(-1)
+      ActiveFrom = shortLinkRequest.ActiveFrom?.UtcDateTime ?? DateTime.MinValue.AddMonths(1),
+      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.MaxValue.AddMonths(-1)
     };
 
     return shortLinkRepository
@@ -101,7 +102,7 @@ public class ShortLinkController(
       .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
-      .Match(ActionResult (shortLink) => Created($"/to/{shortLink.Id}", shortLink), BadRequest);
+      .Match(ActionResult (shortLink) => Created($"/{shortLink.Id}", shortLink), BadRequest);
   }
 
   /// <summary>

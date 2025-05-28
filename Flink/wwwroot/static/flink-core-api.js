@@ -8,11 +8,15 @@ class FlinkInfo {
 }
 
 class ShortLink {
-  constructor(id, creationDate, creator, uri) {
+  constructor(id, creationDate, creator, uri, preferredId=null, preferredIdLength=4, activeUntil=null, activeFrom=null) {
     this.id = id;
     this.creationDate = creationDate;
     this.creator = creator;
     this.uri = uri
+    this.preferredId = preferredId;
+    this.preferredIdLength = preferredIdLength;
+    this.activeUntil = activeUntil;
+    this.activeFrom = activeFrom;
   }
 }
 
@@ -72,7 +76,7 @@ class FlinkApiClient {
   }
 
 
-  async postLink(uri, creator, preferredId, preferredIdLength) {
+  async postLink(uri, creator, preferredId=null, preferredIdLength=4, activeFrom=null, activeUntil=null) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', `/links`, true);
@@ -95,8 +99,10 @@ class FlinkApiClient {
       xhr.send(JSON.stringify({
         'uri': uri,
         'creator': creator,
-        'preferredId': preferredId,
-        'preferredIdLength': preferredIdLength
+        'preferredId':  preferredId,
+        'preferredIdLength': preferredIdLength,
+        'activeUntil': activeUntil,
+        'activeFrom': activeFrom
       }));
     });
   }

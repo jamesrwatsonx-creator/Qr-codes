@@ -77,7 +77,7 @@ Every theme requires at least an `index.html` file, which serves as the main ent
     <input id="long-link-input">
 
     <!-- this is the button that is pressed to trigger flink -->
-    <button id="flinify-button">flinkify</button>
+    <button id="flinkify-button">flinkify</button>
 
     <!-- this textbox is where we want to see the flinkified link -->
     <input id="short-link-input">
@@ -145,7 +145,7 @@ And this is exactly what we'll be working on in this step. Let's create a new fi
 const flinkApi = new FlinkApiClient();
 
 const input = document.getElementById('long-link-input');
-const button = document.getElementById('flinify-button');
+const button = document.getElementById('flinkify-button');
 const output = document.getElementById('short-link-input');
 
 // how many characters shall the flinkified URL have?
@@ -198,6 +198,10 @@ Now that we created our rudimentary theme, it's your turn to improve it and adap
   - show embeds
   - show metadata
   - about instance info
+  - add ARIA labels (to improve screenreader experience)
+  - add Password form (for when a client wants a link to have a password)
+  - add support for activation and/or expiration time
+  - create a page that allows editing
 
 - SEO
   - Twitter cards

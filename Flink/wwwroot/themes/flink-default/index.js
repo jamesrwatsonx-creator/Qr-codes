@@ -58,7 +58,7 @@
     if(domPreferredIdInput.value.length > domLongUrlInput.value.length - 7)
       setInputElementStatus(domPreferredIdInput, `Id is longer than the URL to shorten. Are you sure?`, 'warn');
     if(domPreferredIdInput?.value?.length === 0)
-      setInputElementStatus(domPreferredIdInput, `Flink will generate a random ID for you`, 'info')
+      setInputElementStatus(domPreferredIdInput, `Flink will generate a random ID for you`, 'info');
 
     if(domActiveFromInput?.value === "")
       setInputElementStatus(domActiveFromInput, `Link will be active immediately`, 'info');
@@ -69,8 +69,8 @@
     const sanitizedUrl = flinkUi.sanitizeUrl(domLongUrlInput.value);
     domLongUrlInput.value = sanitizedUrl;
 
-    const activeFromDateTime = flinkUi.convertToIsoDateTimeString(flinkUi.parseDateTime(domActiveFromInput));
-    const activeUntilDateTime = flinkUi.convertToIsoDateTimeString(flinkUi.parseDateTime(domActiveUntilInput));
+    const activeFromDateTime = flinkUi.convertToIsoDateTimeString(flinkUi.parseDateTime(domActiveFromInput.value));
+    const activeUntilDateTime = flinkUi.convertToIsoDateTimeString(flinkUi.parseDateTime(domActiveUntilInput.value));
     const suffixLength = parseInt(domSuffixLengthInput.value);
     const preferredId = domPreferredIdInput.value.trim() === "" ? null : domPreferredIdInput.value;
     const password = domPasswordInput.value.trim() === "" ? null : domPasswordInput.value;

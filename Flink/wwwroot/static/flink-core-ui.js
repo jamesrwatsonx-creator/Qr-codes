@@ -14,7 +14,7 @@ class FlinkUi {
   }
 
   parseDateTime(inputValue) {
-    if (!inputValue) 
+    if (!inputValue)
       return null;
     if (inputValue === "")
       return null;
@@ -22,7 +22,6 @@ class FlinkUi {
     const date = new Date(inputValue);
     if (isNaN(date.getTime()))
       return null;
-
     return date;
   }
 

@@ -111,7 +111,6 @@ app.MapPrometheusScrapingEndpoint(metricsConfiguration.MetricsEndpointPath);
 app.UseMiddleware<MetricsMiddleware>();
 
 app.UseWebUi();
-app.UseHttpsRedirection();
 app.Run();
 return;
 

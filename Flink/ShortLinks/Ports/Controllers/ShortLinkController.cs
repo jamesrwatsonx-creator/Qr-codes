@@ -46,6 +46,7 @@ public class ShortLinkController(
     "links",
     "stats",
     "spam-protection",
+    "pw",
     metricsConfiguration.Value.MetricsEndpointPath.Replace("/", "")
   ];
 

@@ -6,15 +6,15 @@ namespace Flink.Shared;
 public static class PasswordHasher {
   public static string? CalculatePasswordHash(string? password, string shortLinkId) {
     if (password == null) return null;
-    
+
     // prefer Shake256, fallback to SHA256 if not supported on Platform
-    return Shake256.IsSupported 
+    return Shake256.IsSupported
       ? CalculateShake256PasswordHash(password, shortLinkId)
       : CalculateSha256PasswordHash(password, shortLinkId);
   }
 
   private static readonly Dictionary<string, Func<string?, string, string?>> AlgMap = new() {
-    { "shake256:32", CalculateShake256PasswordHash},
+    { "shake256:32", CalculateShake256PasswordHash },
     { $"sha256:{SHA256.HashSizeInBytes}", CalculateSha256PasswordHash }
   };
 
@@ -22,18 +22,18 @@ public static class PasswordHasher {
   public static bool VerifyPasswordHash(string? passwordHash, string? password, string shortLinkId) {
     if (passwordHash == null) return true;
     if (password == null) return false;
-    
+
     var parts = passwordHash.Split('|');
     if (parts.Length != 2) return false;
     var algorithm = parts[0];
     if (!AlgMap.TryGetValue(algorithm, out var calculatePasswordHash)) return false;
-    
+
     var hashedPassword = calculatePasswordHash(password, shortLinkId);
     if (hashedPassword == null) return false;
     return hashedPassword == passwordHash;
   }
-  
-  
+
+
   public static string? CalculateShake256PasswordHash(string? password, string shortLinkId) {
     if (password == null) return null;
     var buf = new byte[32];

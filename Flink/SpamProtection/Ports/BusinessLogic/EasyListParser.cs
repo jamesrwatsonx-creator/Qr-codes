@@ -26,7 +26,7 @@ public static class EasyListParser {
                                  .Replace("! Updated: ", "")?
                                  .Trim();
 
-      var lastModifiedDateTime = lastModifiedString != null 
+      var lastModifiedDateTime = lastModifiedString != null
         ? DateTime.Parse(lastModifiedString)
         : DateTime.UtcNow;
       return Result.Success(new EasyListSource {

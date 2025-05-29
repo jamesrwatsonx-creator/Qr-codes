@@ -12,4 +12,3 @@ public class ShortenedLink {
 
   public string? PasswordHash { get; init; } = null;
 }
-

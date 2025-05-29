@@ -47,7 +47,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var deserializedResponse = JsonSerializer.Deserialize<ShortLinkMetaData>(responseContent, _serializerOptions);
     deserializedResponse?.Title.Should().NotBeNull();
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningShortLinkWithPasswordAdded_RequestedWithoutPassword_Returns401() {
     // Arrange
@@ -69,7 +69,7 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     // Assert
     metaRequest.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
   }
-  
+
   [Fact]
   public async Task FlinkIsRunningShortLinkWithPasswordAdded_RequestedWithPassword_Returns200() {
     // Arrange

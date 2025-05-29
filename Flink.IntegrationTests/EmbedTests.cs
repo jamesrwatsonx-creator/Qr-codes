@@ -53,7 +53,7 @@ public class EmbedTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
-  
+
   [Fact]
   public async Task PasswordProtectedEmbed_RequestedWithoutPassword_ReturnsUnauthorizedEmbed() {
     // Arrange
@@ -78,7 +78,7 @@ public class EmbedTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     var body = await r.Content.ReadAsStringAsync();
     body.Should().Contain("Unauthorized");
   }
-  
+
   [Fact]
   public async Task NonExistingEmbed_RequestedByUser_ReturnsNotFoundEmbed() {
     // Arrange

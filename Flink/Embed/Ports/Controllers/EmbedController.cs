@@ -29,7 +29,7 @@ public class EmbedController(
     .WithImage("/static/img/flink-logo.png", "flink logo")
     .WithDescription("Flink is experiencing a temporary problem. Retry again in a minute. If the problem persists, please contact the administrator")
     .Build();
-  
+
   private readonly string _401Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
     .WithTitle("⛔ Unauthorized")
     .WithImage("/static/img/flink-logo.png", "flink logo")
@@ -44,15 +44,15 @@ public class EmbedController(
   /// <returns></returns>
   [HttpGet("/links/{shortLinkId}/embed", Name = "GetEmbed")]
   [Produces("text/html")]
-  public async Task<IActionResult> GetEmbed(string shortLinkId, [FromQuery]string? password=null) {
+  public async Task<IActionResult> GetEmbed(string shortLinkId, [FromQuery] string? password = null) {
     var shortLinkResult = await shortLinkRepository.GetAsync(shortLinkId);
     if (shortLinkResult.IsFailure)
       return Content(_500Embed, "text/html");
     if (shortLinkResult is { IsSuccess: true, Value.HasNoValue: true })
       return Content(_404Embed, "text/html");
-    
-    if(shortLinkResult.Value.Value.PasswordHash != null 
-       && !PasswordHasher.VerifyPasswordHash(shortLinkResult.Value.Value.PasswordHash, password, shortLinkId))
+
+    if (shortLinkResult.Value.Value.PasswordHash != null
+        && !PasswordHasher.VerifyPasswordHash(shortLinkResult.Value.Value.PasswordHash, password, shortLinkId))
       return Content(_401Embed, "text/html");
 
     var metaDataResult = await metaDataRepository.GetAsync(shortLinkId);

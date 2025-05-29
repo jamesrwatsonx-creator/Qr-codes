@@ -189,7 +189,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-  
+
   [Fact]
   public async Task NewResourceCreated_AlreadyExpiredShortLink_Returns404() {
     // Arrange
@@ -210,7 +210,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
-  
+
   [Fact]
   public async Task NewResourceWithPasswordCreated_AccessedWithPassword_Returns301() {
     // Arrange
@@ -224,7 +224,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
       Password = Password
     }), Encoding.UTF8, "application/json");
 
-    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
     await httpClient.PostAsync("/links", payload);
 
     // Act
@@ -234,7 +234,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     r.StatusCode.Should().Be(HttpStatusCode.Redirect);
     r.Headers.Location.Should().Be(Uri);
   }
-  
+
   [Fact]
   public async Task NewResourceWithPasswordCreated_AccessedWithoutPassword_Returns301() {
     // Arrange
@@ -246,7 +246,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
       Password = "123"
     }), Encoding.UTF8, "application/json");
 
-    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
     await httpClient.PostAsync("/links", payload);
 
     // Act

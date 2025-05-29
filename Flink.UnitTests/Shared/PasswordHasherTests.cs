@@ -15,7 +15,7 @@ public class PasswordHasherTests {
     var hash = PasswordHasher.CalculateSha256PasswordHash(password, "static");
     PasswordHasher.VerifyPasswordHash(hash, password, "static").Should().BeTrue();
   }
-  
+
   [Theory]
   [InlineData("")]
   [InlineData(" ")]
@@ -27,7 +27,7 @@ public class PasswordHasherTests {
     var hash = PasswordHasher.CalculateShake256PasswordHash(password, "static");
     PasswordHasher.VerifyPasswordHash(hash, password, "static").Should().BeTrue();
   }
-  
+
   [Theory]
   [InlineData("")]
   [InlineData(" ")]
@@ -39,19 +39,19 @@ public class PasswordHasherTests {
     var hash = PasswordHasher.CalculatePasswordHash(password, "static");
     PasswordHasher.VerifyPasswordHash(hash, password, "static").Should().BeTrue();
   }
-  
+
   [Fact]
   public void PasswordHasherUserPassesNull_VerifyHash_ReturnsFalse() {
     var hash = PasswordHasher.CalculatePasswordHash("password", "static");
     PasswordHasher.VerifyPasswordHash(hash, null, "static").Should().BeFalse();
   }
-  
+
   [Fact]
   public void PasswordHasher_CalculateHash_DefaultsToShake256() {
     var hash = PasswordHasher.CalculatePasswordHash("password", "static");
     hash.Should().StartWith("shake256:32");
   }
-  
+
   [Theory]
   [InlineData("")]
   [InlineData(" ")]

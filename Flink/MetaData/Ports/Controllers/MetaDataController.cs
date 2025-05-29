@@ -12,7 +12,11 @@ namespace Flink.MetaData.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class MetaDataController(IMetaDataRepository metaDataRepository, IShortLinkRepository shortLinkRepository, ILogger<MetaDataController> logger, EmbedMetricsRegistry metricsRegistry)
+public class MetaDataController(
+  IMetaDataRepository metaDataRepository,
+  IShortLinkRepository shortLinkRepository,
+  ILogger<MetaDataController> logger,
+  EmbedMetricsRegistry metricsRegistry)
   : ControllerBase {
   /// <summary>
   ///   Query the crawled/scraped metadata for any given shortlink
@@ -24,17 +28,17 @@ public class MetaDataController(IMetaDataRepository metaDataRepository, IShortLi
   [ProducesResponseType(typeof(ShortLinkMetaData), 200, "application/json")]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-  public async Task<ActionResult> Get(string shortLinkId, [FromQuery]string? password) {
+  public async Task<ActionResult> Get(string shortLinkId, [FromQuery] string? password) {
     var shortLinkResult = await shortLinkRepository.GetAsync(shortLinkId);
     if (shortLinkResult.IsFailure)
       return Problem();
-    if(shortLinkResult.Value.HasNoValue)
+    if (shortLinkResult.Value.HasNoValue)
       return NotFound();
-    
-    if(shortLinkResult.Value.Value.PasswordHash != null 
-       && !PasswordHasher.VerifyPasswordHash(shortLinkResult.Value.Value.PasswordHash, password, shortLinkId))
+
+    if (shortLinkResult.Value.Value.PasswordHash != null
+        && !PasswordHasher.VerifyPasswordHash(shortLinkResult.Value.Value.PasswordHash, password, shortLinkId))
       return Unauthorized();
-    
+
     var response = await metaDataRepository.GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not get MetaData for {Id}, because {Error}", shortLinkId, e))
       .Tap(e => e.Execute(m => metricsRegistry.Success(m.Id)))

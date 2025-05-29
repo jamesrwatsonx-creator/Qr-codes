@@ -83,7 +83,7 @@
         domQrCodeImg.src = await flinkApi.getQrCodeHref(data['id'], 202);
         domQrCodeImg.classList.remove("invisible");
         domLoadingSpinner.classList.remove("invisible");
-        flinkApi.retryGetMeta(data.id, 200)
+        flinkApi.retryGetMeta(data.id, password, 200)
           .then(async _ => {
             domLoadingSpinner.classList.add("invisible");
             domEmbedIframe.src = await flinkApi.getEmbedHref(data.id, password);

@@ -37,8 +37,8 @@
 }
 
 .collapsible-active {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .collapsible-active:after {
@@ -119,8 +119,6 @@
   color: #CCC;
   background-color: #404040;
 }
-
-
 
 .sec-output {
   display: flex;

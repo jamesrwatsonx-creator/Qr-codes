@@ -1,7 +1,7 @@
 const flinkApi = new FlinkApiClient();
 
 const input = document.getElementById('long-link-input');
-const button = document.getElementById('flinify-button');
+const button = document.getElementById('flinkify-button');
 const output = document.getElementById('short-link-input');
 
 // how many characters shall the flinkified URL have?
@@ -18,8 +18,5 @@ button.addEventListener('click', () => {
 
   flinkApi
     .postLink(longUrl, "my-flink-theme", null, linkPrefixLength)
-    .then(data => {
-      const flinkifiedUrl = flinkApi.getShortLinkHref(data['id']);
-      output.value = flinkifiedUrl;
-    });
+    .then(async data => output.value = await flinkApi.getShortLinkHref(data['id']));
 });

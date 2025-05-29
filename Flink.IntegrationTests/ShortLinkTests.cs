@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
+using Flink.Shared;
 using Flink.ShortLinks.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -120,6 +121,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
   [InlineData("qr")]
   [InlineData("stats")]
   [InlineData("spam-protection")]
+  [InlineData("pw")]
   public async Task AddForbiddenShortLinkId_ToShortLinks_Returns400(string shortLinkId) {
     // Arrange
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
@@ -200,12 +202,58 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     }), Encoding.UTF8, "application/json");
 
     var httpClient = webApplicationFactory.CreateClient();
-    var x = await httpClient.PostAsync("/links", payload);
+    await httpClient.PostAsync("/links", payload);
 
     // Act
     var r = await httpClient.GetAsync($"/links/{id}");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
+  }
+  
+  [Fact]
+  public async Task NewResourceWithPasswordCreated_AccessedWithPassword_Returns301() {
+    // Arrange
+    const string Password = "123";
+    var id = $"{Guid.NewGuid()}-{nameof(NewResourceWithPasswordCreated_AccessedWithPassword_Returns301)}";
+    const string Uri = "https://flink.rtrace.io/";
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = Guid.NewGuid().ToString(),
+      PreferredId = id,
+      Uri = Uri,
+      Password = Password
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+    await httpClient.PostAsync("/links", payload);
+
+    // Act
+    var r = await httpClient.GetAsync($"/links/{id}?password={Password}");
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.Redirect);
+    r.Headers.Location.Should().Be(Uri);
+  }
+  
+  [Fact]
+  public async Task NewResourceWithPasswordCreated_AccessedWithoutPassword_Returns301() {
+    // Arrange
+    var id = $"{Guid.NewGuid()}-{nameof(NewResourceWithPasswordCreated_AccessedWithoutPassword_Returns301)}";
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = Guid.NewGuid().ToString(),
+      PreferredId = id,
+      Uri = "https://flink.rtrace.io/",
+      Password = "123"
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+    await httpClient.PostAsync("/links", payload);
+
+    // Act
+    var r = await httpClient.GetAsync($"/links/{id}");
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.Redirect);
+    r.Headers.Location.Should().Be($"/pw/{id}");
   }
 }

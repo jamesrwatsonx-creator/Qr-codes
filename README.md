@@ -24,7 +24,7 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 🗓️ shortened links accessible for given time-frames
 - 🔐 password-protected/locked short links
 
-![Flink UI Demo image](flink-ui-sample.png)
+![Flink UI Demo image](flink-ui-sample-2.1.png)
 
 
 ## Flink Instances

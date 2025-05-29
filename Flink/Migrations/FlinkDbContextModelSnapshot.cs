@@ -66,6 +66,9 @@ namespace Flink.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Uri")
                         .IsRequired()
                         .HasColumnType("TEXT");

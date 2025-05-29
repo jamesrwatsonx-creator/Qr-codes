@@ -3,6 +3,7 @@ using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.MetaData.Ports;
 using Flink.Metrics.Ports.Models;
+using Flink.Shared;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
 using Flink.SpamProtection.Ports.Repositories;
@@ -86,13 +87,15 @@ public class ShortLinkController(
     if (forbiddenDomainRepository.ContainsDomain(new Uri(shortLinkRequest.Uri).Host))
       return Task.FromResult<ActionResult>(BadRequest("The given URL is considered spam."));
 
+    var actualId = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength);
     var shortenedLink = new ShortenedLink {
-      Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
+      Id = actualId,
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow,
       ActiveFrom = shortLinkRequest.ActiveFrom?.UtcDateTime ?? DateTime.MinValue.AddMonths(1),
-      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.MaxValue.AddMonths(-1)
+      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.MaxValue.AddMonths(-1),
+      PasswordHash = shortLinkRequest.Password == null ? null : PasswordHasher.CalculatePasswordHash(shortLinkRequest.Password, actualId)
     };
 
     return shortLinkRepository

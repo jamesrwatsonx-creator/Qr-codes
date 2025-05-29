@@ -31,11 +31,16 @@ public class ShortLinkRequest {
   ///   (optional) the point in time until the shortened link is active. After this point in time, the link cannot be visited
   /// </summary>
   [DataType(DataType.DateTime)]
-  public DateTimeOffset? ActiveUntil { get; set; }
+  public DateTimeOffset? ActiveUntil { get; init; }
 
   /// <summary>
   ///   (optional) the point in time from which on the shortened link becomes active. Before this point in time, the link cannot be visited
   /// </summary>
   [DataType(DataType.DateTime)]
-  public DateTimeOffset? ActiveFrom { get; set; }
+  public DateTimeOffset? ActiveFrom { get; init; }
+  
+  /// <summary>
+  ///    (optional) a password (better, a hash of it - so the plain-text password remains at the client) that protects the shortened link
+  /// </summary>
+  public string? Password { get; set; }
 }

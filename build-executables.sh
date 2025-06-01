@@ -11,7 +11,6 @@ runtimes=(
     "linux-musl-arm64"
     "linux-arm"
     "linux-arm64"
-    "linux-loongarch64"
 )
 
 apt-get update -y && apt-get install zip -y

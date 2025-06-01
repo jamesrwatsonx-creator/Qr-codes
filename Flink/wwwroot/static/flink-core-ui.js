@@ -13,6 +13,24 @@ class FlinkUi {
     ].filter(sanitizers => sanitizers !== undefined)
   }
 
+  parseDateTime(inputValue) {
+    if (!inputValue)
+      return null;
+    if (inputValue === "")
+      return null;
+
+    const date = new Date(inputValue);
+    if (isNaN(date.getTime()))
+      return null;
+    return date;
+  }
+
+  convertToIsoDateTimeString(inputValue) {
+    const date = this.parseDateTime(inputValue);
+    if (date === null) return null;
+    return date.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  }
+
   isValidURL(inputUrl) {
     const isUrl = new RegExp(this.urlRegex, 'i').test(inputUrl);
     const indicationForRecursion = this.recursionDetectionRegexes.some(r => r.test(inputUrl));

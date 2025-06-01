@@ -14,25 +14,27 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 📱 easy generation of QR Codes for shortened links
 - 🪪 generate Link previews that are embeddable as `iframe`
 - ⌨️ batch short link creation from your terminal (using `curl`, `wget` or any other board util)
-- 😎 swagger (OpenAPI) interface allowing you to build on top of `flink`
-- 🖥️ runs on Linux, Windows, Mac
-- 🐳 deployable as container (podman and docker), support for Kubernetes
+- 😎 swagger (OpenAPI) and Scalar interface allowing you to build on top of `flink`
+- 🖥️ runs on Linux, Windows, macOS (even Apple Silicon)
+- 🐳 deployable as container (podman and docker, ARM and x86/x64), support for Kubernetes
 - 📈 keep track of how often short links are visited through built-in Prometheus support
 - 🌐 simple default-theme, with the possibility to create custom themes
-- 🐟 spam-protection
+- 🐟 spam-protection (loads ABP/AdGuard AdBlock and Phishing blocklists)
 - 💾 supports Sqlite, PostgreSQL and MariaDB/MySQL
+- 🗓️ shortened links accessible for given time-frames
+- 🔐 password-protected/locked short links
 
-![Flink UI Demo image](flink-ui-sample.png)
+![Flink UI Demo image](flink-ui-sample-2.1.png)
 
 
 ## Flink Instances
 
-Flink is F(L)OSS and made for the public! If you are running a Flink instance and would share it with the world, please provide a PR adding your instance details to the table below. Alternatively send an e-mail to [flink@rtrace.io](mailto:flink@rtrace.io).
+Flink is F(L)OSS and made for the public! If you are running a Flink instance and would share it with the world, please provide a PR adding your instance details to the table below. Alternatively send an e-mail to [flink@rtrace.io](mailto:flink@rtrace.io) for the Flink team to add it to the list. Thank you ❤️
 
 | Source                                                | Country  | Cloudflare |
 |-------------------------------------------------------|:--------:|:----------:|
-| [flink.is](https://flink.is)                          | 🇦🇹       | ⛔         |
-| [flink.rtrace.io](https://flink.rtrace.io)            | 🇩🇪       | ⛔         |
+| [flink.is](https://flink.is)                          | 🇦🇹 AT    | ⛔ no      |
+| [flink.rtrace.io](https://flink.rtrace.io)            | 🇩🇪 DE    | ⛔ no      |
 
 
 ## Quickstart Guide

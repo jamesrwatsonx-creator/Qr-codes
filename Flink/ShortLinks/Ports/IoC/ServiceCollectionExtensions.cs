@@ -6,6 +6,7 @@ namespace Flink.ShortLinks.Ports.IoC;
 public static class ServiceCollectionExtensions {
   public static IServiceCollection RegisterShortLinksDomain(this IServiceCollection serviceCollection) {
     return serviceCollection
+      .AddSingleton(TimeProvider.System)
       .AddScoped<DbShortLinkRepository>()
       .AddScoped<IShortLinkRepository>(provider => {
         var memoryCache = provider.GetRequiredService<IMemoryCache>();

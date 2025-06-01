@@ -8,7 +8,11 @@ namespace Flink.QRCodes.Ports.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class QrCodeController(IShortLinkRepository shortLinkRepository, IQrCodeCache qrCodeCache, QrCodeMetricsRegistry metricsRegistry, ILogger<QrCodeController> logger) : ControllerBase {
+public class QrCodeController(
+  IShortLinkRepository shortLinkRepository,
+  IQrCodeCache qrCodeCache,
+  QrCodeMetricsRegistry metricsRegistry,
+  ILogger<QrCodeController> logger) : ControllerBase {
   /// <summary>
   ///   Get the QR Code for a (previously created) shortlink
   /// </summary>

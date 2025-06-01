@@ -2,5 +2,7 @@
   Id: a-super-unique-id-that-is-awesome,
   CreationDate: DateTime_1,
   Creator: raffael,
-  Uri: https://rtrace.io
+  Uri: https://rtrace.io,
+  ActiveFrom: DateTime_2,
+  ActiveUntil: DateTime_3
 }

@@ -1,8 +1,10 @@
 using System.Net;
 using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions.ValueTasks;
 using Flink.Domain;
 using Flink.MetaData.Ports;
 using Flink.Metrics.Ports.Models;
+using Flink.Shared;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
 using Flink.SpamProtection.Ports.Repositories;
@@ -19,7 +21,8 @@ public class ShortLinkController(
   IScrapingQueue scrapingQueue,
   IForbiddenDomainRepository forbiddenDomainRepository,
   ShortLinkMetricsRegistry metrics,
-  IOptions<MetricsConfiguration> metricsConfiguration)
+  IOptions<MetricsConfiguration> metricsConfiguration,
+  TimeProvider timeProvider)
   : ControllerBase {
   private readonly string[] _forbiddenShortLinkIds = [
     "",
@@ -43,6 +46,7 @@ public class ShortLinkController(
     "links",
     "stats",
     "spam-protection",
+    "pw",
     metricsConfiguration.Value.MetricsEndpointPath.Replace("/", "")
   ];
 
@@ -50,22 +54,25 @@ public class ShortLinkController(
   ///   Get redirected to the URL of the shortLink
   /// </summary>
   /// <param name="shortLinkId">The id of the previously created shortlink</param>
+  /// <param name="password">password to visit a shortlink (only needed if a shortlink was set up with a password)</param>
   /// <returns></returns>
   [HttpGet("/{shortLinkId}", Name = "GetShortLinkRoot")]
   [HttpGet("/links/{shortLinkId}", Name = "GetShortLink")]
   [ProducesResponseType((int)HttpStatusCode.Redirect)]
   [ProducesResponseType((int)HttpStatusCode.NotFound)]
   [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-  public Task<ActionResult> Get(string shortLinkId) {
+  public Task<ActionResult> Get(string shortLinkId, [FromQuery] string? password) {
     logger.LogDebug("Requesting Short Link with {Id}", shortLinkId);
 
+    var now = timeProvider.GetUtcNow();
     return shortLinkRepository
       .GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
       .Match(maybeLink => maybeLink
+        .NoneIf(s => !(now < s.ActiveUntil && now > s.ActiveFrom))
         .TapSome(_ => metrics.Ok(shortLinkId))
         .TapNone(() => metrics.NotFound(shortLinkId))
-        .Match(ActionResult (l) => Redirect(l.Uri), NotFound), _ => Problem());
+        .GetValueOrDefault(l => GetActionResultForLinkRequest(l, password), NotFound()), _ => Problem());
   }
 
   /// <summary>
@@ -83,11 +90,15 @@ public class ShortLinkController(
     if (forbiddenDomainRepository.ContainsDomain(new Uri(shortLinkRequest.Uri).Host))
       return Task.FromResult<ActionResult>(BadRequest("The given URL is considered spam."));
 
+    var actualId = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength);
     var shortenedLink = new ShortenedLink {
-      Id = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength),
+      Id = actualId,
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
-      CreationDate = DateTime.UtcNow
+      CreationDate = DateTime.UtcNow,
+      ActiveFrom = shortLinkRequest.ActiveFrom?.UtcDateTime ?? DateTime.MinValue.AddMonths(1),
+      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.MaxValue.AddMonths(-1),
+      PasswordHash = shortLinkRequest.Password == null ? null : PasswordHasher.CalculatePasswordHash(shortLinkRequest.Password, actualId)
     };
 
     return shortLinkRepository
@@ -97,7 +108,7 @@ public class ShortLinkController(
       .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
-      .Match(ActionResult (shortLink) => Created($"/to/{shortLink.Id}", shortLink), BadRequest);
+      .Match(ActionResult (shortLink) => Created($"/{shortLink.Id}", StripPassword(shortLink)), BadRequest);
   }
 
   /// <summary>
@@ -113,4 +124,34 @@ public class ShortLinkController(
       .TapError(f => logger.LogError("Could not delete Shortened Link {Id}, because {Error}", shortLinkId, f))
       .Match(Ok, ActionResult (f) => BadRequest(f));
   }
+
+  private ActionResult GetActionResultForLinkRequest(ShortenedLink shortenedLink, string? clientProvidedPassword) {
+    var now = timeProvider.GetUtcNow();
+
+    // No password provided (even though a password is needed) -> Unauthorized
+    if (shortenedLink.PasswordHash != null && clientProvidedPassword == null)
+      return Redirect($"/pw/{shortenedLink.Id}");
+
+    // The ShortLink is not yet valid or has expired already -> Not Found
+    if (!(now < shortenedLink.ActiveUntil && now > shortenedLink.ActiveFrom))
+      return NotFound(); // Todo: redirect to "countdown" page
+
+    // Short Link is password protected and provided password does not match
+    if (shortenedLink.PasswordHash != null
+        && clientProvidedPassword != null
+        && !PasswordHasher.VerifyPasswordHash(shortenedLink.PasswordHash, clientProvidedPassword, shortenedLink.Id))
+      return Unauthorized();
+
+    return Redirect(shortenedLink.Uri);
+  }
+
+  private static ShortenedLink StripPassword(ShortenedLink shortenedLink) => new() {
+    Id = shortenedLink.Id,
+    Uri = shortenedLink.Uri,
+    Creator = shortenedLink.Creator,
+    CreationDate = shortenedLink.CreationDate,
+    ActiveFrom = shortenedLink.ActiveFrom,
+    ActiveUntil = shortenedLink.ActiveUntil,
+    PasswordHash = null
+  };
 }

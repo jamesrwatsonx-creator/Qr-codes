@@ -47,4 +47,49 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var deserializedResponse = JsonSerializer.Deserialize<ShortLinkMetaData>(responseContent, _serializerOptions);
     deserializedResponse?.Title.Should().NotBeNull();
   }
+
+  [Fact]
+  public async Task FlinkIsRunningShortLinkWithPasswordAdded_RequestedWithoutPassword_Returns401() {
+    // Arrange
+    var shortLinkId = $"noice{Guid.NewGuid()}";
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = "ruffy",
+      PreferredId = shortLinkId,
+      Uri = "https://blog.rtrace.io/",
+      Password = Guid.NewGuid().ToString()
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.PostAsync("/links", payload);
+
+    // Act
+    await Task.Delay(TimeSpan.FromSeconds(4));
+    var metaRequest = await httpClient.GetAsync($"/links/{shortLinkId}/meta");
+
+    // Assert
+    metaRequest.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  }
+
+  [Fact]
+  public async Task FlinkIsRunningShortLinkWithPasswordAdded_RequestedWithPassword_Returns200() {
+    // Arrange
+    var shortLinkId = $"noice{Guid.NewGuid()}";
+    var password = Guid.NewGuid().ToString();
+    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
+      Creator = "ruffy",
+      PreferredId = shortLinkId,
+      Uri = "https://blog.rtrace.io/",
+      Password = password
+    }), Encoding.UTF8, "application/json");
+
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.PostAsync("/links", payload);
+
+    // Act
+    await Task.Delay(TimeSpan.FromSeconds(4));
+    var metaRequest = await httpClient.GetAsync($"/links/{shortLinkId}/meta?password={password}");
+
+    // Assert
+    metaRequest.StatusCode.Should().Be(HttpStatusCode.OK);
+  }
 }

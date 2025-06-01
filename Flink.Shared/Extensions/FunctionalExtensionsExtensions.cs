@@ -18,4 +18,9 @@ public static class FunctionalExtensionsExtensions {
       ? compensation()
       : maybeValue;
   }
+
+  public static Maybe<T> NoneIf<T>(this Maybe<T> maybeValue, Predicate<T> predicate) {
+    if (maybeValue.HasValue && predicate(maybeValue.Value)) return Maybe<T>.None;
+    return maybeValue;
+  }
 }

@@ -28,4 +28,14 @@ public class WebUiController(IOptions<WebUiConfiguration> webUiConfig, IThemeMan
 
     return Content(themeManager.GetFile("stats.html", themePath), "text/html");
   }
+
+  [HttpGet("/pw/{shortLinkId}")]
+  [ProducesResponseType(typeof(string), 200, "text/html")]
+  public IActionResult GetPasswordPage(string shortLinkId, [FromQuery] string? theme) {
+    var themePath = theme ?? webUiConfig.Value.DefaultTheme;
+    if (!themeManager.AvailableThemes().Contains(themePath))
+      return NotFound();
+
+    return Content(themeManager.GetFile("password.html", themePath), "text/html");
+  }
 }

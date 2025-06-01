@@ -96,8 +96,8 @@ public class ShortLinkController(
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTime.UtcNow,
-      ActiveFrom = shortLinkRequest.ActiveFrom?.UtcDateTime ?? DateTime.MinValue.AddMonths(1),
-      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.MaxValue.AddMonths(-1),
+      ActiveFrom = shortLinkRequest.ActiveFrom?.UtcDateTime ?? DateTime.SpecifyKind(DateTime.MinValue.AddMonths(1), DateTimeKind.Utc),
+      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.SpecifyKind(DateTime.MaxValue.AddMonths(-1), DateTimeKind.Utc),
       PasswordHash = shortLinkRequest.Password == null ? null : PasswordHasher.CalculatePasswordHash(shortLinkRequest.Password, actualId)
     };
 

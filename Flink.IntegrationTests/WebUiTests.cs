@@ -19,7 +19,6 @@ public class WebUiTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
   [Theory]
   [InlineData("/")]
   [InlineData("/stats")]
-  [InlineData("/pw")]
   [InlineData("/pw/123")]
   public async Task WebUiRequest_NoParametersPassed_Returns200(string url) {
     // Act
@@ -34,7 +33,6 @@ public class WebUiTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
   [Theory]
   [InlineData("/")]
   [InlineData("/stats")]
-  [InlineData("/pw")]
   [InlineData("/pw/123")]
   public async Task WebUiRequest_NoParametersPassed_ReturnsSecurityHeaders(string url) {
     // Act

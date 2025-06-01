@@ -1,3 +1,4 @@
+
 using QRCoder;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
@@ -10,8 +11,8 @@ public static class QrCodeGenerator {
     var payload = new PayloadGenerator.Url(uri).ToString();
     var qrGenerator = new QRCodeGenerator();
     var qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
-    var qrCode = new QRCode(qrCodeData);
-    var qrCodeImage = qrCode.GetGraphic(40);
+    var qrCode = new PngByteQRCode(qrCodeData);
+    var qrCodeImage = Image.Load(qrCode.GetGraphic(40));
     qrCodeImage.Mutate(x => x.Resize(length, length));
     return EncodeToRawPng(qrCodeImage);
   }

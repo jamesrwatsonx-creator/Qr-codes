@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.8" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.1"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
@@ -54,11 +55,4 @@
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\static\img\flink-logo.png"/>
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="QRCoder">
-      <HintPath>..\..\..\.nuget\packages\qrcoder-imagesharp\0.10.0\lib\net8.0\QRCoder.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

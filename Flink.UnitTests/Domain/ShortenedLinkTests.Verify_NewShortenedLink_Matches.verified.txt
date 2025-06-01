@@ -1,8 +1,8 @@
 {
   Id: a-super-unique-id-that-is-awesome,
-  CreationDate: DateTime_1,
+  CreationDate: 1,
   Creator: raffael,
   Uri: https://rtrace.io,
-  ActiveFrom: DateTime_2,
-  ActiveUntil: DateTime_3
+  ActiveFrom: 1,
+  ActiveUntil: 1
 }

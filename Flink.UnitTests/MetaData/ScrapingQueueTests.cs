@@ -10,7 +10,7 @@ public class ScrapingQueueTests {
   [Fact]
   public void EmptyQueue_EntryAdded_EnqueueResultIsSuccess() {
     // Arrange
-    var shortenedLink = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
+    var shortenedLink = new ShortenedLink { CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
 
     // Act
@@ -23,7 +23,7 @@ public class ScrapingQueueTests {
   [Fact]
   public void QueueWithSingleElement_MaxCountDequeue_ReturnsSingleElement() {
     // Arrange
-    var shortenedLink = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
+    var shortenedLink = new ShortenedLink { CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), Creator = "ruffy", Id = "h3LL0", Uri = "https://blog.rtrace.io" };
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     scrapingQueue.EnqueueForScraping(shortenedLink);
 
@@ -38,8 +38,8 @@ public class ScrapingQueueTests {
   [Fact]
   public void QueueWith2Elements_DequeueSingleElement_ReturnsFirstElementOfQueue() {
     // Arrange
-    var shortenedLink1 = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "1st", Uri = "https://blog.rtrace.io" };
-    var shortenedLink2 = new ShortenedLink { CreationDate = DateTime.UtcNow, Creator = "ruffy", Id = "2nd", Uri = "https://blog.rtrace.io" };
+    var shortenedLink1 = new ShortenedLink { CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), Creator = "ruffy", Id = "1st", Uri = "https://blog.rtrace.io" };
+    var shortenedLink2 = new ShortenedLink { CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), Creator = "ruffy", Id = "2nd", Uri = "https://blog.rtrace.io" };
     var scrapingQueue = new InMemoryScrapingQueue(new ScrapingQueueMetricsRegistry(new UnitTestMeterFactory()));
     scrapingQueue.EnqueueForScraping(shortenedLink1);
     scrapingQueue.EnqueueForScraping(shortenedLink2);

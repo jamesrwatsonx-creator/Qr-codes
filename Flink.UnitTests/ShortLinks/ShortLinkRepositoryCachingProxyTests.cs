@@ -14,7 +14,7 @@ public class ShortLinkRepositoryCachingProxyTests {
   public async Task RequestShortLink_CachedEntryExists_ReturnsCachedEntryWithoutAskingRepository() {
     // Arrange
     var implMock = new Mock<IShortLinkRepository>();
-    var shortLink = new ShortenedLink { Creator = "ruffy", CreationDate = DateTime.UtcNow, Id = "Gulasch", Uri = "https://gula.sh" };
+    var shortLink = new ShortenedLink { Creator = "ruffy", CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), Id = "Gulasch", Uri = "https://gula.sh" };
     var cachingProxy = new ShortLinkRepositoryCachingProxy(new MemoryCache(Options.Create(new MemoryCacheOptions())), implMock.Object);
 
     var addResult = await cachingProxy.AddAsync(shortLink);
@@ -51,7 +51,7 @@ public class ShortLinkRepositoryCachingProxyTests {
     // Arrange
     var cache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
     var implMock = new Mock<IShortLinkRepository>();
-    var shortLink = new ShortenedLink { Creator = "ruffy", CreationDate = DateTime.UtcNow, Id = "Gulasch", Uri = "https://gula.sh" };
+    var shortLink = new ShortenedLink { Creator = "ruffy", CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), Id = "Gulasch", Uri = "https://gula.sh" };
     var cachingProxy = new ShortLinkRepositoryCachingProxy(cache, implMock.Object);
     await cachingProxy.AddAsync(shortLink);
 

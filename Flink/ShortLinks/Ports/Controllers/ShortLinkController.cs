@@ -64,7 +64,7 @@ public class ShortLinkController(
   public Task<ActionResult> Get(string shortLinkId, [FromQuery] string? password) {
     logger.LogDebug("Requesting Short Link with {Id}", shortLinkId);
 
-    var now = timeProvider.GetUtcNow();
+    var now = timeProvider.GetUtcNow().ToUnixTimeSeconds();
     return shortLinkRepository
       .GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
@@ -95,9 +95,9 @@ public class ShortLinkController(
       Id = actualId,
       Creator = shortLinkRequest.Creator,
       Uri = shortLinkRequest.Uri,
-      CreationDate = DateTime.UtcNow,
-      ActiveFrom = shortLinkRequest.ActiveFrom?.UtcDateTime ?? DateTime.SpecifyKind(DateTime.MinValue.AddMonths(1), DateTimeKind.Utc),
-      ActiveUntil = shortLinkRequest.ActiveUntil?.UtcDateTime ?? DateTime.SpecifyKind(DateTime.MaxValue.AddMonths(-1), DateTimeKind.Utc),
+      CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+      ActiveFrom = shortLinkRequest.ActiveFrom?.ToUnixTimeSeconds() ?? 0,
+      ActiveUntil = shortLinkRequest.ActiveUntil?.ToUnixTimeSeconds() ?? long.MaxValue,
       PasswordHash = shortLinkRequest.Password == null ? null : PasswordHasher.CalculatePasswordHash(shortLinkRequest.Password, actualId)
     };
 
@@ -126,7 +126,7 @@ public class ShortLinkController(
   }
 
   private ActionResult GetActionResultForLinkRequest(ShortenedLink shortenedLink, string? clientProvidedPassword) {
-    var now = timeProvider.GetUtcNow();
+    var now = timeProvider.GetUtcNow().ToUnixTimeSeconds();
 
     // No password provided (even though a password is needed) -> Unauthorized
     if (shortenedLink.PasswordHash != null && clientProvidedPassword == null)

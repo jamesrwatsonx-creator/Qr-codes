@@ -7,9 +7,11 @@ public class ShortenedLinkTests {
   public Task Verify_NewShortenedLink_Matches() {
     var shortenedLink = new ShortenedLink {
       Creator = "raffael",
-      CreationDate = DateTime.MinValue.AddYears(2000).AddDays(2),
+      CreationDate = 1,
       Id = "a-super-unique-id-that-is-awesome",
-      Uri = "https://rtrace.io"
+      Uri = "https://rtrace.io",
+      ActiveFrom = 1,
+      ActiveUntil = 1
     };
 
     return Verify(shortenedLink);

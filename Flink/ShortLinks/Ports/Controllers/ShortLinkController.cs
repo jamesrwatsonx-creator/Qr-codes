@@ -69,7 +69,6 @@ public class ShortLinkController(
       .GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
       .Match(maybeLink => maybeLink
-        .NoneIf(s => !(now < s.ActiveUntil && now > s.ActiveFrom))
         .TapSome(_ => metrics.Ok(shortLinkId))
         .TapNone(() => metrics.NotFound(shortLinkId))
         .GetValueOrDefault(l => GetActionResultForLinkRequest(l, password), NotFound()), _ => Problem());
@@ -132,9 +131,11 @@ public class ShortLinkController(
     if (shortenedLink.PasswordHash != null && clientProvidedPassword == null)
       return Redirect($"/pw/{shortenedLink.Id}");
 
-    // The ShortLink is not yet valid or has expired already -> Not Found
-    if (!(now < shortenedLink.ActiveUntil && now > shortenedLink.ActiveFrom))
-      return NotFound(); // Todo: redirect to "countdown" page
+    if (now < shortenedLink.ActiveFrom)
+      return Redirect($"/cd/{shortenedLink.Id}?activeFrom={shortenedLink.ActiveFrom}");
+    
+    if (now >= shortenedLink.ActiveUntil)
+      return NotFound();
 
     // Short Link is password protected and provided password does not match
     if (shortenedLink.PasswordHash != null

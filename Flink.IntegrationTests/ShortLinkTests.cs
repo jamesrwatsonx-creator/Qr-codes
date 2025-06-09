@@ -170,9 +170,9 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
   }
 
   [Fact]
-  public async Task NewResourceCreated_NotYetActiveShortLink_Returns404() {
+  public async Task NewResourceCreated_NotYetActiveShortLink_Returns301() {
     // Arrange
-    var id = $"{Guid.NewGuid()}-{nameof(NewResourceCreated_NotYetActiveShortLink_Returns404)}";
+    var id = $"{Guid.NewGuid()}-{nameof(NewResourceCreated_NotYetActiveShortLink_Returns301)}";
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
       Creator = Guid.NewGuid().ToString(),
       PreferredId = id,
@@ -180,14 +180,14 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
       ActiveFrom = DateTime.UtcNow.AddMinutes(1)
     }), Encoding.UTF8, "application/json");
 
-    var httpClient = webApplicationFactory.CreateClient();
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
     await httpClient.PostAsync("/links", payload);
 
     // Act
     var r = await httpClient.GetAsync($"/links/{id}");
 
     // Assert
-    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    r.StatusCode.Should().Be(HttpStatusCode.Redirect);
   }
 
   [Fact]
@@ -201,7 +201,7 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
       ActiveUntil = DateTime.UtcNow.AddMinutes(-1)
     }), Encoding.UTF8, "application/json");
 
-    var httpClient = webApplicationFactory.CreateClient();
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
     await httpClient.PostAsync("/links", payload);
 
     // Act

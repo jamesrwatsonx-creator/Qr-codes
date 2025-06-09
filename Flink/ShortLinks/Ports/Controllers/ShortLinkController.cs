@@ -127,12 +127,12 @@ public class ShortLinkController(
   private ActionResult GetActionResultForLinkRequest(ShortenedLink shortenedLink, string? clientProvidedPassword) {
     var now = timeProvider.GetUtcNow().ToUnixTimeSeconds();
 
+    if (now < shortenedLink.ActiveFrom)
+      return Redirect($"/cd/{shortenedLink.Id}?activeFrom={shortenedLink.ActiveFrom}");
+    
     // No password provided (even though a password is needed) -> Unauthorized
     if (shortenedLink.PasswordHash != null && clientProvidedPassword == null)
       return Redirect($"/pw/{shortenedLink.Id}");
-
-    if (now < shortenedLink.ActiveFrom)
-      return Redirect($"/cd/{shortenedLink.Id}?activeFrom={shortenedLink.ActiveFrom}");
     
     if (now >= shortenedLink.ActiveUntil)
       return NotFound();

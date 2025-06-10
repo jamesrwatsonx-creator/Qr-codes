@@ -33,7 +33,7 @@ async function fetchShortLinkMetrics() {
 function parseShortLinkMetrics(metricsData) {
   return metricsData
     .split('\n')
-    .filter(l => l.startsWith('ok_get_requests_total'))
+    .filter(l => l.startsWith('ok_get_requests_total{otel_scope_name="shortlinks"'))
     .map(l => l.match(/ok_get_requests_total\{([^}]*)} (\d+)/))
     .filter(m => m)
     .map(m => {

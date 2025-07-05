@@ -1,3 +1,4 @@
+using Flink.Shared.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Flink.Proxy.Ports.IoC;
@@ -7,7 +8,7 @@ public static class ServiceCollectionExtensions {
 
   public static IServiceCollection RegisterProxyDomain(this IServiceCollection serviceCollection) {
     serviceCollection
-      .AddHttpClient<ForwardProxy>(c => c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent));
+      .AddHttpClient<IForwardProxy, ForwardProxy>(c => c.AddBrowserImitationRequestHeaders());
 
     serviceCollection
       .AddSingleton<ForwardProxy>()

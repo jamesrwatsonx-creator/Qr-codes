@@ -1,0 +1,15 @@
+[Adblock Plus 2.0]
+! Version: 1
+! Title: EasyList
+! Last modified: 28 Jun 2025 19:48 UTC
+! Expires: 2 days (update frequency)
+! 
+! Please report any unblocked adverts or problems
+! via mail to flink-spam@rtrace.io
+! 
+! Homepage: https://gitlab.com/rtraceio/web/flink
+! Licence: https://easylist.to/pages/licence.html
+! GitLab: https://gitlab.com/rtraceio/web/flink
+!
+||wixsite.com^
+

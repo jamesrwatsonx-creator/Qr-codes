@@ -13,3 +13,5 @@
 !
 ||wixsite.com^
 ||koyeb.app^
+||rb.gy^
+||is.gd^

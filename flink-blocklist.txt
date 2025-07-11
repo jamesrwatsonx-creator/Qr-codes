@@ -15,3 +15,4 @@
 ||koyeb.app^
 ||rb.gy^
 ||is.gd^
+||lmy.de^

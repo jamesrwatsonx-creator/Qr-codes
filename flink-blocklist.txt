@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 4
+! Version: 5
 ! Title: Flink-Blocklist
-! Last modified: 21 Jul 2025 16:19 UTC
+! Last modified: 29 Jul 2025 20:04 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems

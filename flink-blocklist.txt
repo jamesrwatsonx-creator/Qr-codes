@@ -19,3 +19,4 @@
 ||tinyurl.com^
 ||tiny.cc^
 ||urlr.me^
+||zws.im^

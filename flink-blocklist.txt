@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 5
+! Version: 6
 ! Title: Flink-Blocklist
-! Last modified: 29 Jul 2025 20:04 UTC
+! Last modified: 30 Jul 2025 09:27 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -11,8 +11,15 @@
 ! Licence: https://easylist.to/pages/licence.html
 ! GitLab: https://gitlab.com/rtraceio/web/flink
 !
+
+! phishing
 ||wixsite.com^
+||cprapid.com^
+
+! URL Shortener Services
+! (typically a URL shouldn't be shortened multiple times)
 ||koyeb.app^
+||cleanuri.com^
 ||rb.gy^
 ||is.gd^
 ||lmy.de^

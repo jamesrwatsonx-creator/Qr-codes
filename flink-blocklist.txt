@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 7
+! Version: 8
 ! Title: Flink-Blocklist
-! Last modified: 09 Sep 2025 05:00 UTC
+! Last modified: 09 Sep 2025 05:08 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -18,6 +18,9 @@
 ||xdxcc.top^
 ||protpub.fr^
 ||fonte.com.co^
+||fundacionfunke.org.ar^
+||lidiferraz.com^
+||freeoil.ind.br^
 
 ! URL Shortener Services
 ! (typically a URL shouldn't be shortened multiple times)

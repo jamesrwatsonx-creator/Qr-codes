@@ -34,3 +34,4 @@
 ||tiny.cc^
 ||urlr.me^
 ||zws.im^
+||shorturl.fm^

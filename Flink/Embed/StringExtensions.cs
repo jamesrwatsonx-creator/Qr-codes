@@ -8,7 +8,7 @@ public static class StringExtensions {
       ? value[..maxLength] + truncationSuffix
       : value;
   }
-  
+
   public static string? HtmlEncode(this string? value) {
     return WebUtility.HtmlEncode(value);
   }

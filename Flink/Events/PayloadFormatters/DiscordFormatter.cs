@@ -21,7 +21,7 @@ public class DiscordFormatter : IPayloadFormatter {
       description += "\n\n---\n";
       description += string.Join("\n", links);
     }
-    
+
     var embed = new Dictionary<string, object?> {
       ["title"] = $"{ev.Emoji} {ev.Title}",
       ["description"] = description,

@@ -7,7 +7,10 @@ using Microsoft.Extensions.Options;
 
 namespace Flink.Events.Services;
 
-public class EventDispatcherBackgroundService(IEventNotificationQueue eventNotificationQueue, HttpClient httpClient, IOptions<EventNotificationConfiguration> config)
+public class EventDispatcherBackgroundService(
+  IEventNotificationQueue eventNotificationQueue,
+  HttpClient httpClient,
+  IOptions<EventNotificationConfiguration> config)
   : BackgroundService {
   private static readonly NtfyFormatter NtfyFormatter = new();
   private static readonly DiscordFormatter DiscordFormatter = new();
@@ -26,9 +29,9 @@ public class EventDispatcherBackgroundService(IEventNotificationQueue eventNotif
   private async Task<Result> SendSingleAsync(EventNotification ev) {
     try {
       foreach (var sink in config.Value.Sinks) {
-        if(!sink.Events.Contains(ev.EventType))
+        if (!sink.Events.Contains(ev.EventType))
           continue;
-        
+
         var payload = sink.PayloadFormat.ToLower() switch {
           "ntfy" => NtfyFormatter.Format(ev, sink),
           "discord" => DiscordFormatter.Format(ev, sink),

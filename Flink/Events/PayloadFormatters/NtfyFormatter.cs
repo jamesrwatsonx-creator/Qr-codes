@@ -26,7 +26,7 @@ public class NtfyFormatter : IPayloadFormatter {
           ["clear"] = false
         }),
     };
-    
+
     return JsonSerializer.Serialize(payload, SerializerOptions);
   }
 

@@ -25,6 +25,7 @@ using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,12 +82,12 @@ builder.Services.AddOpenTelemetry()
     .AddMeter(EmbedMetricsRegistry.MeterName)
     .AddMeter(QrCodeMetricsRegistry.MeterName)
     .AddPrometheusExporter())
-  /*.WithTracing(tracing => {
+  .WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();
     tracing.AddHttpClientInstrumentation();
     tracing.AddConsoleExporter();
-  })*/;
-  
+  });
+
 
 var app = builder.Build();
 

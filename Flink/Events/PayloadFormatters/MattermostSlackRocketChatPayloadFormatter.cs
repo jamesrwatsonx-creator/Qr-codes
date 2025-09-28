@@ -9,7 +9,7 @@ public class MattermostSlackRocketChatPayloadFormatter : IPayloadFormatter {
     WriteIndented = false
   };
 
-  
+
   public string Format(EventNotification ev, EventNotificationSinkConfiguration configuration) {
     var baseText = ev.Message;
 
@@ -23,7 +23,7 @@ public class MattermostSlackRocketChatPayloadFormatter : IPayloadFormatter {
       ["text"] = baseText,
       ["mrkdwn_in"] = new[] { "text", "pretext" }
     };
-    
+
     if (!string.IsNullOrWhiteSpace(ev.Emoji)) {
       attachment["pretext"] = ev.Emoji;
     }
@@ -31,6 +31,7 @@ public class MattermostSlackRocketChatPayloadFormatter : IPayloadFormatter {
     if (!string.IsNullOrWhiteSpace(ev.ImageUrl)) {
       attachment["image_url"] = ev.ImageUrl;
     }
+
     var payload = new Dictionary<string, object?> {
       ["attachments"] = new[] { attachment }
     };

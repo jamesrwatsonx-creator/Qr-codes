@@ -22,7 +22,7 @@ public class SpamRemovalService(
     try {
       using var scope = serviceScopeFactory.CreateScope();
       var shortLinkRepository = scope.ServiceProvider.GetRequiredService<IShortLinkRepository>();
-      
+
       var shortLinkSnapshot = await shortLinkRepository.GetAll();
       if (shortLinkSnapshot.IsFailure) return;
 

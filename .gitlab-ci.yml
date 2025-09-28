@@ -1,148 +1,152 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-  - build
-  - lint
-  - test
-  - publish
-
+- test
 variables:
   IMAGE_NAME: quay.io/rtraceio/flink
-
 build:
   stage: build
   image:
     name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
-    - dotnet build
-
+  - dotnet build
 hadolint:
   stage: lint
   image: alpine:latest
   before_script:
-  - wget -qO - https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint
+  - wget -qO - https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+    -O /usr/local/bin/hadolint
   - chmod +x /usr/local/bin/hadolint
   script:
   - hadolint ./Flink/Dockerfile
-
 unit-test:
   stage: test
   dependencies:
-    - build
+  - build
   image:
     name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
-    - apt-get update -y && apt-get install bc -y
-    - cd Flink.UnitTests/
-    - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-    - ../calc-codecov.sh "$CI_PROJECT_DIR/Flink.UnitTests/cobertura/"
-  coverage: /TOTAL_COVERAGE=(\d+.\d+)/
+  - apt-get update -y && apt-get install bc -y
+  - cd Flink.UnitTests/
+  - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage"
+    --test-adapter-path:. --logger:"junit;LogFilePath=unit-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+  - ../calc-codecov.sh "$CI_PROJECT_DIR/Flink.UnitTests/cobertura/"
+  coverage: "/TOTAL_COVERAGE=(\\d+.\\d+)/"
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml
-      - $CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml
+    - "$CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml"
+    - "$CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml"
     reports:
       junit:
-        - $CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml
+      - "$CI_PROJECT_DIR/Flink.UnitTests/unit-test-result.xml"
       coverage_report:
         coverage_format: cobertura
-        path: $CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml
-
+        path: "$CI_PROJECT_DIR/Flink.UnitTests/cobertura/**/coverage.cobertura.xml"
 integration-test:
   stage: test
   dependencies:
-    - build
+  - build
   image:
     name: mcr.microsoft.com/dotnet/sdk:9.0
   script:
-    - apt-get update -y && apt-get install bc -y
-    - cd Flink.IntegrationTests/
-    - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage" --test-adapter-path:. --logger:"junit;LogFilePath=integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-    - ../calc-codecov.sh "$CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/"
-  coverage: /TOTAL_COVERAGE=(\d+.\d+)/
+  - apt-get update -y && apt-get install bc -y
+  - cd Flink.IntegrationTests/
+  - dotnet test -c Debug --results-directory ./cobertura --collect:"XPlat Code Coverage"
+    --test-adapter-path:. --logger:"junit;LogFilePath=integration-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+  - ../calc-codecov.sh "$CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/"
+  coverage: "/TOTAL_COVERAGE=(\\d+.\\d+)/"
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml
-      - $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml
+    - "$CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml"
+    - "$CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml"
     reports:
       junit:
-        - $CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml
+      - "$CI_PROJECT_DIR/Flink.IntegrationTests/integration-test-result.xml"
       coverage_report:
         coverage_format: cobertura
-        path: $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml
-
+        path: "$CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml"
 podman-pub-arm64:
   stage: publish
   image:
     name: quay.io/podman/stable
   tags:
-    - saas-linux-small-arm64
+  - saas-linux-small-arm64
   only:
-    - tags
+  - tags
   script:
-    - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
-    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch arm64 -t $IMAGE_NAME:$CI_COMMIT_TAG-arm64 -f Flink/Dockerfile .
-    - podman push $IMAGE_NAME:$CI_COMMIT_TAG-arm64
-
+  - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
+  - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch arm64 -t $IMAGE_NAME:$CI_COMMIT_TAG-arm64
+    -f Flink/Dockerfile .
+  - podman push $IMAGE_NAME:$CI_COMMIT_TAG-arm64
 podman-pub-amd64:
   stage: publish
   image:
     name: quay.io/podman/stable
   tags:
-    - saas-linux-small-amd64
+  - saas-linux-small-amd64
   only:
-    - tags
+  - tags
   script:
-    - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
-    - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch amd64 -t $IMAGE_NAME:$CI_COMMIT_TAG-amd64 -f Flink/Dockerfile .
-    - podman push $IMAGE_NAME:$CI_COMMIT_TAG-amd64
-
+  - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
+  - podman build --build-arg="VERSION=$CI_COMMIT_TAG" --arch amd64 -t $IMAGE_NAME:$CI_COMMIT_TAG-amd64
+    -f Flink/Dockerfile .
+  - podman push $IMAGE_NAME:$CI_COMMIT_TAG-amd64
 podman-publish-manifest:
   stage: publish
   needs:
-    - podman-pub-arm64
-    - podman-pub-amd64
+  - podman-pub-arm64
+  - podman-pub-amd64
   image:
     name: quay.io/podman/stable
   only:
-    - tags
+  - tags
   script:
-    - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
-    - podman manifest create $IMAGE_NAME:$CI_COMMIT_TAG
-    - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-amd64
-    - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-arm64
-    - podman manifest push $IMAGE_NAME:$CI_COMMIT_TAG
-    - podman manifest create $IMAGE_NAME:latest
-    - podman manifest add $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_TAG-amd64
-    - podman manifest add $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_TAG-arm64
-    - podman manifest push $IMAGE_NAME:latest
-
+  - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
+  - podman manifest create $IMAGE_NAME:$CI_COMMIT_TAG
+  - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-amd64
+  - podman manifest add $IMAGE_NAME:$CI_COMMIT_TAG $IMAGE_NAME:$CI_COMMIT_TAG-arm64
+  - podman manifest push $IMAGE_NAME:$CI_COMMIT_TAG
+  - podman manifest create $IMAGE_NAME:latest
+  - podman manifest add $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_TAG-amd64
+  - podman manifest add $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_TAG-arm64
+  - podman manifest push $IMAGE_NAME:latest
 build-executables:
   stage: publish
   image:
     name: mcr.microsoft.com/dotnet/sdk:9.0
   only:
-    - tags
+  - tags
   script:
-    - chmod +x ./build-executables.sh
-    - ./build-executables.sh
+  - chmod +x ./build-executables.sh
+  - "./build-executables.sh"
   artifacts:
     expire_in: never
     when: always
     paths:
-      - $CI_PROJECT_DIR/release/*.zip
-      - $CI_PROJECT_DIR/release/*.sha256
-      - $CI_PROJECT_DIR/release/*.sha512
-
+    - "$CI_PROJECT_DIR/release/*.zip"
+    - "$CI_PROJECT_DIR/release/*.sha256"
+    - "$CI_PROJECT_DIR/release/*.sha512"
 create-release:
   stage: publish
   image: registry.gitlab.com/gitlab-org/cli:latest
   only:
-    - tags
+  - tags
   needs:
-    - job: build-executables
-      artifacts: true
+  - job: build-executables
+    artifacts: true
   script:
-    - echo "Creating GitLab Release for $CI_COMMIT_TAG"
-    - glab auth login --job-token $CI_JOB_TOKEN
-    - glab release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --name "$CI_COMMIT_TAG" --notes "Automated release for tag $CI_COMMIT_TAG" release/*
+  - echo "Creating GitLab Release for $CI_COMMIT_TAG"
+  - glab auth login --job-token $CI_JOB_TOKEN
+  - glab release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --name "$CI_COMMIT_TAG"
+    --notes "Automated release for tag $CI_COMMIT_TAG" release/*
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml

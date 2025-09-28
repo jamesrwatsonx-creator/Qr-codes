@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace Flink.Embed;
 
 public static class StringExtensions {
@@ -5,5 +7,9 @@ public static class StringExtensions {
     return value?.Length > maxLength
       ? value[..maxLength] + truncationSuffix
       : value;
+  }
+  
+  public static string? HtmlEncode(this string? value) {
+    return WebUtility.HtmlEncode(value);
   }
 }

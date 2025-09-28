@@ -2,7 +2,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
-using Flink.Shared;
 using Flink.ShortLinks.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;

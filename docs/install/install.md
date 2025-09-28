@@ -11,7 +11,7 @@ Flink is a C# / ASP.NET WebAPI packaged as multiple executable artifacts, so it 
 |:---------------|:---------------------|
 | < 10m           | ★★★☆☆                |
 
-Flink is built as native exectuable for different Operating Systems and CPU Architectures.
+Flink is built as a native executable for different Operating Systems and CPU Architectures.
 
 - 🪟 Windows (x86)
 - 🪟 Windows (x64)
@@ -176,5 +176,5 @@ spec:
 - Add Service (Loadbalancer, ClusterIP)
 - Add Ingress Resource
 
-**Warning**: Using SQLite as database it is NOT recommended to scale the `ReplicaCount` to > 1. There is a (high!) chance 2 `Flink` instances will concurrently write to the
+**Warning**: When using SQLite as database it is NOT recommended to scale the `ReplicaCount` to > 1. There is a (high!) chance 2 `Flink` instances will concurrently write to the
 Database and thus corrupt the SQLite file. SQLite is NOT made for multi-session access.

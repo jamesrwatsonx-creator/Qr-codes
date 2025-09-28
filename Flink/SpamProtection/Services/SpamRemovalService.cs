@@ -7,11 +7,10 @@ namespace Flink.SpamProtection.Services;
 public class SpamRemovalService(
   ILogger<SpamRemovalService> logger,
   IForbiddenDomainRepository forbiddenDomains,
-  IShortLinkRepository shortLinkRepository) : BackgroundService {
-  
+  IServiceScopeFactory serviceScopeFactory) : BackgroundService {
   protected override async Task ExecuteAsync(CancellationToken cancellationToken) {
     await Task.Delay(TimeSpan.FromMinutes(15), cancellationToken);
-    
+
     logger.LogInformation($"Starting {nameof(SpamRemovalService)}");
     while (!cancellationToken.IsCancellationRequested) {
       await RunOnce();
@@ -21,6 +20,9 @@ public class SpamRemovalService(
 
   public async Task RunOnce() {
     try {
+      using var scope = serviceScopeFactory.CreateScope();
+      var shortLinkRepository = scope.ServiceProvider.GetRequiredService<IShortLinkRepository>();
+
       var shortLinkSnapshot = await shortLinkRepository.GetAll();
       if (shortLinkSnapshot.IsFailure) return;
 

@@ -1,12 +1,14 @@
 using System.Net;
 using CSharpFunctionalExtensions;
-using CSharpFunctionalExtensions.ValueTasks;
 using Flink.Domain;
+using Flink.Events.Ports;
 using Flink.MetaData.Ports;
 using Flink.Metrics.Ports.Models;
+using Flink.Proxy.Ports.Extensions;
 using Flink.Shared;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
+using Flink.ShortLinks.Ports.Events;
 using Flink.SpamProtection.Ports.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -22,6 +24,7 @@ public class ShortLinkController(
   IForbiddenDomainRepository forbiddenDomainRepository,
   ShortLinkMetricsRegistry metrics,
   IOptions<MetricsConfiguration> metricsConfiguration,
+  IEventNotificationQueue eventNotificationQueue,
   TimeProvider timeProvider)
   : ControllerBase {
   private readonly string[] _forbiddenShortLinkIds = [
@@ -105,9 +108,30 @@ public class ShortLinkController(
       .TapError(e => logger.LogError("Could not create Shortened Link with {Id}, because {Error}", shortenedLink.Id, e))
       .Tap(shortLink => logger.LogInformation("Saved Shortened Link with {Id}", shortLink.Id))
       .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
+      .Check(shortLink => PublishCreationNotification(shortLink, shortenedLink))
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
       .Match(ActionResult (shortLink) => Created($"/{shortLink.Id}", StripPassword(shortLink)), BadRequest);
+  }
+
+  private Result PublishCreationNotification(ShortenedLink shortLink, ShortenedLink shortenedLink) {
+    var request = HttpContext.Request;
+    var shortUrl = $"{request.Scheme}://{request.Headers.Host}/links/{shortenedLink.Id}";
+    var embedUrl = $"{request.Scheme}://{request.Headers.Host}/links/{shortenedLink.Id}/embed";
+    var isPasswordProtected = shortenedLink.PasswordHash is null ? "no" : "yes";
+
+    return eventNotificationQueue.Publish(new ShortLinkCreatedEventNotification {
+      Emoji = "🆕",
+      Title = $"{shortLink.Id} flinkified",
+      Message =
+        $"{shortLink.Uri} created by '{shortLink.Creator}' is now available with Id {shortLink.Id} (Password-protected: {isPasswordProtected})",
+      ImageUrl = HttpContext.Request.GetThumbnailUrl(shortLink.Id),
+      Urls = new Dictionary<string, Uri> {
+        { "Long Link", new Uri(shortenedLink.Uri) },
+        { "Short URL", new Uri(shortUrl) },
+        { "Embed", new Uri(embedUrl) }
+      },
+    });
   }
 
   /// <summary>
@@ -120,8 +144,19 @@ public class ShortLinkController(
   public Task<ActionResult> Delete(string shortLinkId) {
     return shortLinkRepository.DeleteAsync(shortLinkId)
       .Tap(() => logger.LogInformation("Deleted Shortened Link {Id}", shortLinkId))
+      .Tap(() => PublishDeletionNotification(shortLinkId))
       .TapError(f => logger.LogError("Could not delete Shortened Link {Id}, because {Error}", shortLinkId, f))
       .Match(Ok, ActionResult (f) => BadRequest(f));
+  }
+
+  private Result PublishDeletionNotification(string shortLinkId) {
+    return eventNotificationQueue.Publish(new ShortLinkCreatedEventNotification {
+      Emoji = "🗑️",
+      Title = $"{shortLinkId} deleted",
+      Message = $"Flinkified link with Id {shortLinkId} was deleted.",
+      ImageUrl = HttpContext.Request.GetThumbnailUrl(shortLinkId),
+      Urls = new Dictionary<string, Uri>(),
+    });
   }
 
   private ActionResult GetActionResultForLinkRequest(ShortenedLink shortenedLink, string? clientProvidedPassword) {
@@ -129,11 +164,11 @@ public class ShortLinkController(
 
     if (now < shortenedLink.ActiveFrom)
       return Redirect($"/cd/{shortenedLink.Id}?activeFrom={shortenedLink.ActiveFrom}");
-    
+
     // No password provided (even though a password is needed) -> Unauthorized
     if (shortenedLink.PasswordHash != null && clientProvidedPassword == null)
       return Redirect($"/pw/{shortenedLink.Id}");
-    
+
     if (now >= shortenedLink.ActiveUntil)
       return NotFound();
 

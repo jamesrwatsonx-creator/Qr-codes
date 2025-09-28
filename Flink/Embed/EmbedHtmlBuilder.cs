@@ -11,13 +11,13 @@ public class EmbedHtmlBuilder(string defaultTheme) {
   public EmbedHtmlBuilder WithTitle(string? title) {
     if (title == null) return this;
     _title = title;
-    _titleHtml = $"<h2 class=\"primary-foreground-color\">{title}</h2>";
+    _titleHtml = $"<h2 class=\"primary-foreground-color\">{title.HtmlEncode().Truncate(100)}</h2>";
     return this;
   }
 
   public EmbedHtmlBuilder WithOriginalUrl(string? originalUrl) {
     if (originalUrl == null) return this;
-    _originalUrlHtml = $"<h3>\ud83c\udf10 {originalUrl}</h3>";
+    _originalUrlHtml = $"<h3>\ud83c\udf10 {originalUrl.HtmlEncode().Truncate(40)}</h3>";
     return this;
   }
 
@@ -28,13 +28,13 @@ public class EmbedHtmlBuilder(string defaultTheme) {
 
   public EmbedHtmlBuilder WithDescription(string? description) {
     if (description == null) return this;
-    _descriptionHtml = $"<p class=\"secondary-foreground-color \">{description.Truncate(400)}</p>";
+    _descriptionHtml = $"<p class=\"secondary-foreground-color \">{description.HtmlEncode().Truncate(400)}</p>";
     return this;
   }
 
   public EmbedHtmlBuilder WithImage(string? imageUrl, string? altText) {
     if (imageUrl == null) return this;
-    _imageHtml = $"<img class=\"link-preview-image\" src=\"{imageUrl}\" alt=\"{altText}\"></img>";
+    _imageHtml = $"<img class=\"link-preview-image\" src=\"{imageUrl}\" alt=\"{altText.HtmlEncode()}\"></img>";
     return this;
   }
 

@@ -3,6 +3,8 @@ using System.Reflection;
 using Flink;
 using Flink.Embed.Ports;
 using Flink.Embed.Ports.IoC;
+using Flink.Events.Ports.IoC;
+using Flink.Events.Ports.Models;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
 using Flink.Metrics.Ports.Middleware;
@@ -23,7 +25,6 @@ using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,7 +55,8 @@ builder
   .ValidateAndConfigure<DbConfiguration>(out var dbConfiguration)
   .ValidateAndConfigure<MetricsConfiguration>(out var metricsConfiguration)
   .ValidateAndConfigure<WebUiConfiguration>()
-  .ValidateAndConfigure<SpamProtectionConfiguration>();
+  .ValidateAndConfigure<SpamProtectionConfiguration>()
+  .ValidateAndConfigure<EventNotificationConfiguration>();
 
 builder.Services
   .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))
@@ -64,6 +66,7 @@ builder.Services
   .RegisterQrCodeDomain()
   .RegisterProxyDomain()
   .RegisterEmbedDomain()
+  .RegisterEventsDomain()
   .RegisterWebUi();
 
 builder.Services.AddOpenTelemetry()
@@ -78,19 +81,17 @@ builder.Services.AddOpenTelemetry()
     .AddMeter(EmbedMetricsRegistry.MeterName)
     .AddMeter(QrCodeMetricsRegistry.MeterName)
     .AddPrometheusExporter())
-  .WithTracing(tracing => {
+  /*.WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();
     tracing.AddHttpClientInstrumentation();
     tracing.AddConsoleExporter();
-  });
+  })*/;
+  
 
 var app = builder.Build();
 
 try {
-  /*
-  dotnet ef migrations add V001CreateShortenedLinkDbTables --context ShortenedLinkDbContext --output-dir Migrations/ShortenedLink
-  dotnet ef migrations add V001CreateMetaDataDbTables --context MetaDataDbContext --output-dir Migrations/MetaData
-  */
+  // dotnet ef migrations add V00xCreateShortenedLinkDbTables --context FlinkDbContext --output-dir Migrations/
   using var scope = app.Services.CreateScope();
   scope.ServiceProvider.GetRequiredService<FlinkDbContext>().Database.Migrate();
 } catch {

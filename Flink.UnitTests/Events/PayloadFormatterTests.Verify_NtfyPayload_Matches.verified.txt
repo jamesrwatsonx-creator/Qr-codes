@@ -1,0 +1,1 @@
+﻿{"attachments":[{"title":"Payload Formatter Test","text":"Hello World 01234567890\u00E4\u00F6\u00FC\u00DF\n\n*Long Link:* https://blog.rtrace.io/\n*Short URL:* https://blog.rtrace.io/\n*Embed:* https://blog.rtrace.io/","mrkdwn_in":["text","pretext"],"pretext":"\uD83C\uDD95","image_url":"https://blog.rtrace.io/favicon.ico"}]}

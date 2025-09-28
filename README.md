@@ -93,6 +93,7 @@ curl -X "POST" \
     - [Metrics Configuration](/docs/config/config.md#metrics-configuration)
     - [WebUI Configuration](/docs/config/config.md#webui-configuration)
     - [Spam Protection Configuration](/docs/config/config.md#spam-protection-configuration)
+    - [Event Notification Sinks Configuration](/docs/config/config.md#event-notification-configuration)
 - **[😎 Customization](/docs/customization/custom-themes.md)**
     - [Ceate your own Flink theme](/docs/customization/custom-themes.md)
     - [Create a custom blocklist](/docs/customization/custom-blocklist.md)

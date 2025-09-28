@@ -3,6 +3,7 @@ using Flink.Domain;
 using Flink.ShortLinks.Ports;
 using Flink.SpamProtection.Repositories;
 using Flink.SpamProtection.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
@@ -25,7 +26,14 @@ public class SpamRemovalServiceTests {
       .Setup(x => x.DeleteAsync(It.IsAny<string>()))
       .ReturnsAsync(Result.Success());
     
-    var spamRemovalService = new SpamRemovalService(NullLogger<SpamRemovalService>.Instance, forbiddenDomains, shortLinkRepoMock.Object);
+    var provider = new ServiceCollection()
+      .AddSingleton(forbiddenDomains)
+      .AddSingleton(shortLinkRepoMock.Object)
+      .BuildServiceProvider();
+    var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+
+    
+    var spamRemovalService = new SpamRemovalService(NullLogger<SpamRemovalService>.Instance, forbiddenDomains, scopeFactory);
     forbiddenDomains.AddForbiddenDomains(["spam.spam.tld"]);
     var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2000));
     

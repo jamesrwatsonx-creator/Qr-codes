@@ -94,6 +94,7 @@ curl -X "POST" \
     - [Spam Protection Configuration](/docs/config/config.md#spam-protection-configuration)
 - **[😎 Customization](/docs/customization/custom-themes.md)**
     - [Ceate your own Flink theme](/docs/customization/custom-themes.md)
+    - [Create a custom blocklist](/docs/customization/custom-blocklist.md)
 - **[❤️ Community](/docs/community/install-guides.md)**
     - [Flink Setup with Docker & Nginx Proxy Manager](https://gitlab.com/rtraceio/web/flink/-/blob/main/docs/community/install-guides.md?ref_type=heads#flink-setup-with-docker--nginx-proxy-manager-2025-02-21)
     - [How To Install Flink on Your Synology NAS](https://gitlab.com/rtraceio/web/flink/-/blob/main/docs/community/install-guides.md?ref_type=heads#blogs)

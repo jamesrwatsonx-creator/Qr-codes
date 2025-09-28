@@ -10,7 +10,8 @@ namespace Flink.Events.Services;
 public class EventDispatcherBackgroundService(
   IEventNotificationQueue eventNotificationQueue,
   HttpClient httpClient,
-  IOptions<EventNotificationConfiguration> config)
+  IOptions<EventNotificationConfiguration> config,
+  ILogger<EventDispatcherBackgroundService> logger)
   : BackgroundService {
   private static readonly NtfyFormatter NtfyFormatter = new();
   private static readonly DiscordFormatter DiscordFormatter = new();
@@ -55,9 +56,16 @@ public class EventDispatcherBackgroundService(
           "GET" => httpClient.GetAsync(url),
           _ => throw new NotImplementedException()
         });
+
+        if (response.IsSuccessStatusCode) {
+          logger.LogInformation("Successful dispatch to {Sink} for Event {EventMessage} ({EventType})", sink.Name, ev.Message, ev.EventType);
+        } else {
+          logger.LogError("Failed dispatch to {Sink} for Event {EventMessage} ({EventType}) - Response StatusCode: {HttpStatusCode}", sink.Name, ev.Message,
+            ev.EventType, response.StatusCode);
+        }
       }
     } catch (Exception e) {
-      return Result.Failure(e.Message);
+      return Result.Failure($"Failed to Send Notification \"{ev.Message}\" because '{e.Message}'.");
     }
 
     return Result.Success();

@@ -23,6 +23,7 @@ Flink is a simple, Free, Libre, and Open Source URL Shortener built with love an
 - 💾 supports Sqlite, PostgreSQL and MariaDB/MySQL
 - 🗓️ shortened links accessible for given time-frames
 - 🔐 password-protected/locked short links
+- ☎️ triggers webhook/notification on shortened URLs and removed URLs (for [ntfy.sh](https://ntfy.sh), [Discord](https://discord.com), [Slack](https://slack.com), [Mattermost](https://mattermost.org), [Rocket.Chat](https://rocket.chat) and more)
 
 ![Flink UI Demo image](flink-ui-sample-2.1.png)
 

@@ -23,6 +23,7 @@
 ||freeoil.ind.br^
 ||workers.dev^
 ||aircrewacaderny.com^
+||vectorx-cel.business^
 
 ! URL Shortener Services
 ! (typically a URL shouldn't be shortened multiple times)

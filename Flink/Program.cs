@@ -59,6 +59,8 @@ builder
   .ValidateAndConfigure<SpamProtectionConfiguration>()
   .ValidateAndConfigure<EventNotificationConfiguration>();
 
+var consoleTracingEnabled = builder.Configuration.GetSection("Tracing").GetValue<bool>("ConsoleTracingEnabled");
+
 builder.Services
   .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))
   .RegisterShortLinksDomain()
@@ -85,7 +87,9 @@ builder.Services.AddOpenTelemetry()
   .WithTracing(tracing => {
     tracing.AddAspNetCoreInstrumentation();
     tracing.AddHttpClientInstrumentation();
-    tracing.AddConsoleExporter();
+    if (consoleTracingEnabled) {
+      tracing.AddConsoleExporter();
+    }
   });
 
 

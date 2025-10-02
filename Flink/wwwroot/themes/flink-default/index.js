@@ -15,6 +15,7 @@
   const domQrCodeImg = document.getElementById("img-qrcode");
   const domLoadingSpinner = document.getElementById("div-embed-loading-spinner");
   const domEmbedIframe = document.getElementById("if-embed");
+  let lockInputUrl = false;
 
   const resetOutputSection = () => {
     domQrCodeImg.classList.add('invisible');
@@ -32,13 +33,19 @@
 
   // Submit on enter (on Flink Input URL)
   domLongUrlInput.addEventListener('keyup', (longUrlKeyUpEvent) => {
-    if (longUrlKeyUpEvent.key === "Enter") {
+    if (longUrlKeyUpEvent.key === "Enter" && lockInputUrl === false) {
       longUrlKeyUpEvent.preventDefault();
       domFlinkifyButton.click();
+    } else {
+      lockInputUrl = false;
     }
   });
 
   domFlinkifyButton.addEventListener('click', () => {
+    if(lockInputUrl === true)
+      return;
+
+    lockInputUrl = true;
     resetOutputSection();
 
     if(!flinkUi.isValidURL(domLongUrlInput.value)) {

@@ -19,7 +19,7 @@ public class ShortLinkRequest {
   /// <summary>
   ///   In case a preferred Id is provided, Flink will attempt to use it as the Id
   /// </summary>
-  [Length(2, 100)]
+  [Length(2, 250)]
   [RegularExpression("^[a-zA-Z0-9._~-]*$")]
   public string? PreferredId { get; init; }
 

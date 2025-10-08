@@ -2,15 +2,46 @@
 
 all configurations are optional. Flink works out-of-the-box and is configured with secure and reliable defaults.
 
+#### Proxy Configuration
+
+Flink can route its outgoing network requests through proxy servers defined by the HTTP_PROXY, HTTPS_PROXY, and SOCKS_PROXY environment variables. 
+This helps in scenarios where Flink’s IP addresses are blocked or when requests need to be sent through Tor for anonymity or access control reasons.
+
+| Environment Variable | AppSettings Path | Description                                                                   | Default                 |
+|:---------------------|:-----------------|:------------------------------------------------------------------------------|:------------------------|
+| HTTP_PROXY           | HTTP_PROXY       | the proxy to use for outgoing HTTP requests                                   | null                    |
+| HTTPS_PROXY          | HTTPS_PROXY      | the proxy to use for outgoing HTTPS requests (if set, overrides HTTP_PROXY)   | null                    |
+| SOCKS_PROXY          | SOCKS_PROXY      | the socks5 proxy to use for outgoing requests (if set, overrides HTTPS_PROXY) | null                    |
+
+
 #### Database Configuration
+
+Flink allows you to configure its database connection through environment variables or corresponding application settings. 
+These settings determine which database backend is used and how the connection to that database is established.
+
+Supported Databases:
+- Postgres
+- MySql
+- Sqlite
 
 | Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
 | DBCONFIGURATION__DBTYPE                   | DbConfiguration:DbType                   | which database type shall be used (enum, either `Postgres`, `MySql` or `Sqlite`)  | Sqlite                  |
 | DBCONFIGURATION__SQLITECONNECTIONSTRING   | DbConfiguration:SqliteConnectionString   | format: `Data Source=flink.sqlite`                                                | `Data Source=flink.db ` |
 | DBCONFIGURATION__POSTGRESCONNECTIONSTRING | DbConfiguration:PostgresConnectionString | format: `Server=localhost;Port=5432;Database=flink;User Id=flink;Password=flink;` | null                    |
+| DBCONFIGURATION__MYSQLCONNECTIONSTRING    | DbConfiguration:MySqlConnectionString    | format: `Server=localhost;Port=3306;Database=flink;Uid=flink;Pwd=flink;`          | null                    |
 
 #### Metrics Configuration
+
+Flink provides a configurable metrics endpoint that can be enabled or disabled through environment variables. 
+The metrics endpoint allows external systems such as Prometheus to collect runtime metrics from Flink. 
+Access to this endpoint can be protected using HTTP Basic Authentication for security.
+Metrics can be enabled or disabled via the `EnableMetrics` setting. 
+When metrics are enabled, the endpoint can optionally require authentication, controlled by `RequireBasicAuth`. 
+If authentication is enabled, both a username (`BasicAuthUsername`) and password (`BasicAuthPassword`) must be provided. 
+The endpoint path itself can be customized through `MetricsEndpointPath`.
+
+By default, metrics are enabled and require authentication with the default credentials `flink` / `flink`, accessible under the `/metrics` path.
 
 | Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
@@ -24,13 +55,32 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 
 #### WebUI Configuration
 
+These settings control the appearance and caching behavior of the Flink Web UI. They define global, 
+theme-independent parameters that apply to any configured theme.  The `DefaultTheme` setting determines 
+which theme is used when no theme is specified through the `?theme` query parameter in the URL. 
+This ensures the Web UI always loads with a consistent appearance even when no explicit theme is requested.
+
+The `ThemeCacheDuration` setting defines how long a theme is cached in memory, measured in seconds. 
+Caching improves performance by reducing the need to repeatedly load theme resources from disk.
+
 | Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
 | WEBUICONFIGURATION__DEFAULTTHEME          | WebUiConfiguration:DefaultTheme          | which Theme to use in case in case query parameter ?theme is not providing theme  | flink-default           |
 | WEBUICONFIGURATION__THEMECACHEDURATION    | WebUiConfiguration:ThemeCacheDuration    | mumber of seconds a theme shall be cached in memory (in seconds)                  | 300                     |
 
+Both settings apply globally across all themes and are not tied to any specific theme configuration.
 
 #### Spam Protection Configuration
+
+
+Flink includes a built-in spam protection mechanism to help prevent the creation and distribution of malicious or unwanted shortened URLs. 
+This feature analyzes submitted links against one or more blocklists to detect and block spam, phishing, or advertising domains before they are shortened.
+The spam protection system can be enabled or disabled through the `Enabled` setting. When enabled, 
+Flink checks every submitted URL against the configured blocklists specified in the `BlockLists` setting. 
+These blocklists follow the **AdblockPlus 2.0** format and can include any number of third-party or custom lists.
+
+By default, Flink uses a curated set of well-known community-maintained blocklists. 
+Administrators can extend or replace these defaults by providing their own blocklist URLs.
 
 | Environment Variable                      | AppSettings Path                         | Description                                                                       | Default                 |
 |:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------------|:------------------------|
@@ -47,7 +97,15 @@ all configurations are optional. Flink works out-of-the-box and is configured wi
 
 #### Event Notification Configuration
 
-Event Notifications are configured in the form of sinks. Multiple sinks can be configured. Each sink requires a URL, a method as well as a payload format.
+Flink provides an event-driven notification system that allows you to send real-time updates to external services 
+whenever specific events occur within the application. Notifications are delivered to one or more **sinks**, 
+each representing an external endpoint that receives event data. This enables integration with chat platforms, 
+alerting tools, or custom webhooks for monitoring and automation purposes (e.g. [n8n](https://n8n.io/))
+
+Each sink requires a **URL**, an HTTP **method** (typically `POST`), and a **payload format** defining 
+how the notification data is structured. Multiple sinks can be configured independently, 
+allowing different events to trigger different destinations. For example, one sink might send 
+startup notifications to an internal monitoring system, while another pushes link-related events to a Slack or Discord channel.
 
 Flink currently supports the following payload formats (and webhook formats):
 - [ntfy](https://ntfy.sh) (use method: `POST`)

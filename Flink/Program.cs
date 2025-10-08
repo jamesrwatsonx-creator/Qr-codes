@@ -5,6 +5,8 @@ using Flink.Embed.Ports;
 using Flink.Embed.Ports.IoC;
 using Flink.Events.Ports.IoC;
 using Flink.Events.Ports.Models;
+using Flink.GlobalProxy.Ports.IoC;
+using Flink.GlobalProxy.Ports.Models;
 using Flink.MetaData.Ports;
 using Flink.MetaData.Ports.IoC;
 using Flink.Metrics.Ports.Middleware;
@@ -53,6 +55,7 @@ builder.Services.AddSwaggerGen(o => {
 });
 
 builder
+  .ValidateAndConfigure<ProxyConfiguration>()
   .ValidateAndConfigure<DbConfiguration>(out var dbConfiguration)
   .ValidateAndConfigure<MetricsConfiguration>(out var metricsConfiguration)
   .ValidateAndConfigure<WebUiConfiguration>()
@@ -61,6 +64,7 @@ builder
 
 builder.Services
   .AddDbContext<FlinkDbContext>(ctxOpts => ctxOpts.ConfigureDb(dbConfiguration))
+  .RegisterGlobalWebProxy()
   .RegisterShortLinksDomain()
   .RegisterSpamProtection()
   .RegisterMetaDataDomain()

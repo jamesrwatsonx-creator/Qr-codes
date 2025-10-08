@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using Flink.Events.Ports;
 using Flink.Events.Ports.Models;
 
+namespace Flink.Events.PayloadFormatters;
+
 public class MattermostSlackRocketChatPayloadFormatter : IPayloadFormatter {
   private static readonly JsonSerializerOptions SerializerOptions = new() {
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

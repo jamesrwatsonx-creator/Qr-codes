@@ -15,6 +15,15 @@ public static class ConfigurationExtensions {
     return builder;
   }
 
+  public static WebApplicationBuilder ValidateAndConfigureFromRoot<T>(this WebApplicationBuilder builder, out T? config) where T : class {
+    config = builder.Configuration
+      .Get<T>()
+      .ValidateConfiguration();
+    
+    builder.Services.Configure<T>(builder.Configuration);
+    return builder;
+  }
+
   public static WebApplicationBuilder ValidateAndConfigure<T>(this WebApplicationBuilder builder) where T : class {
     return builder.ValidateAndConfigure<T>(out _);
   }

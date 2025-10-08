@@ -13,6 +13,18 @@ This helps in scenarios where Flink’s IP addresses are blocked or when request
 | HTTPS_PROXY          | HTTPS_PROXY      | the proxy to use for outgoing HTTPS requests (if set, overrides HTTP_PROXY)   | null                    |
 | SOCKS_PROXY          | SOCKS_PROXY      | the socks5 proxy to use for outgoing requests (if set, overrides HTTPS_PROXY) | null                    |
 
+##### Examples
+
+```bash
+# with username and password and ip address
+HTTP_PROXY=http://username:password@127.0.0.1:8080
+
+# with username and password and fqdn
+SOCKS_PROXY=socks5://username:password@myproxy.tld:1234
+
+# no authentication, just hostname + port
+HTTPS_PROXY=https://localhost:8080
+```
 
 #### Database Configuration
 

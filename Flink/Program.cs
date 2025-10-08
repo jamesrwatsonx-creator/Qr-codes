@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen(o => {
 });
 
 builder
-  .ValidateAndConfigure<ProxyConfiguration>()
+  .ValidateAndConfigureFromRoot<ProxyConfiguration>(out _)
   .ValidateAndConfigure<DbConfiguration>(out var dbConfiguration)
   .ValidateAndConfigure<MetricsConfiguration>(out var metricsConfiguration)
   .ValidateAndConfigure<WebUiConfiguration>()

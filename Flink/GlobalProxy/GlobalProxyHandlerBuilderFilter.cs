@@ -9,9 +9,11 @@ public class GlobalProxyHandlerBuilderFilter(IOptions<ProxyConfiguration> proxyO
   public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next) {
     return builder => {
       next(builder);
-      var proxy = proxyOptions.Value.Http_Proxy ?? proxyOptions.Value.Https_Proxy ?? proxyOptions.Value.Socks_Proxy;
+      var proxy = proxyOptions.Value.Socks_Proxy.EmptyToNull()
+                  ?? proxyOptions.Value.Https_Proxy.EmptyToNull()
+                  ?? proxyOptions.Value.Http_Proxy.EmptyToNull();
       var proxyEnabled = !string.IsNullOrEmpty(proxy);
-      if (builder.PrimaryHandler is not HttpClientHandler handler) return;
+      if (builder.PrimaryHandler is not SocketsHttpHandler handler) return;
       handler.Proxy = proxyEnabled ? new WebProxy(proxy) : null;
       handler.UseProxy = proxyEnabled;
     };

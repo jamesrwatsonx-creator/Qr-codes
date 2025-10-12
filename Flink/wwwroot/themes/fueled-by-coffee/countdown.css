@@ -1,0 +1,85 @@
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #BBBBBF;
+  gap: 15px;
+  font-size: 2rem;
+  margin-top: 15px;
+}
+
+.unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  color: #aaa;
+}
+
+.digits {
+  display: flex;
+  gap: 5px;
+}
+
+.digit {
+  background: #222;
+  width: 50px;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.digit span {
+  display: block;
+  animation: flipDown 0.25s ease;
+}
+
+@keyframes flipDown {
+  0% {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+
+@media (min-width: 120px) and (max-width: 575px) {
+  .digit {
+    width: 35px;
+  }
+}
+
+@media (min-width: 576px) {
+  .digit {
+    width: 45px;
+  }
+}
+
+@media (min-width: 768px) {
+  .digit {
+    width: 50px;
+  }
+}
+
+@media (min-width: 992px) {
+  .digit {
+    width: 50px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .digit {
+    width: 50px;
+  }
+}

@@ -1,6 +1,7 @@
 (function () {
   const flinkUi = new FlinkUi();
   const flinkApi = new FlinkApiClient();
+  const flinkLocalHistory = new FlinkLocalHistory();
 
   const domLongUrlInput = document.getElementById('in-long-url');
   const domAdvancedCollapsibleButton = document.getElementById('btn-advanced-collapsible');
@@ -116,10 +117,11 @@
         domQrCodeImg.classList.remove('invisible');
         domLoadingSpinner.classList.remove('invisible');
         flinkApi.retryGetMeta(data.id, password, 200)
-          .then(async _ => {
+          .then(async (meta) => {
             domLoadingSpinner.classList.add('invisible');
             domEmbedIframe.src = await flinkApi.getEmbedHref(data.id, password);
             domEmbedIframe.classList.remove('invisible');
+            flinkLocalHistory.add(data['id'], data, meta);
           });
       }).catch(() => {
         showError('Could not flinkify your URL. Try a different URL or ID');

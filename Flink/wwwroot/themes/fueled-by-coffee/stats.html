@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Flink Live Stats</title>
+
+  <link href="/static/img/favicon.ico" rel="icon" type="image/x-icon">
+  <link href="/static/img/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+  <link href="/static/img/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+  <link href="/static/img/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta
+    content="Flink, URL Shortener, Link Shortener, Shortener, Flinkify, Shorten Links, Bit.ly Alternative, FLOSS, QR Codes, Metadata, Embeds, iframes"
+    name="keywords">
+  <meta
+    content="Flink is a F(L)OSS URL shortener built with ASP.NET, offering powerful link management with QR code generation, detailed analytics, and customizable embeds for rich link previews. Shorten, track, and share your links effortlessly. Try Flink today!"
+    name="description">
+  <meta content="Flink Team" name="author">
+  <meta content="index, follow" name="robots">
+  <meta content="general" name="rating">
+
+  <meta content="Flink URL shortener" property="og:title"/>
+  <meta
+    content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews."
+    property="og:description"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" property="og:image"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink" property="og:url"/>
+  <meta content="website" property="og:type"/>
+  <meta content="Flink" property="og:site_name"/>
+  <meta content="en_US" property="og:locale"/>
+
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="Flink URL Shortener" name="twitter:title"/>
+  <meta
+    content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews."
+    name="twitter:description"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" name="twitter:image"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink" name="twitter:url"/>
+
+  <link href="/themes/flink-default/stats.css" rel="stylesheet"/>
+</head>
+<body>
+<nav>
+  <a href="/">🦔 shortener</a>
+  <a href="/scalar">📎 scalar</a>
+  <a href="/swagger">📜 swagger</a>
+  <a class="small" href="https://gitlab.com/rtraceio/web/Flink">⌨️ source</a>
+</nav>
+<h1>📈 Stats</h1>
+<div class="note-block">
+  Flink provides a Prometheus-compatible <a href="/metrics">metrics endpoint</a> that exposes real-time measurements,
+  which can be collected by Prometheus. As the industry-standard time-series database, Prometheus enables the
+  aggregation of multiple point-in-time metrics into time-series data. These time-series can then be visualized
+  using Grafana, a powerful tool for creating charts, dashboards, and alerts.
+
+  The <a href="/stats">Stats page</a> offers a lightweight alternative to what Prometheus and Grafana can provide.
+  Since Flink does not persist the metrics data from the <a href="/metrics">metrics endpoint</a>,
+  this page only displays interactions recorded since the last restart of the Flink instance.
+</div>
+
+<h2>🌟 Recently visited</h2>
+<div class="block-container" id="metrics"></div>
+<script src="/themes/flink-default/stats.js"></script>
+</body>
+</html>

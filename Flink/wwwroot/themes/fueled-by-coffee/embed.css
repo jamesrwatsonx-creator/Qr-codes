@@ -1,0 +1,97 @@
+html, body, head {
+  overflow: hidden;
+  background: transparent;
+  font-family: Arial, sans-serif;
+
+  margin: 0;
+  padding: 0;
+  width: 600px;
+  height: 250px;
+}
+
+.link-preview-container {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 200px;
+  width: 599px;
+  text-decoration: none;
+}
+
+.link-preview {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  margin: 0;
+  padding: 0;
+  height: 200px;
+
+  border: 1px solid #AAA;
+  border-radius: 5px;
+}
+
+.link-preview img {
+  margin: 15px 0 15px 15px;
+  max-width: 200px;
+  max-height: 170px;
+  object-fit: cover;
+  filter: drop-shadow(0 0 15px #000);
+}
+
+.link-content {
+  margin: 15px;
+  padding: 0;
+  display: flex;
+  max-height: 200px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.link-content > h2 {
+  margin: 0 15px;
+  font-size: 1em;
+}
+
+.link-content > h3 {
+  margin: 5px 15px;
+  font-size: 0.85em;
+  color: #6090FF;
+  font-weight: 500;
+}
+
+.link-content > p {
+  margin: 5px 15px;
+  font-size: 0.80em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .primary-foreground-color {
+    color: #EAEAEA;
+  }
+
+  .secondary-foreground-color {
+    color: #BBB;
+  }
+
+  .primary-background-color {
+    background-color: #151515;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .primary-foreground-color {
+    color: #000;
+  }
+
+  .secondary-foreground-color {
+    color: #444;
+  }
+
+  .primary-background-color {
+    background-color: #FCFCFF;
+  }
+}

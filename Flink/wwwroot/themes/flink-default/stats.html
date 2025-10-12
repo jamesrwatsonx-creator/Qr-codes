@@ -43,11 +43,13 @@
   <link href="/themes/flink-default/stats.css" rel="stylesheet"/>
 </head>
 <body>
-<nav>
+<nav role="navigation" aria-label="main">
   <a href="/">🦔 shortener</a>
-  <a href="/scalar">📎 scalar</a>
-  <a href="/swagger">📜 swagger</a>
-  <a class="small" href="https://gitlab.com/rtraceio/web/Flink">⌨️ source</a>
+  <a href="/scalar"><span aria-hidden="true">📎 </span><span>scalar</span></a>
+  <a href="/swagger"><span aria-hidden="true">📜 </span><span>swagger</span></a>
+  <a href="/history"><span aria-hidden="true">⭕ </span> <span>history</span></a>
+  <a href="/stats"><span aria-hidden="true">📈 </span><span>stats</span></a>
+  <a href="https://gitlab.com/rtraceio/web/Flink"><span aria-hidden="true">⌨️ </span><span>source</span></a>
 </nav>
 <h1>📈 Stats</h1>
 <div class="note-block">

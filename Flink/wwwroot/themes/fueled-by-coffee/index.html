@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flink URL shortener</title>
+
+  <link href="/static/img/favicon.ico" rel="icon" type="image/x-icon">
+  <link href="/static/img/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+  <link href="/static/img/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+  <link href="/static/img/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta
+    content="Flink, URL Shortener, Link Shortener, Shortener, Flinkify, Shorten Links, bit.ly Alternative, FLOSS, QR Codes, Metadata, Embeds, iframes"
+    name="keywords">
+  <meta
+    content="Flink is a F(L)OSS URL shortener built with ASP.NET, offering powerful link management with QR code generation, detailed analytics, and customizable embeds for rich link previews. Shorten, track, and share your links effortlessly. Try Flink today!"
+    name="description">
+  <meta content="Flink Team" name="author">
+  <meta content="index, follow" name="robots">
+  <meta content="general" name="rating">
+  <meta content="Flink URL shortener" property="og:title"/>
+  <meta
+    content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews."
+    property="og:description"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" property="og:image"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink" property="og:url"/>
+  <meta content="website" property="og:type"/>
+  <meta content="Flink" property="og:site_name"/>
+  <meta content="en_US" property="og:locale"/>
+
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="Flink URL Shortener" name="twitter:title"/>
+  <meta
+    content="Flink is a F(L)OSS URL shortener built with ASP.NET, featuring QR code generation, analytics, and customizable embeds for rich link previews."
+    name="twitter:description"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink/-/raw/main/flink-logo.png" name="twitter:image"/>
+  <meta content="https://gitlab.com/rtraceio/web/flink" name="twitter:url"/>
+
+  <link href="/themes/flink-default/theme-shared.css" rel="stylesheet"/>
+  <link href="/themes/flink-default/index.css" rel="stylesheet"/>
+</head>
+<body>
+<nav role="navigation" aria-label="main">
+  <a href="/scalar"><span aria-hidden="true">📎 </span><span>scalar</span></a>
+  <a href="/swagger"><span aria-hidden="true">📜 </span><span>swagger</span></a>
+  <a href="/stats"><span aria-hidden="true">📈 </span><span>stats</span></a>
+  <a href="https://gitlab.com/rtraceio/web/Flink"><span aria-hidden="true">⌨️ </span><span>source</span></a>
+</nav>
+
+<main>
+  <img class="img-flink-logo" src="/static/img/flink-logo.png" alt="The Flink Logo shows a drawn hedgehog that is jumping over the heading"/>
+  <div class="sec-input">
+    <input id="in-long-url" class="in-primary" minlength="11" maxlength="1000" placeholder="enter URL to shorten" type="url">
+    <p id="p-long-url-status-text" class="input-element-status-message invisible"></p>
+     
+    <button id="btn-advanced-collapsible" class="btn-collapsible" type="button" aria-expanded="false" aria-controls="div-collapsible-content"><span aria-hidden="true">⚙️ </span><span>advanced options</span></button>
+    <div id="div-advanced-collapsible-content" class="div-collapsible-content invisible">
+      
+      <div class="div-input-wrapper">
+        <label for="in-dt-active-from"><span aria-hidden="true">🗓️ </span><span>activation time</span><span class="tooltip-text" role="tooltip" id="tt-active-from">the link will not be accessible before this point in time</span></label>
+        <input id="in-dt-active-from" aria-describedby="tt-active-from" type="datetime-local" name="active from" />
+        <p id="p-dt-active-from-status-text" class="input-element-status-message invisible"></p>
+      </div>
+
+      <div class="div-input-wrapper">
+        <label for="in-dt-active-until"><span aria-hidden="true">🗓️ </span><span>expiration</span><span class="tooltip-text" role="tooltip" id="tt-active-until">the link will not be accessible after this point in time</span></label>
+        <input id="in-dt-active-until" aria-describedby="tt-active-until" type="datetime-local" name="active until" />
+        <p id="p-dt-active-until-status-text" class="input-element-status-message invisible"></p>
+      </div>
+
+      <div class="div-input-wrapper">
+        <label for="in-password"><span aria-hidden="true">🔐 </span><span>password</span><span class="tooltip-text" role="tooltip" id="tt-password">set an optional password for the link</span></label>
+        <input id="in-password" minlength="0" maxlength="250" aria-describedby="tt-password" type="password" name="password" />
+        <p id="p-password-status-text" class="input-element-status-message invisible"></p>
+      </div>
+
+      <div class="div-input-wrapper">
+        <label for="in-preferred-id"><span aria-hidden="true">🆔 </span><span>Flink ID</span><span class="tooltip-text" role="tooltip" id="tt-preferred-id">set a preferred Id (don't generate one randomly)</span></label>
+        <input id="in-preferred-id" minlength="0" maxlength="250" aria-describedby="tt-preferred-id" name="flink ID" />
+        <p id="p-preferred-id-status-text" class="input-element-status-message invisible"></p>
+      </div>
+
+      <div class="div-input-wrapper">
+        <label for="in-suffix-length"><span aria-hidden="true">📏 </span><span>Random ID Length</span><span class="tooltip-text" role="tooltip" id="tt-suffix-length">number of characters to use for a random short link</span></label>
+        <input id="in-suffix-length" min="3" max="250"  aria-describedby="tt-suffix-length" type="number" name="short link length" value="4" />
+        <p id="p-suffix-length-status-text" class="input-element-status-message invisible"></p>
+      </div>
+    </div>
+  
+    <button id="btn-flinkify" class="btn-primary">🦔 flinkify</button>
+  </div>
+  
+  <div class="sec-output">
+    <input id="in-short-url" class="in-primary invisible" readonly type="url" name="shortened URL"/>
+    <img aria-hidden="true" id="img-qrcode" alt="QR Code for your URL" class="invisible" src="">
+    <div aria-hidden="true" id="div-embed-loading-spinner" class="loader invisible"></div>
+    <iframe id="if-embed" class="invisible"></iframe>
+  </div>
+</main>
+
+<!-- UI JS -->
+<script src="/static/flink-core-api.js"></script>
+<script src="/static/flink-core-ui.js"></script>
+<script src="/themes/flink-default/theme-shared.js"></script>
+<script src="/themes/flink-default/index.js"></script>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 15
+! Version: 16
 ! Title: Flink-Blocklist
-! Last modified: 12 Oct 2025 08:05 UTC
+! Last modified: 12 Oct 2025 19:21 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -29,6 +29,9 @@
 
 ! Open Redirects
 ||business.google.com^
+
+! spam
+||castle-rock.info^
 
 ! URL Shortener Services
 ! (typically a URL shouldn't be shortened multiple times)

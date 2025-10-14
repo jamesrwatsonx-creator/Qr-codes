@@ -1,6 +1,7 @@
 (function () {
   const flinkUi = new FlinkUi();
   const flinkApi = new FlinkApiClient();
+  const flinkLocalHistory = new FlinkLocalHistory();
 
   const domLongUrlInput = document.getElementById('in-long-url');
   const domAdvancedCollapsibleButton = document.getElementById('btn-advanced-collapsible');
@@ -16,6 +17,7 @@
   const domLoadingSpinner = document.getElementById('div-embed-loading-spinner');
   const domEmbedIframe = document.getElementById('if-embed');
   const popover = document.getElementById('error-popover');
+  const qrCodeHref = document.getElementById('a-qrcode');
 
   let lockFlinkifyButton = false;
 
@@ -112,14 +114,17 @@
       .then(async data => {
         domShortUrlInput.value = await flinkApi.getShortLinkHref(data['id'], null);
         domShortUrlInput.classList.remove('invisible');
-        domQrCodeImg.src = await flinkApi.getQrCodeHref(data['id'], 202);
+        domQrCodeImg.src = await flinkApi.getQrCodeHref(data['id'], 200);
+        qrCodeHref.href = await flinkApi.getQrCodeHref(data['id'], 1024);
         domQrCodeImg.classList.remove('invisible');
+        qrCodeHref.classList.remove('invisible');
         domLoadingSpinner.classList.remove('invisible');
         flinkApi.retryGetMeta(data.id, password, 200)
-          .then(async _ => {
+          .then(async (meta) => {
             domLoadingSpinner.classList.add('invisible');
             domEmbedIframe.src = await flinkApi.getEmbedHref(data.id, password);
             domEmbedIframe.classList.remove('invisible');
+            flinkLocalHistory.add(data['id'], data, meta);
           });
       }).catch(() => {
         showError('Could not flinkify your URL. Try a different URL or ID');

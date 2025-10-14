@@ -12,6 +12,7 @@ This helps in scenarios where Flink’s IP addresses are blocked or when request
 | HTTP_PROXY           | HTTP_PROXY       | the proxy to use for outgoing HTTP requests                                   | null                    |
 | HTTPS_PROXY          | HTTPS_PROXY      | the proxy to use for outgoing HTTPS requests (if set, overrides HTTP_PROXY)   | null                    |
 | SOCKS_PROXY          | SOCKS_PROXY      | the socks5 proxy to use for outgoing requests (if set, overrides HTTPS_PROXY) | null                    |
+| NO_PROXY             | NO_PROXY         | comma-separated list of hostnames that can bypass the proxy                   | null                    |
 
 ##### Examples
 

@@ -67,7 +67,6 @@ Example additions:
 
 ## Best Practices
 
-- Keep it updated: Use the `! Expires` header to control how often Flink refreshes the blocklist.
 - Be specific: Block only what you really need to avoid breaking legitimate use cases.
 - Combine lists: You can maintain multiple blocklists (e.g., ads, scams, trackers) and merge them for your instance.
 - Test before deployment: Ensure your blocklist does not unintentionally block essential services.

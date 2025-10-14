@@ -50,7 +50,7 @@ function createBlock(shortLinkId, count) {
   div.innerHTML = `
             <div class="metric-block-head">
               <div class="metric-block-head-left">
-                  <span>🦔 <a href="/links/${shortLinkId}">${shortLinkId}</a></span>
+                  <a href="/links/${shortLinkId}">${shortLinkId}</a>
               </div>
 
               <div class="metric-block-head-right">
@@ -58,6 +58,6 @@ function createBlock(shortLinkId, count) {
               </div>
             </div>
 
-            <iframe src="/links/${shortLinkId}/embed"></iframe>`;
+            <iframe src="/links/${shortLinkId}/embed" loading="lazy"></iframe>`;
   return div;
 }

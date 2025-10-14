@@ -50,7 +50,7 @@ function createBlock(shortLinkId, count) {
   div.innerHTML = `
             <div class="metric-block-head">
               <div class="metric-block-head-left">
-                  <span><span>🦔</span> <a href="/links/${shortLinkId}">${shortLinkId}</a></span>
+                  <a href="/links/${shortLinkId}">${shortLinkId}</a>
               </div>
 
               <div class="metric-block-head-right">

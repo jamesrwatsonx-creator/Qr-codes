@@ -17,6 +17,7 @@
   const domLoadingSpinner = document.getElementById('div-embed-loading-spinner');
   const domEmbedIframe = document.getElementById('if-embed');
   const popover = document.getElementById('error-popover');
+  const qrCodeHref = document.getElementById('a-qrcode');
 
   let lockFlinkifyButton = false;
 
@@ -113,8 +114,10 @@
       .then(async data => {
         domShortUrlInput.value = await flinkApi.getShortLinkHref(data['id'], null);
         domShortUrlInput.classList.remove('invisible');
-        domQrCodeImg.src = await flinkApi.getQrCodeHref(data['id'], 202);
+        domQrCodeImg.src = await flinkApi.getQrCodeHref(data['id'], 200);
+        qrCodeHref.href = await flinkApi.getQrCodeHref(data['id'], 1024);
         domQrCodeImg.classList.remove('invisible');
+        qrCodeHref.classList.remove('invisible');
         domLoadingSpinner.classList.remove('invisible');
         flinkApi.retryGetMeta(data.id, password, 200)
           .then(async (meta) => {

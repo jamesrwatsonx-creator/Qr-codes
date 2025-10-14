@@ -14,7 +14,7 @@ public class GlobalProxyHandlerBuilderFilter(IOptions<ProxyConfiguration> proxyO
                   ?? proxyOptions.Value.Http_Proxy.EmptyToNull();
       var proxyEnabled = !string.IsNullOrEmpty(proxy);
       if (builder.PrimaryHandler is not SocketsHttpHandler handler) return;
-      handler.Proxy = proxyEnabled ? new WebProxy(proxy) : null;
+      handler.Proxy = proxyEnabled ? new WebProxy(proxy, true, proxyOptions.Value.No_Proxy.ParseCollection()) : null;
       handler.UseProxy = proxyEnabled;
     };
   }

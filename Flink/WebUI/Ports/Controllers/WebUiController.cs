@@ -48,7 +48,7 @@ public class WebUiController(IOptions<WebUiConfiguration> webUiConfig, IThemeMan
 
     return Content(themeManager.GetFile("countdown.html", themePath), "text/html");
   }
-  
+
   [HttpGet("/history")]
   [ProducesResponseType(typeof(string), 200, "text/html")]
   public IActionResult GetLocalHistory([FromQuery] string? theme) {

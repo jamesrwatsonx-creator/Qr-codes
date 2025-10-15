@@ -10,11 +10,11 @@ public static class ServiceCollectionExtensions {
   public static IServiceCollection RegisterMetaDataDomain(this IServiceCollection serviceCollection) {
     serviceCollection
       .AddHttpClient<IMetaDataScraper, MetaDataScraper>(c => c.AddBrowserImitationRequestHeaders())
-      .ConfigureHttpClient(c => c.AddBrowserImitationRequestHeaders())
       .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler {
         AllowAutoRedirect = true,
         UseCookies = true,
         AutomaticDecompression = DecompressionMethods.All,
+        MaxAutomaticRedirections = 10,
       });
     return serviceCollection
       .AddSingleton<ScrapingQueueMetricsRegistry>()

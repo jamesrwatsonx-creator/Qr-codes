@@ -19,7 +19,7 @@ public static class ConfigurationExtensions {
     config = builder.Configuration
       .Get<T>()
       .ValidateConfiguration();
-    
+
     builder.Services.Configure<T>(builder.Configuration);
     return builder;
   }

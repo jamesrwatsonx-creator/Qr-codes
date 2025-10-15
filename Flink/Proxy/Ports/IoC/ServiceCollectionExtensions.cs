@@ -6,7 +6,7 @@ namespace Flink.Proxy.Ports.IoC;
 public static class ServiceCollectionExtensions {
   public static IServiceCollection RegisterProxyDomain(this IServiceCollection serviceCollection) {
     serviceCollection
-      .AddHttpClient<IForwardProxy, ForwardProxy>(c => c.AddBrowserImitationRequestHeaders());
+      .AddHttpClient<ForwardProxy>(c => c.AddBrowserImitationRequestHeaders());
 
     serviceCollection
       .AddSingleton<ForwardProxy>()

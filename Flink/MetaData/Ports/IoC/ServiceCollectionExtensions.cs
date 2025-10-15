@@ -9,7 +9,8 @@ namespace Flink.MetaData.Ports.IoC;
 public static class ServiceCollectionExtensions {
   public static IServiceCollection RegisterMetaDataDomain(this IServiceCollection serviceCollection) {
     serviceCollection
-      .AddHttpClient<IMetaDataScraper, MetaDataScraper>(c => c.AddBrowserImitationRequestHeaders())
+      .AddHttpClient<IMetaDataScraper, MetaDataScraper>()
+      .ConfigureHttpClient(c => c.AddBrowserImitationRequestHeaders())
       .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler {
         AllowAutoRedirect = true,
         UseCookies = true,
@@ -21,7 +22,6 @@ public static class ServiceCollectionExtensions {
       .AddSingleton<EmbedMetricsRegistry>()
       .AddScoped<IMetaDataRepository, DbMetaDataRepository>()
       .AddSingleton<IScrapingQueue, InMemoryScrapingQueue>()
-      .AddTransient<IMetaDataScraper, MetaDataScraper>()
       .AddHostedService<ScrapingBackgroundService>();
   }
 }

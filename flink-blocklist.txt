@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 16
+! Version: 17
 ! Title: Flink-Blocklist
-! Last modified: 12 Oct 2025 19:21 UTC
+! Last modified: 15 Oct 2025 20:35 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -26,9 +26,11 @@
 ||vectorx-cel.business^
 ||webhostbox.net^
 ||mybluehost.me^
+||dweb.link^
 
 ! Open Redirects
 ||business.google.com^
+||catholic.net^
 
 ! spam
 ||castle-rock.info^
@@ -45,3 +47,107 @@
 ||urlr.me^
 ||zws.im^
 ||shorturl.fm^
+||bit.ly^
+||shrtn.io^
+||shorturl.at^
+||shortlyx.de^
+||pxl.to^
+||cutt.ly^
+||short.io^
+||cli.re^
+||tiny.ie^
+||s.id^
+||t.ly^
+||ow.ly^
+||tiny.ie^
+||bl.ink^
+||n9.cl^
+||kutt.it^
+||y2u.be^
+||u.to^
+||plu.sh^
+||bc.vc^
+||quo.io^
+||v.gd^
+||adshrink.it^
+||urly.fi^
+||link.zone^
+||shrinkme.io^
+||branch.io^
+||linkza.co^
+||switchy.io^
+||shoort.ch^
+||lnkz.at^
+||petir.io^
+||onclick.to^
+||urlshtr.com^
+||shorter.me^
+||t2m.io^
+||zii.bz^
+||slink.be^
+||nano.do^
+||shorturl.is^
+||goo.io^
+||fwdto.cc^
+||adf.ly^
+||ulvis.net^
+||chl.li^
+||shtn.me^
+||short.cm^
+||pqn.pw^
+||munj.pw^
+||rea.link^
+||linklittle.com^
+||sparkly.to^
+||goo.gl^
+||fuck.it^
+||shrt.li^
+||opn.im^
+||2long.cc^
+||urlshorter.net^
+||joo.gl^
+||blogcoli.com^
+||cut.lu^
+||klik.li^
+||eazy.co^
+||eo.is^
+||urlshortner.org^
+||by2.io^
+||shortenurl.app^
+||shortiny.com^
+||ln.run^
+||link-cut.com^
+||shortenurl.org^
+||milc.io^
+||shortener-url.com^
+||useshort.com^
+||t2mio.com^
+||boltic.io^
+||linkr.it^
+||webn.in^
+||urlyte.com^
+||bitly.cx^
+||l8.nu^
+||url-shortener.co^
+||urldn.com^
+||spify.co^
+||tomly.io^
+||yourls.org^
+||dshr.io^
+||zight.com^
+||w2u.io^
+||capsulink.com^
+||shorten.so^
+||nxturl.com^
+||idm.in^
+||shrink.gg^
+||short-link.me^
+||flashylink.com^
+||ur8ly.com^
+||snipify.net^
+||shlink.io^
+||zweet.link^
+
+! Flink URL Shorteners
+||flink.rtrace.io^
+||flink.is^

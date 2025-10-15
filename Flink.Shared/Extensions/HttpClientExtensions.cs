@@ -1,7 +1,8 @@
 namespace Flink.Shared.Extensions;
 
 public static class HttpClientExtensions {
-  public static void AddBrowserImitationRequestHeaders(this HttpClient httpClient) {
+  public static HttpClient AddBrowserImitationRequestHeaders(this HttpClient httpClient) {
+    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (X11; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0");
     httpClient.DefaultRequestHeaders.Accept.ParseAdd(
       "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
     httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip, deflate, br, zstd");
@@ -15,5 +16,7 @@ public static class HttpClientExtensions {
     httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Sec-Fetch-Site", "none");
     httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Sec-Fetch-User", "?1");
     httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
+
+    return httpClient;
   }
 }

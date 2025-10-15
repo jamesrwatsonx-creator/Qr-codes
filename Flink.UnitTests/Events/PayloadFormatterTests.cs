@@ -4,7 +4,7 @@ using Flink.Events.Ports.Models;
 
 namespace Flink.UnitTests.Events;
 
-public class PayloadFormatterTests {    
+public class PayloadFormatterTests {
   private readonly EventNotification _eventNotification = new EventNotification(FlinkEventNotificationType.FlinkLinkShortened) {
     Emoji = "🆕",
     Title = "Payload Formatter Test",
@@ -16,7 +16,7 @@ public class PayloadFormatterTests {
       { "Embed", new Uri("https://blog.rtrace.io") }
     },
   };
-  
+
   [Fact]
   public Task Verify_DiscordPayload_Matches() {
     var config = new EventNotificationSinkConfiguration {
@@ -31,7 +31,7 @@ public class PayloadFormatterTests {
     var payload = payloadFormatter.Format(_eventNotification, config);
     return Verify(payload);
   }
-  
+
   [Fact]
   public Task Verify_SlackPayload_Matches() {
     var config = new EventNotificationSinkConfiguration {
@@ -46,7 +46,7 @@ public class PayloadFormatterTests {
     var payload = payloadFormatter.Format(_eventNotification, config);
     return Verify(payload);
   }
-  
+
   [Fact]
   public Task Verify_NtfyPayload_Matches() {
     var config = new EventNotificationSinkConfiguration {
@@ -61,7 +61,7 @@ public class PayloadFormatterTests {
     var payload = payloadFormatter.Format(_eventNotification, config);
     return Verify(payload);
   }
-  
+
   [Fact]
   public Task Verify_MattermostPayload_Matches() {
     var config = new EventNotificationSinkConfiguration {
@@ -76,7 +76,7 @@ public class PayloadFormatterTests {
     var payload = payloadFormatter.Format(_eventNotification, config);
     return Verify(payload);
   }
-  
+
   [Fact]
   public Task Verify_RocketchatPayload_Matches() {
     var config = new EventNotificationSinkConfiguration {

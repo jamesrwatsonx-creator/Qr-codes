@@ -10,11 +10,10 @@ public static class ServiceCollectionExtensions {
   public static IServiceCollection RegisterSpamProtection(this IServiceCollection services) {
     services
       .AddHttpClient<EasyListSyncService>()
-      .ConfigureHttpClient(c => c.AddBrowserImitationRequestHeaders())
       .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler {
         AllowAutoRedirect = true,
-        UseCookies = true,
-        AutomaticDecompression = DecompressionMethods.All,
+        UseCookies = false,
+        AutomaticDecompression = DecompressionMethods.All
       });
 
     return services

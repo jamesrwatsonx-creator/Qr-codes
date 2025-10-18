@@ -52,7 +52,7 @@ docker run -p 8080:8080 quay.io/rtraceio/flink
 # yes, that's it flink is up and running 🚀
 ```
 
-Flink defaults to using Sqlite unless specified.
+Flink defaults to using Sqlite unless specified. Now Flink  is up and running, visit [localhost:8080](http://localhost:8080/) to explore the Flink UI.
 
 ### Creating your first Short Link from CLI
 
@@ -70,17 +70,6 @@ curl -X "POST" \
     'http://localhost:8080/links'
 ```
 
-### Exploring flink with your browser
-
-1. navigate to [/](http://localhost:8080/) and you'll see the `flink` UI
-2. navigate to [/awesomeblog](http://localhost:8080/awesomeblog) and `flink` does what it does best: redirecting you
-3. navigate to [/links/awesomeblog/qr](http://localhost:8080/links/awesomeblog/qr) and `flink` will give you the URL encoded as QRcode
-4. navigate to [/links/awesomeblog/meta](http://localhost:8080/links/awesomeblog/meta) and `flink` will give you the Meta Data of the site it has crawled
-5. navigate to [/links/awesomeblog/embed](http://localhost:8080/links/awesomeblog/embed) and `flink` will show you a nice link preview (that you can embed as iframe on your website)
-6. navigate to [/metrics](http://localhost:8080/metrics) and you'll see detail metrics that can be consumed with Prometheus (and visualized with Grafana) (Username: `flink`, Password: `flink`)
-7. navigate to [/swagger/index.html](http://localhost:8080/swagger/index.html) and you'll have Swagger/Swashbuckle REST Client from your browser
-8. navigate to [/swagger/v1/swagger.json](http://localhost:5206/swagger/v1/swagger.json) to get the OpenAPI definition of `flink`
-
 ## Flink Documentation
 
 - **[🚀 Install Guide](/docs/install/install.md)**
@@ -89,6 +78,7 @@ curl -X "POST" \
     - [docker-compose (with PostgreSQL)](/docs/install/install.md#docker-compose-with-postgresql)
     - [Kubernetes Deployment (with SQLite)](/docs/install/install.md#kubernetes-deployment-with-sqlite)
 - **[⚙️ Configuration](/docs/config/config.md)**
+    - [Proxy Configuration](/docs/config/config.md#proxy-configuration)
     - [Database Configuration](/docs/config/config.md#database-configuration)
     - [Metrics Configuration](/docs/config/config.md#metrics-configuration)
     - [WebUI Configuration](/docs/config/config.md#webui-configuration)

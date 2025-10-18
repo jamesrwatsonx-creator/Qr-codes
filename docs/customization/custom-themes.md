@@ -185,6 +185,14 @@ Now we have rudimentary JS in place that makes our theme functional. The final s
 
 visit [http://localhost:8080/](http://localhost:8080) - and flinkify some links.
 
+## Sites for a Theme
+
+- `index.html` landing page on '/'
+- `stats.html` statistics page on '/stats'
+- `history.html` (local) history page on '/history'
+- `countdown.html` links that are not yet active '/cd'
+- `password.html` links that are password protected '/pw'
+
 ## Improvement ideas
 
 Now that we created our rudimentary theme, it's your turn to improve it and adapt it to your liking. The following ideas

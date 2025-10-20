@@ -147,6 +147,7 @@
 ||snipify.net^
 ||shlink.io^
 ||zweet.link^
+||iplogger.co^
 
 ! Flink URL Shorteners
 ||flink.rtrace.io^

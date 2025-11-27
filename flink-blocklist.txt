@@ -150,6 +150,7 @@
 ||zweet.link^
 ||iplogger.co^
 ||kntn.ly^
+||utn.pl^
 
 ! Flink URL Shorteners
 ||flink.rtrace.io^

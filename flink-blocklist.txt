@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 20
+! Version: 21
 ! Title: Flink-Blocklist
-! Last modified: 04 Dez 2025 17:13 UTC
+! Last modified: 28 Dez 2025 17:43 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -29,6 +29,8 @@
 ||dweb.link^
 ||meindokumentnuen.info^
 ||framer.app^
+||4d-3.com^
+
 
 ! Open Redirects
 ||business.google.com^
@@ -152,6 +154,7 @@
 ||iplogger.co^
 ||kntn.ly^
 ||utn.pl^
+||lnk.sk^
 
 ! Flink URL Shorteners
 ||flink.rtrace.io^

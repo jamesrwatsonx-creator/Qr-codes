@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions {
       });
 
     services.AddHostedService<EventDispatcherBackgroundService>();
+    services.AddHostedService<FlinkBootEventBackgroundService>();
     return services.AddSingleton<IEventNotificationQueue, InMemoryEventNotificationNotificationQueue>();
   }
 }

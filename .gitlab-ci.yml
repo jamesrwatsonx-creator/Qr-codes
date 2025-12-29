@@ -10,7 +10,7 @@ variables:
 build:
   stage: build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:9.0
+    name: mcr.microsoft.com/dotnet/sdk:10.0
   script:
     - dotnet build
 
@@ -28,7 +28,7 @@ unit-test:
   dependencies:
     - build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:9.0
+    name: mcr.microsoft.com/dotnet/sdk:10.0
   script:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.UnitTests/
@@ -52,7 +52,7 @@ integration-test:
   dependencies:
     - build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:9.0
+    name: mcr.microsoft.com/dotnet/sdk:10.0
   script:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.IntegrationTests/
@@ -120,7 +120,7 @@ podman-publish-manifest:
 build-executables:
   stage: publish
   image:
-    name: mcr.microsoft.com/dotnet/sdk:9.0
+    name: mcr.microsoft.com/dotnet/sdk:10.0
   only:
     - tags
   script:
@@ -139,7 +139,6 @@ create-release:
   image: registry.gitlab.com/gitlab-org/cli:latest
   only:
     - tags
-  only:
     - /^(\d+\.\d+\.\d+)$/
   needs:
     - job: build-executables

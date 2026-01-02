@@ -3,7 +3,7 @@ using FluentAssertions;
 
 namespace Flink.UnitTests.SpamProtection;
 
-public class EasyListParserTests {
+public class BlockListParserTests {
   private const string EasyListHeaderExample = """
                                                [Adblock Plus 2.0]
                                                ! Version: 202503301046
@@ -50,19 +50,20 @@ public class EasyListParserTests {
   [InlineData(EasyListHeaderExample)]
   public void ValidEasyListHeader_ParseHeader_SuccessfulParseResults(string lines) {
     // Act
-    var parseResult = EasyListParser.ParseHeader("", lines);
+    var parseResult = BlockListParser.ParseBlockListSourceInformation("", lines);
 
     // Assert
-    parseResult.IsSuccess.Should().BeTrue();
+    parseResult.Should().NotBeNull();
   }
 
   [Theory]
   [InlineData("||domain.tld^", "domain.tld")]
   [InlineData("||sub.domain.tld^", "sub.domain.tld")]
   [InlineData("||domain.co.uk^", "domain.co.uk")]
+  [InlineData("||UPPERCASE.co.UK", "uppercase.co.UK")]
   public void ValidEasyListExcerpt_ParseDomains_ReturnsDomainsFromExcerpt(string input, string expectedDomain) {
     // Act
-    var parseResult = EasyListParser.ParseForbiddenDomains(input);
+    var parseResult = BlockListParser.ParseExactMatches(input);
 
     // Assert
     parseResult.Should().Contain(expectedDomain);

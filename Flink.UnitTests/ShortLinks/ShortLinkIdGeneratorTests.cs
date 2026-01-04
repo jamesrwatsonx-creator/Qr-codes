@@ -10,6 +10,7 @@ public class ShortLinkIdGeneratorTests {
   [InlineData(0)]
   public void ShortLinkGeneratorCalled_WithFixedLength_ReturnsCorrectLength(int length) {
     var id = ShortLinkIdGenerator.CreateRandomId(length);
+    id.Should().NotBeNull();
     id.Length.Should().Be(length);
   }
 

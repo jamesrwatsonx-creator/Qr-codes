@@ -1,8 +1,10 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Flink.Domain;
 using Flink.IntegrationTests.TestScaffolding;
-using Flink.ShortLinks.Models;
+using Flink.IntegrationTests.TestScaffolding.Extensions;
+using Flink.ShortLinks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -18,170 +20,152 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     new object[] { new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseUpper } }
   };
 
-  [Theory]
-  [InlineData("")]
-  [InlineData("/links")]
-  public async Task GetShortLinkRequest_WhenRequestedShortLinkDoesNotExist_Returns404(string shortLinkPrefix) {
-    var r = await webApplicationFactory
-      .CreateClient()
-      .GetAsync($"{shortLinkPrefix}/{Guid.NewGuid()}-not-existing-{Guid.NewGuid()}");
+  public static readonly IEnumerable<object[]> SupportedEncodings = new List<object[]> {
+    new object[] { Encoding.UTF8 },
+    new object[] { Encoding.Unicode }
+  };
 
-    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
-  }
+  public static readonly IEnumerable<object[]> ReservedIds = SpecialShortLinkIds.ReservedShortLinkIds.Select(x => new object[] { x });
 
   [Fact]
-  public async Task AddShortLinkRequest_WhenProvidedPreferredUrlDoesNotYetExist_Returns201() {
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = Guid.NewGuid().ToString(),
-      Uri = "https://flink.rtrace.io/"
-    }), Encoding.UTF8, "application/json");
-
+  public async Task AddShortLinkRequest_PreviouslyNotExistingWithPreferredId_Returns201Created() {
+    // Act
     var r = await webApplicationFactory
       .CreateClient()
-      .PostAsync("/links", payload);
+      .CreateShortLinkWithPreferredId(Guid.NewGuid().ToString());
 
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.Created);
+  }
+  
+  
+  [Fact]
+  public async Task AddShortLinkRequest_PreviouslyNotExistingWithRandomId_Returns201Created() {
+    // Act
+    var r = await webApplicationFactory
+      .CreateClient()
+      .CreateShortLinkWithRandomId();
+
+    // Assert
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
 
   [Theory]
   [MemberData(nameof(SerializerSettings))]
-  public async Task AddPreviouslyNonExistingShortLinkRequest_WithDifferentSerializationFormats_Returns201(JsonSerializerOptions opts) {
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = Guid.NewGuid().ToString(),
-      Uri = "https://flink.rtrace.io/"
-    }, opts), Encoding.UTF8, "application/json");
-
+  public async Task AddShortLinkRequest_PreviouslyNotExistingWithDifferentSerializationFormats_Returns201Created(JsonSerializerOptions opts) {
+    // Act
     var r = await webApplicationFactory
       .CreateClient()
-      .PostAsync("/links", payload);
+      .CreateShortLinkWithPreferredId(Guid.NewGuid().ToString(), options: opts);
 
+    // Assert
     r.StatusCode.Should().Be(HttpStatusCode.Created);
   }
 
   [Theory]
-  [InlineData("")]
-  [InlineData("/links")]
-  public async Task GetExistingShortLinkRequest_WhenRequestedUriExists_Returns302(string shortLinkPrefix) {
+  [MemberData(nameof(SupportedEncodings))]
+  public async Task AddShortLinkRequest_PreviouslyNotExistingWithDifferentRequestEncodings_Returns201Created(Encoding enc) {
+    // Act
+    var r = await webApplicationFactory.CreateClient()
+      .CreateShortLinkWithPreferredId(Guid.NewGuid().ToString(), encoding: enc);
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.Created);
+  }
+  
+  
+  [Fact]
+  public async Task AddShortLinkRequest_TwiceWithIdenticalId_Returns400BadRequest() {
     // Arrange
     var id = Guid.NewGuid().ToString();
-    const string Uri = "https://flink.rtrace.io/";
     var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+    await httpClient.CreateShortLinkWithPreferredId(id);
+    
+    // Act
+    var r = await httpClient.CreateShortLinkWithPreferredId(id);
 
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = id,
-      Uri = Uri
-    }), Encoding.UTF8, "application/json");
-    await httpClient.PostAsync("/links", payload);
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+  }
+
+  
+  [Theory]
+  [InlineData("")]
+  [InlineData("/links")]
+  public async Task GetShortLinkRequest_WhenRequestedShortLinkDoesNotExist_Returns404(string shortLinkPrefix) {
+    // Act
+    var r = await webApplicationFactory.CreateClient().GetAsync($"{shortLinkPrefix}/{Guid.NewGuid()}-nx");
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
+  }
+  
+  
+  [Theory]
+  [InlineData("")]
+  [InlineData("/links")]
+  public async Task GetShortLink_ExistingShortLink_Returns302Redirect(string shortLinkPrefix) {
+    // Arrange
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+    await httpClient.CreateShortLinkWithPreferredId(id);
 
     // Act
     var r = await httpClient.GetAsync($"{shortLinkPrefix}/{id}");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.Redirect);
-    r.Headers.Location.Should().Be(Uri);
-  }
-
-  [Fact]
-  public async Task AddMultipleIdenticalExistingShortLinkRequest_WithIdenticalId_Returns400() {
-    // Arrange
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = Guid.NewGuid().ToString(),
-      Uri = "https://flink.rtrace.io/"
-    }), Encoding.UTF8, "application/json");
-
-    var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync("/links", payload);
-
-    // Act
-    var r = await httpClient.PostAsync("/links", payload);
-
-    // Assert
-    r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    r.Headers.Location.Should().Be(TestConstants.TestUri);
   }
 
   [Theory]
-  [InlineData("/")]
-  [InlineData("to")]
-  [InlineData("metrics")]
-  [InlineData("scalar")]
-  [InlineData("swagger")]
-  [InlineData("index")]
-  [InlineData("index.html")]
-  [InlineData("meta")]
-  [InlineData("embed")]
-  [InlineData("")]
-  [InlineData("proxy")]
-  [InlineData("info")]
-  [InlineData("Info")]
-  [InlineData("qr")]
-  [InlineData("stats")]
-  [InlineData("spam-protection")]
-  [InlineData("pw")]
-  [InlineData("history")]
-  public async Task AddForbiddenShortLinkId_ToShortLinks_Returns400(string shortLinkId) {
+  [MemberData(nameof(ReservedIds))]
+  public async Task AddShortLinkRequest_WithForbiddenAndReservedShortLinkId_Returns451Unavailable(string reservedShortLinkId) {
     // Arrange
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = shortLinkId,
-      Uri = "https://flink.rtrace.io/"
-    }), Encoding.UTF8, "application/json");
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
     // Act
-    var httpClient = webApplicationFactory.CreateClient();
-    var r = await httpClient.PostAsync("/links", payload);
+    var r = await httpClient.CreateShortLinkWithPreferredId(reservedShortLinkId);
 
     // Assert
-    r.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    r.StatusCode.Should().Be(HttpStatusCode.UnavailableForLegalReasons);
   }
 
   [Fact]
-  public async Task FlinkSetup_AttemptDeleteNotExisting_Returns200() {
+  public async Task DeleteShortLinkRequest_DeleteNonExistingShortLink_Returns200Ok() {
     // Arrange
     var httpClient = webApplicationFactory.CreateClient();
+    
     // Act
     var r = await httpClient.DeleteAsync($"/links/{Guid.NewGuid().ToString()}-delete");
+    
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.OK);
   }
 
-  [Fact]
-  public async Task ExistingResourceDeleted_AttemptToAccessDeletedShortLink_Returns404() {
+  [Theory]
+  [InlineData("")]
+  [InlineData("/links")]
+  public async Task DeleteShortLinkRequest_GetShortLinkAfterDelete_Returns404NotFound(string prefix) {
     // Arrange
-    var id = $"{Guid.NewGuid()}-{nameof(ExistingResourceDeleted_AttemptToAccessDeletedShortLink_Returns404)}";
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = id,
-      Uri = "https://flink.rtrace.io/"
-    }), Encoding.UTF8, "application/json");
-
+    var id = Guid.NewGuid().ToString();
     var httpClient = webApplicationFactory.CreateClient();
-    await httpClient.PostAsync("/links", payload);
+    await httpClient.CreateShortLinkWithPreferredId(id);
     await httpClient.DeleteAsync($"/links/{id}");
 
     // Act
-    var r = await httpClient.GetAsync($"/links/{id}");
+    var r = await httpClient.GetAsync($"{prefix}{id}");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.NotFound);
   }
 
   [Fact]
-  public async Task NewResourceCreated_NotYetActiveShortLink_Returns301() {
+  public async Task GetShortLinkRequest_GetOnNotYetActiveShortLink_Returns302Redirect() {
     // Arrange
-    var id = $"{Guid.NewGuid()}-{nameof(NewResourceCreated_NotYetActiveShortLink_Returns301)}";
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = id,
-      Uri = "https://flink.rtrace.io/",
-      ActiveFrom = DateTime.UtcNow.AddMinutes(1)
-    }), Encoding.UTF8, "application/json");
-
-    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
-    await httpClient.PostAsync("/links", payload);
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+    await httpClient.CreateShortLinkWithPreferredId(id, activeUntil: DateTimeOffset.UtcNow.AddMinutes(1));
 
     // Act
     var r = await httpClient.GetAsync($"/links/{id}");
@@ -191,69 +175,111 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
   }
 
   [Fact]
-  public async Task NewResourceCreated_AlreadyExpiredShortLink_Returns404() {
+  public async Task GetShortLinkRequest_GetOnAlreadyExpiredShortLink_Returns410Gone() {
     // Arrange
-    var id = $"{Guid.NewGuid()}-{nameof(NewResourceCreated_AlreadyExpiredShortLink_Returns404)}";
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = id,
-      Uri = "https://flink.rtrace.io/",
-      ActiveUntil = DateTime.UtcNow.AddMinutes(-1)
-    }), Encoding.UTF8, "application/json");
-
-    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
-    await httpClient.PostAsync("/links", payload);
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.CreateShortLinkWithPreferredId(id, activeUntil: DateTimeOffset.UtcNow.AddMinutes(-1));
 
     // Act
     var r = await httpClient.GetAsync($"/links/{id}");
 
     // Assert
-    r.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    r.StatusCode.Should().Be(HttpStatusCode.Gone);
   }
 
   [Fact]
-  public async Task NewResourceWithPasswordCreated_AccessedWithPassword_Returns301() {
+  public async Task GetShortLinkRequest_AccessedWithCorrectPassword_Returns302Redirect() {
     // Arrange
     const string Password = "123";
-    var id = $"{Guid.NewGuid()}-{nameof(NewResourceWithPasswordCreated_AccessedWithPassword_Returns301)}";
-    const string Uri = "https://flink.rtrace.io/";
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = id,
-      Uri = Uri,
-      Password = Password
-    }), Encoding.UTF8, "application/json");
-
-    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
-    await httpClient.PostAsync("/links", payload);
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
+    await httpClient.CreateShortLinkWithPreferredId(id, password: Password);
 
     // Act
     var r = await httpClient.GetAsync($"/links/{id}?password={Password}");
 
     // Assert
     r.StatusCode.Should().Be(HttpStatusCode.Redirect);
-    r.Headers.Location.Should().Be(Uri);
+    r.Headers.Location.Should().Be(TestConstants.TestUri);
   }
 
   [Fact]
-  public async Task NewResourceWithPasswordCreated_AccessedWithoutPassword_Returns301() {
+  public async Task GetShortLinkRequest_AccessedWithoutPassword_Returns401Unauthorized() {
     // Arrange
-    var id = $"{Guid.NewGuid()}-{nameof(NewResourceWithPasswordCreated_AccessedWithoutPassword_Returns301)}";
-    var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
-      PreferredId = id,
-      Uri = "https://flink.rtrace.io/",
-      Password = "123"
-    }), Encoding.UTF8, "application/json");
-
-    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
-    await httpClient.PostAsync("/links", payload);
+    const string Password = "123";
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.CreateShortLinkWithPreferredId(id, password: Password);
 
     // Act
     var r = await httpClient.GetAsync($"/links/{id}");
 
     // Assert
-    r.StatusCode.Should().Be(HttpStatusCode.Redirect);
-    r.Headers.Location.Should().Be($"/pw/{id}");
+    r.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  }
+  
+  [Fact]
+  public async Task GetShortLinkRequest_AccessedWithIncorrectPassword_Returns401Unauthorized() {
+    // Arrange
+    const string Password = "123";
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient();
+    await httpClient.CreateShortLinkWithPreferredId(id, password: Password);
+
+    // Act
+    var r = await httpClient.GetAsync($"/links/{id}?password=WrongPassword");
+
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  }
+  
+  [Fact]
+  public async Task AddShortLinkRequest_WithPassword_StripsPasswordFromResponsePayload() {
+    // Arrange
+    const string Password = "123";
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient();
+    
+    
+    // Act
+    var r = await httpClient.CreateShortLinkWithPreferredId(id, password: Password);
+    var bodyText = await r.Content.ReadAsStringAsync();
+    var shortenedLink = JsonSerializer.Deserialize<ShortenedLink>(bodyText, JsonSerializerOptions.Web);
+    
+    // Assert
+    shortenedLink?.PasswordHash.Should().BeNull();
+  }
+  
+  [Fact]
+  public async Task AddShortLinkRequest_NotYetActive_StripsUriFromPayload() {
+    // Arrange
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient();
+    
+    
+    // Act
+    var r = await httpClient.CreateShortLinkWithPreferredId(id, activeFrom: DateTimeOffset.UtcNow.AddMinutes(1));
+    var bodyText = await r.Content.ReadAsStringAsync();
+    var shortenedLink = JsonSerializer.Deserialize<ShortenedLink>(bodyText, JsonSerializerOptions.Web);
+    
+    // Assert
+    shortenedLink?.Uri.Should().NotBe(TestConstants.TestUri);
+  }
+  
+  [Fact]
+  public async Task AddShortLinkRequest_AlreadyExpired_StripsUriFromPayload() {
+    // Arrange
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient();
+    
+    
+    // Act
+    var r = await httpClient.CreateShortLinkWithPreferredId(id, activeUntil: DateTimeOffset.UtcNow.AddMinutes(-1));
+    var bodyText = await r.Content.ReadAsStringAsync();
+    var shortenedLink = JsonSerializer.Deserialize<ShortenedLink>(bodyText, JsonSerializerOptions.Web);
+    
+    // Assert
+    shortenedLink?.Uri.Should().NotBe(TestConstants.TestUri);
   }
 }

@@ -5,7 +5,7 @@ using Flink.Events.Ports.Models;
 namespace Flink.UnitTests.Events;
 
 public class PayloadFormatterTests {
-  private readonly EventNotification _eventNotification = new EventNotification(FlinkEventNotificationType.FlinkLinkShortened) {
+  private readonly EventNotification _eventNotification = new(FlinkEventNotificationType.FlinkLinkShortened) {
     Emoji = "🆕",
     Title = "Payload Formatter Test",
     Message = "Hello World 01234567890äöüß",

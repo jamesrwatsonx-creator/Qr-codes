@@ -1,4 +1,4 @@
-using Flink.SpamProtection.Ports.BusinessLogic;
+using Flink.SpamProtection.BusinessLogic;
 using Flink.SpamProtection.Ports.Repositories;
 using Flink.SpamProtection.Ports.Models;
 using Microsoft.Extensions.Options;

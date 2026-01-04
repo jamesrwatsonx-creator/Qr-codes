@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Flink.Shared.Extensions;
 using FluentAssertions;
 
-namespace Flink.UnitTests.Shared;
+namespace Flink.UnitTests.Shared.Extensions;
 
 public class TestClass {
   [Range(0, 10)] public int Value { get; init; }

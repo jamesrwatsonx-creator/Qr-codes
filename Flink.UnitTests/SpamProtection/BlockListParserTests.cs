@@ -1,4 +1,4 @@
-using Flink.SpamProtection.Ports.BusinessLogic;
+using Flink.SpamProtection.BusinessLogic;
 using FluentAssertions;
 
 namespace Flink.UnitTests.SpamProtection;
@@ -16,8 +16,9 @@ public class BlockListParserTests {
                                                ! in the forums (https://forums.lanik.us/)
                                                ! or via e-mail (easylist@protonmail.com).
                                                ! 
+                                               ! Maintainers: ABC
                                                ! Homepage: https://easylist.to/
-                                               ! Licence: https://easylist.to/pages/licence.html
+                                               ! License: https://easylist.to/pages/licence.html
                                                ! GitHub issues: https://github.com/easylist/easylist/issues
                                                ! GitHub pull requests: https://github.com/easylist/easylist/pulls
                                                ! 
@@ -35,6 +36,7 @@ public class BlockListParserTests {
                                                  ! Last modified: 2025-03-30 10:40 UTC
                                                  ! Expires: 9 days (update frequency)
                                                  ! Homepage: https://easylist.to/
+                                                 ! Maintainer: abc
                                                  ! License: http://creativecommons.org/licenses/by/3.0/
                                                  !
                                                  ! Please report any unblocked content or problems by email or in our forums
@@ -46,21 +48,27 @@ public class BlockListParserTests {
                                                  """;
 
   [Theory]
-  [InlineData(FanboyListHeaderExample)]
-  [InlineData(EasyListHeaderExample)]
-  public void ValidEasyListHeader_ParseHeader_SuccessfulParseResults(string lines) {
+  [InlineData(FanboyListHeaderExample, "Fanboy's Annoyance List", 202503301040u)]
+  [InlineData(EasyListHeaderExample, "EasyList", 202503301046u)]
+  public void ValidEasyListHeader_ParseHeader_SuccessfulParseResults(string lines, string title, ulong version) {
     // Act
-    var parseResult = BlockListParser.ParseBlockListSourceInformation("", lines);
+    var parseResult = BlockListParser.ParseBlockListSourceInformation("src", lines);
 
     // Assert
     parseResult.Should().NotBeNull();
+    parseResult.Source.Should().Be("src");
+    parseResult.Title.Should().Be(title);
+    parseResult.Sha3.Should().NotBeNull();
+    parseResult.Version.Should().Be(version);
+    parseResult.MetaData.Should().NotBeNull();
+    parseResult.MetaData.Count.Should().BeGreaterThan(2);
   }
 
   [Theory]
   [InlineData("||domain.tld^", "domain.tld")]
   [InlineData("||sub.domain.tld^", "sub.domain.tld")]
   [InlineData("||domain.co.uk^", "domain.co.uk")]
-  [InlineData("||UPPERCASE.co.UK", "uppercase.co.UK")]
+  [InlineData("||UPPERCASE.co.UK^", "uppercase.co.uk")]
   public void ValidEasyListExcerpt_ParseDomains_ReturnsDomainsFromExcerpt(string input, string expectedDomain) {
     // Act
     var parseResult = BlockListParser.ParseExactMatches(input);

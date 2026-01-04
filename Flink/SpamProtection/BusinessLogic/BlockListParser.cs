@@ -1,20 +1,19 @@
-using System.Text;
 using System.Security.Cryptography;
-
+using System.Text;
 using Flink.SpamProtection.Models;
 
-namespace Flink.SpamProtection.Ports.BusinessLogic;
+namespace Flink.SpamProtection.BusinessLogic;
 
 public static class BlockListParser {
   private static string? ReadHeaderField(string[] lines, string fieldName, string? fallback = null) {
     try {
-      string[] variants = [fieldName, fieldName.ToUpperInvariant(), fieldName.ToLowerInvariant()];
-
-      var relevantLine = lines.SingleOrDefault(l => l.StartsWith('!') && l.Contains(':') && variants.Any(l.Contains));
+      var relevantLine = lines.SingleOrDefault(l => l.StartsWith('!') && l.Contains(':') && l.ToLowerInvariant().Contains(fieldName.ToLowerInvariant()));
       if (relevantLine == null) return fallback;
 
-      var lineSplit = relevantLine.Split(':');
-      return lineSplit.Length == 2 ? lineSplit[1].Trim() : fallback;
+      var index = relevantLine.IndexOf(':');
+      return index == -1 
+        ? fallback 
+        : relevantLine[(index+1)..].Trim();
     } catch {
       return fallback;
     }
@@ -23,9 +22,8 @@ public static class BlockListParser {
   public static BlockListSource? ParseBlockListSourceInformation(string source, string blockListTxt) {
     try {
       var lines = blockListTxt
-        .Split('\n')
-        .SkipWhile(l => !l.StartsWith("! "))
-        .TakeWhile(l => l.StartsWith("! "))
+        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Where(l => l.StartsWith('!'))
         .ToArray();
 
       var title = ReadHeaderField(lines, "Title", source)!;
@@ -57,8 +55,7 @@ public static class BlockListParser {
 
   public static IEnumerable<string> ParseExactMatches(string blockListText) {
     return blockListText
-      .Split('\n')
-      .Select(l => l.Trim())
+      .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
       .Where(l => !l.StartsWith('!'))
       .Where(l => !l.StartsWith("@@"))
       .Where(l => !l.Contains("##"))

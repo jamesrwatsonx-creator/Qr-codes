@@ -39,17 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Flink.Domain\Flink.Domain.csproj"/>
     <ProjectReference Include="..\Flink.Shared\Flink.Shared.csproj"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="wwwroot\static\img\flink-logo.png"/>
   </ItemGroup>
 </Project>

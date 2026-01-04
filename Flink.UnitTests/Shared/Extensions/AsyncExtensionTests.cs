@@ -1,7 +1,7 @@
 using Flink.Shared.Extensions;
 using FluentAssertions;
 
-namespace Flink.UnitTests.Shared;
+namespace Flink.UnitTests.Shared.Extensions;
 
 public class AsyncExtensionTests {
   [Fact]

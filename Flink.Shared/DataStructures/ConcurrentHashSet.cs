@@ -1,4 +1,4 @@
-namespace Flink.Shared;
+namespace Flink.Shared.DataStructures;
 
 public sealed class ConcurrentHashSet<T>(int expectedCount, IEqualityComparer<T> comparer) {
   private readonly HashSet<T> _set = new(expectedCount, comparer);

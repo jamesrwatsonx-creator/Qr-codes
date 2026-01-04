@@ -4,6 +4,7 @@ using System.Text.Json;
 using Flink.Domain;
 using Flink.IntegrationTests.TestScaffolding;
 using Flink.IntegrationTests.TestScaffolding.Extensions;
+using Flink.Shared.ApiResponse;
 using Flink.ShortLinks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -245,10 +246,10 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Act
     var r = await httpClient.CreateShortLinkWithPreferredId(id, password: Password);
     var bodyText = await r.Content.ReadAsStringAsync();
-    var shortenedLink = JsonSerializer.Deserialize<ShortenedLink>(bodyText, JsonSerializerOptions.Web);
+    var shortenedLink = JsonSerializer.Deserialize<ApiResponse<ShortenedLink>>(bodyText, JsonSerializerOptions.Web);
     
     // Assert
-    shortenedLink?.PasswordHash.Should().BeNull();
+    shortenedLink?.Data?.PasswordHash.Should().BeNull();
   }
   
   [Fact]
@@ -261,10 +262,10 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Act
     var r = await httpClient.CreateShortLinkWithPreferredId(id, activeFrom: DateTimeOffset.UtcNow.AddMinutes(1));
     var bodyText = await r.Content.ReadAsStringAsync();
-    var shortenedLink = JsonSerializer.Deserialize<ShortenedLink>(bodyText, JsonSerializerOptions.Web);
+    var shortenedLink = JsonSerializer.Deserialize<ApiResponse<ShortenedLink>>(bodyText, JsonSerializerOptions.Web);
     
     // Assert
-    shortenedLink?.Uri.Should().NotBe(TestConstants.TestUri);
+    shortenedLink?.Data?.Uri.Should().NotBe(TestConstants.TestUri);
   }
   
   [Fact]
@@ -277,9 +278,9 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Act
     var r = await httpClient.CreateShortLinkWithPreferredId(id, activeUntil: DateTimeOffset.UtcNow.AddMinutes(-1));
     var bodyText = await r.Content.ReadAsStringAsync();
-    var shortenedLink = JsonSerializer.Deserialize<ShortenedLink>(bodyText, JsonSerializerOptions.Web);
+    var shortenedLink = JsonSerializer.Deserialize<ApiResponse<ShortenedLink>>(bodyText, JsonSerializerOptions.Web);
     
     // Assert
-    shortenedLink?.Uri.Should().NotBe(TestConstants.TestUri);
+    shortenedLink?.Data?.Uri.Should().NotBe(TestConstants.TestUri);
   }
 }

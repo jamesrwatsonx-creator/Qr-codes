@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 namespace Flink.Shared.ApiResponse;
 
 public class ApiResponse<T> {
-  private ApiResponse() { }
   public bool IsSuccess { get; private init; }
   public string StatusText { get; private init; } = "";
   [JsonIgnore]

@@ -3,12 +3,18 @@ using HtmlAgilityPack;
 namespace Flink.MetaData;
 
 public static class HtmlMetaDataExtractor {
-  private static readonly string[] MetaDataKeysOfInterest = [
-    "description", "author",
-    "article:author",
-    "og:title", "og:description", "og:image",
-    "twitter:title", "twitter:description", "twitter:image"
-  ];
+  private static readonly HashSet<string> MetaDataKeysOfInterest =
+    new(StringComparer.OrdinalIgnoreCase) {
+      "description",
+      "author",
+      "article:author",
+      "og:title",
+      "og:description",
+      "og:image",
+      "twitter:title",
+      "twitter:description",
+      "twitter:image"
+    };
 
   public static IDictionary<string, string> ExtractMetadata(string htmlBody) {
     try {
@@ -16,14 +22,18 @@ public static class HtmlMetaDataExtractor {
       doc.LoadHtml(htmlBody);
 
       var metaDict = doc.DocumentNode
-        .SelectNodes("//head//meta")!
+        .SelectNodes("//head//meta")
         .Select(ToKeyValuePair)
         .Where(kvp => kvp != null)
         .Select(kvp => kvp!.Value)
         .Where(kvp => MetaDataKeysOfInterest.Contains(kvp.Key))
-        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-      metaDict["title"] = doc.DocumentNode.SelectSingleNode("//head//title")!.InnerText;
+        .GroupBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
+        .ToDictionary(
+          g => g.Key,
+          g => g.First().Value,
+          StringComparer.OrdinalIgnoreCase
+        );
+      
       return metaDict;
     } catch {
       return new Dictionary<string, string>();

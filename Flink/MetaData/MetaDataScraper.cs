@@ -8,18 +8,31 @@ public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
   public async Task<Result<ShortLinkMetaData>> ScrapeAsync(ShortenedLink shortenedLink) {
     try {
       var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5000));
-      var httpRequest = await httpClient.GetAsync(shortenedLink.Uri, cts.Token);
-      var body = await httpRequest.Content.ReadAsStringAsync(cts.Token);
-      var metaDict = HtmlMetaDataExtractor.ExtractMetadata(body);
+      var r = await httpClient.GetAsync(shortenedLink.Uri, cts.Token);
+      
+      var contentType = r.Content.Headers.ContentType?.MediaType ?? "";
 
+      IDictionary<string, string> metaDict;
+
+      if (contentType.StartsWith("text/html")) {
+        var body = await r.Content.ReadAsStringAsync(cts.Token);
+        metaDict = HtmlMetaDataExtractor.ExtractMetadata(body);
+      }
+      else if (contentType.StartsWith("image/")) {
+        metaDict = ImageMetaDataExtractor.Extract(new Uri(shortenedLink.Uri));
+      }
+      else {
+        metaDict = new Dictionary<string, string>();
+      }
+ 
       return Result.Success(new ShortLinkMetaData {
         Id = shortenedLink.Id,
         Author = metaDict.GetOrDefault(["author", "article:author"], null),
         Description = metaDict.GetOrDefault(["description", "og:description", "twitter:description"], null),
         Image = metaDict.GetOrDefault(["og:image", "twitter:image"], null),
         Title = metaDict.GetOrDefault(["title", "og:description", "twitter:description"], null),
-        HttpStatusCode = (int)httpRequest.StatusCode,
-        DocumentSize = body.Length,
+        HttpStatusCode = (int)r.StatusCode,
+        DocumentSize = r.Content.Headers.ContentLength > int.MaxValue ? int.MaxValue : (int)(r.Content.Headers.ContentLength ?? 0),
         LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
       });
     } catch (Exception e) {

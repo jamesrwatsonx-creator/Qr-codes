@@ -106,12 +106,12 @@ class FlinkApiClient {
       xhr.onload = () => {
         if (xhr.status === 201) {
           resolve(new ShortLink(
-            xhr.response.id,
-            xhr.response.creationDate,
-            xhr.response.creator,
-            xhr.response.uri,
-            xhr.response.activeFrom,
-            xhr.response.activeUntil));
+            xhr.response.data.id,
+            xhr.response.data.creationDate,
+            xhr.response.data.creator,
+            xhr.response.data.uri,
+            xhr.response.data.activeFrom,
+            xhr.response.data.activeUntil));
         } else {
           reject(new Error(`Request failed with status ${xhr.status}`));
         }

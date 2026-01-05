@@ -9,7 +9,7 @@ namespace Flink.SpamProtection.Ports.IoC;
 public static class ServiceCollectionExtensions {
   public static IServiceCollection RegisterSpamProtection(this IServiceCollection services) {
     services
-      .AddHttpClient<EasyListSyncService>()
+      .AddHttpClient<BlockListSyncService>()
       .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler {
         AllowAutoRedirect = true,
         UseCookies = false,
@@ -17,8 +17,9 @@ public static class ServiceCollectionExtensions {
       });
 
     return services
-      .AddSingleton<IForbiddenDomainRepository, ForbiddenDomainRepository>()
-      .AddHostedService<EasyListSyncService>()
+      .AddSingleton<IBlockedHostRepository, BlockedHostInMemoryRepository>()
+      .AddSingleton<IBlockListSourceRepository, BlockListSourceInMemoryRepository>()
+      .AddHostedService<BlockListSyncService>()
       .AddHostedService<SpamRemovalService>();
   }
 }

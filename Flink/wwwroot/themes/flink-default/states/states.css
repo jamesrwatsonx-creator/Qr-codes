@@ -1,0 +1,10 @@
+.info-text {
+  border-radius: 15px;
+  border: 1px solid #888;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 30px 15px;
+  text-align: center;
+  color: #888;
+}

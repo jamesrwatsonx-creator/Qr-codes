@@ -37,8 +37,8 @@ public class FlinkWebApplicationFactory : WebApplicationFactory<Program> {
 
       var spamProtectionConfiguration = Options.Create(new SpamProtectionConfiguration {
         Enabled = false,
-        BlockLists = [],
-        CustomBlockedDomains = [],
+        BlockListSources = [],
+        CustomBlockedHosts = [],
         RefreshIntervalInHours = 0
       });
 

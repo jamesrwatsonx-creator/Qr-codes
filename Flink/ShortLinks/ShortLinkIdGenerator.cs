@@ -13,6 +13,10 @@ public static class ShortLinkIdGenerator {
     var randomChars = Enumerable.Range(0, length)
       .Select(_ => UsableCharacters[RandomNumberGenerator.GetInt32(0, UsableCharacters.Length - 1)]);
 
-    return string.Join("", randomChars);
+    var id = string.Join("", randomChars);
+    
+    return SpecialShortLinkIds.ReservedShortLinkIds.Contains(id.ToLowerInvariant())
+      ? CreateRandomId(length)
+      : id;
   }
 }

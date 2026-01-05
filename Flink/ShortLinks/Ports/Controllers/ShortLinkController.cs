@@ -3,15 +3,14 @@ using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.Events.Ports;
 using Flink.MetaData.Ports;
-using Flink.Metrics.Ports.Models;
 using Flink.Proxy.Ports.Extensions;
 using Flink.Shared;
+using Flink.Shared.ApiResponse;
 using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
 using Flink.ShortLinks.Ports.Events;
 using Flink.SpamProtection.Ports.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Flink.ShortLinks.Ports.Controllers;
 
@@ -21,39 +20,11 @@ public class ShortLinkController(
   IShortLinkRepository shortLinkRepository,
   ILogger<ShortLinkController> logger,
   IScrapingQueue scrapingQueue,
-  IForbiddenDomainRepository forbiddenDomainRepository,
   ShortLinkMetricsRegistry metrics,
-  IOptions<MetricsConfiguration> metricsConfiguration,
+  IBlockedHostRepository blockedHostRepository,
   IEventNotificationQueue eventNotificationQueue,
   TimeProvider timeProvider)
   : ControllerBase {
-  private readonly string[] _forbiddenShortLinkIds = [
-    "",
-    " ",
-    "metrics",
-    "to",
-    "scalar",
-    "swagger",
-    "index",
-    "meta",
-    "embed",
-    "proxy",
-    "image",
-    "/",
-    "index.html",
-    "info",
-    "image",
-    "qr",
-    "metadata",
-    "embeds",
-    "links",
-    "stats",
-    "spam-protection",
-    "pw",
-    "history",
-    metricsConfiguration.Value.MetricsEndpointPath.Replace("/", "")
-  ];
-
   /// <summary>
   ///   Get redirected to the URL of the shortLink
   /// </summary>
@@ -63,19 +34,33 @@ public class ShortLinkController(
   [HttpGet("/{shortLinkId}", Name = "GetShortLinkRoot")]
   [HttpGet("/links/{shortLinkId}", Name = "GetShortLink")]
   [ProducesResponseType((int)HttpStatusCode.Redirect)]
-  [ProducesResponseType((int)HttpStatusCode.NotFound)]
-  [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-  public Task<ActionResult> Get(string shortLinkId, [FromQuery] string? password) {
-    logger.LogDebug("Requesting Short Link with {Id}", shortLinkId);
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.NotFound, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.BadRequest, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.UnavailableForLegalReasons, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.Gone, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.Unauthorized, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.ServiceUnavailable, "application/json")]
+  public async Task<IActionResult> Get(string shortLinkId, [FromQuery] string? password) {
+    var maybeShortLinkResult = await shortLinkRepository.GetAsync(shortLinkId)
+      .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e));
 
-    var now = timeProvider.GetUtcNow().ToUnixTimeSeconds();
-    return shortLinkRepository
-      .GetAsync(shortLinkId)
-      .TapError(e => logger.LogError("Could not read Shortened Link with {Id}, because {Error}", shortLinkId, e))
-      .Match(maybeLink => maybeLink
-        .TapSome(_ => metrics.Ok(shortLinkId))
-        .TapNone(() => metrics.NotFound(shortLinkId))
-        .GetValueOrDefault(l => GetActionResultForLinkRequest(l, password), NotFound()), _ => Problem());
+    if (maybeShortLinkResult.IsFailure) {
+      return WantsHtml(HttpContext.Request)
+        ? Redirect("/states/500")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.InternalServerError, null, "Problem querying shortlink").ToResult();
+    }
+
+    maybeShortLinkResult.Value
+      .TapSome(_ => metrics.Ok(shortLinkId))
+      .TapNone(() => metrics.NotFound(shortLinkId));
+
+    if (maybeShortLinkResult.Value.HasNoValue) {
+      return WantsHtml(HttpContext.Request)
+        ? Redirect("/states/404")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.NotFound, null, "Shortlink not found").ToResult();
+    }
+
+    return await GetActionResultForExistingShortenedLinkRequest(maybeShortLinkResult.Value.Value, password);
   }
 
   /// <summary>
@@ -84,16 +69,39 @@ public class ShortLinkController(
   /// <param name="shortLinkRequest">information about the new shortlink</param>
   /// <returns>the shortened link</returns>
   [HttpPost("/links", Name = "CreateNewShortLink")]
-  [ProducesResponseType(typeof(ShortenedLink), 201, "application/json")]
-  [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-  public Task<ActionResult> Add(ShortLinkRequest shortLinkRequest) {
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.Created, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.BadRequest, "application/json")]
+  [ProducesResponseType(typeof(ApiResponse<ShortenedLink>), (int)HttpStatusCode.UnavailableForLegalReasons, "application/json")]
+  public async Task<IActionResult> Add(ShortLinkRequest shortLinkRequest) {
     var sanitizedId = shortLinkRequest.PreferredId?.Trim().ToLower();
-    if (sanitizedId != null && _forbiddenShortLinkIds.Any(forbiddenShortLinkId => sanitizedId == forbiddenShortLinkId))
-      return Task.FromResult<ActionResult>(BadRequest("Reserved ShortLinkId must not be used"));
-    if (forbiddenDomainRepository.ContainsDomain(new Uri(shortLinkRequest.Uri).Host))
-      return Task.FromResult<ActionResult>(BadRequest("The given URL is considered spam."));
+
+    if (sanitizedId != null && SpecialShortLinkIds.ReservedShortLinkIds.Contains(sanitizedId))
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.UnavailableForLegalReasons, null, "Flink ID is reserved")
+        .ToResult();
+
+
+    var isBlocked = await blockedHostRepository.Contains(new Uri(shortLinkRequest.Uri).Host);
+    if (isBlocked) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.UnavailableForLegalReasons, null, "The given URL is considered spam/malicious")
+          .ToResult();
+    }
 
     var actualId = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength);
+    var existCheckResult = await shortLinkRepository.GetAsync(actualId);
+
+    if (existCheckResult.IsFailure) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.InternalServerError, null, "Could not check whether link exists already")
+        .ToResult();
+    }
+    
+    if(existCheckResult.Value.HasValue) {
+      metrics.AlreadyExists(actualId);
+      return ApiResponse<ShortenedLink>.Create(HttpStatusCode.BadRequest, null, "The Shortlink already exists").ToResult();
+    }
+    
     var shortenedLink = new ShortenedLink {
       Id = actualId,
       Creator = shortLinkRequest.Creator,
@@ -104,15 +112,16 @@ public class ShortLinkController(
       PasswordHash = shortLinkRequest.Password == null ? null : PasswordHasher.CalculatePasswordHash(shortLinkRequest.Password, actualId)
     };
 
-    return shortLinkRepository
-      .AddAsync(shortenedLink)
+    return await shortLinkRepository .AddAsync(shortenedLink)
       .TapError(e => logger.LogError("Could not create Shortened Link with {Id}, because {Error}", shortenedLink.Id, e))
       .Tap(shortLink => logger.LogInformation("Saved Shortened Link with {Id}", shortLink.Id))
       .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
       .Check(shortLink => PublishCreationNotification(shortLink, shortenedLink))
       .Tap(_ => metrics.Created())
       .TapError(_ => metrics.AlreadyExists(shortenedLink.Id))
-      .Match(ActionResult (shortLink) => Created($"/{shortLink.Id}", StripPassword(shortLink)), BadRequest);
+      .Match(
+        s => ApiResponse<ShortenedLink>.Create(HttpStatusCode.Created, s.StripPassword(), "Link shortened", $"/{s.Id}").ToResult(),
+        _ => ApiResponse<ShortenedLink>.Create(HttpStatusCode.BadRequest, null, "Failed to add Shortlink").ToResult());
   }
 
   private Result PublishCreationNotification(ShortenedLink shortLink, ShortenedLink shortenedLink) {
@@ -121,11 +130,11 @@ public class ShortLinkController(
     var embedUrl = $"{request.Scheme}://{request.Headers.Host}/links/{shortenedLink.Id}/embed";
     var isPasswordProtected = shortenedLink.PasswordHash is null ? "no" : "yes";
 
-    return eventNotificationQueue.Publish(new ShortLinkCreatedEventNotification {
+    return eventNotificationQueue.Publish(new ShortLinkCreatedEvent {
       Emoji = "🆕",
-      Title = $"{shortLink.Id} flinkified",
+      Title = $"Link shortened",
       Message =
-        $"{shortLink.Uri} created by '{shortLink.Creator}' is now available with Id {shortLink.Id} (Password-protected: {isPasswordProtected})",
+        $"Link with Id {shortLink.Id}, targeting {shortLink.Uri} was created by '{shortLink.Creator}' (Password-protected: {isPasswordProtected})",
       ImageUrl = HttpContext.Request.GetThumbnailUrl(shortLink.Id),
       Urls = new Dictionary<string, Uri> {
         { "Long Link", new Uri(shortenedLink.Uri) },
@@ -142,53 +151,94 @@ public class ShortLinkController(
   [HttpDelete("/links/{shortLinkId}", Name = "RemoveShortLink")]
   [ProducesResponseType((int)HttpStatusCode.OK)]
   [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-  public Task<ActionResult> Delete(string shortLinkId) {
-    return shortLinkRepository.DeleteAsync(shortLinkId)
+  public async Task<IActionResult> Delete(string shortLinkId) {
+    var maybeShortLinkResult = await shortLinkRepository.GetAsync(shortLinkId);
+    if (maybeShortLinkResult.IsFailure) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.InternalServerError, null, "Could not check whether link exists already")
+        .ToResult();
+    }
+
+    if (maybeShortLinkResult.Value.HasNoValue) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.OK, null, "Shortlink does not exist")
+        .ToResult();
+    }
+
+    var shortLink = maybeShortLinkResult.Value.Value;
+
+    return await shortLinkRepository.DeleteAsync(shortLinkId)
       .Tap(() => logger.LogInformation("Deleted Shortened Link {Id}", shortLinkId))
-      .Tap(() => PublishDeletionNotification(shortLinkId))
+      .Tap(() => PublishDeletionNotification(shortLink))
       .TapError(f => logger.LogError("Could not delete Shortened Link {Id}, because {Error}", shortLinkId, f))
-      .Match(Ok, ActionResult (f) => BadRequest(f));
+      .Match(
+        () => ApiResponse<ShortenedLink>
+          .Create(HttpStatusCode.OK, shortLink.StripPassword(), "Shortlink does not exist")
+          .ToResult(), 
+        f => ApiResponse<ShortenedLink>
+          .Create(HttpStatusCode.InternalServerError, shortLink.StripPassword(), "Could not delete Shortened Link")
+          .ToResult());
+    
   }
 
-  private Result PublishDeletionNotification(string shortLinkId) {
-    return eventNotificationQueue.Publish(new ShortLinkCreatedEventNotification {
-      Emoji = "🗑️",
-      Title = $"{shortLinkId} deleted",
-      Message = $"Flinkified link with Id {shortLinkId} was deleted.",
-      ImageUrl = HttpContext.Request.GetThumbnailUrl(shortLinkId),
-      Urls = new Dictionary<string, Uri>(),
+  private void PublishDeletionNotification(ShortenedLink shortLink) {
+    eventNotificationQueue.Publish(new ShortLinkCreatedEvent {
+      Emoji = "🆕",
+      Title = "Link deleted",
+      Message = $"Link with Id {shortLink.Id}, targeting {shortLink.Uri} was deleted'",
+      ImageUrl = HttpContext.Request.GetThumbnailUrl(shortLink.Id),
+      Urls = new Dictionary<string, Uri> {
+        { "Long Link", new Uri(shortLink.Uri) }
+      },
     });
   }
 
-  private ActionResult GetActionResultForLinkRequest(ShortenedLink shortenedLink, string? clientProvidedPassword) {
+  private async Task<IActionResult> GetActionResultForExistingShortenedLinkRequest(ShortenedLink shortenedLink, string? clientProvidedPassword) {
     var now = timeProvider.GetUtcNow().ToUnixTimeSeconds();
+    var uri = new Uri(shortenedLink.Uri).Host.ToLowerInvariant();
 
-    if (now < shortenedLink.ActiveFrom)
-      return Redirect($"/cd/{shortenedLink.Id}?activeFrom={shortenedLink.ActiveFrom}");
+    if (await blockedHostRepository.Contains(uri)) {
+      // Host is on a Spam Protection Blocklist
+      return WantsHtml(HttpContext.Request)
+        ? Redirect($"/states/451")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.UnavailableForLegalReasons, shortenedLink.StripPassword(), "Host is blocked").ToResult();
+    }
 
-    // No password provided (even though a password is needed) -> Unauthorized
-    if (shortenedLink.PasswordHash != null && clientProvidedPassword == null)
-      return Redirect($"/pw/{shortenedLink.Id}");
+    if (now < shortenedLink.ActiveFrom) {
+      // The Shortened Link is not yet active but will be later
+      return WantsHtml(HttpContext.Request)
+        ? Redirect($"/cd/{shortenedLink.Id}?activeFrom={shortenedLink.ActiveFrom}")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.ServiceUnavailable, shortenedLink.StripPassword().StripUri(), "Link not yet active").ToResult();
+    }
 
-    if (now >= shortenedLink.ActiveUntil)
-      return NotFound();
+    if (shortenedLink.PasswordHash != null && clientProvidedPassword == null) {
+      // No password provided (even though a password is needed)
+      return WantsHtml(HttpContext.Request)
+        ? Redirect($"/pw/{shortenedLink.Id}")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.Unauthorized, null, "Password required").ToResult();
+    }
+
+    if (now >= shortenedLink.ActiveUntil) {
+      // The shortened Link is expired and not yet valid anymore
+      return WantsHtml(HttpContext.Request)
+        ? Redirect("/states/410")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.Gone, shortenedLink.StripPassword().StripUri(), "Link expired already").ToResult();
+    }
 
     // Short Link is password protected and provided password does not match
     if (shortenedLink.PasswordHash != null
         && clientProvidedPassword != null
-        && !PasswordHasher.VerifyPasswordHash(shortenedLink.PasswordHash, clientProvidedPassword, shortenedLink.Id))
-      return Unauthorized();
+        && !PasswordHasher.VerifyPasswordHash(shortenedLink.PasswordHash, clientProvidedPassword, shortenedLink.Id)) {
+      return WantsHtml(HttpContext.Request)
+        ? Redirect("/states/401")
+        : ApiResponse<ShortenedLink>.Create(HttpStatusCode.Unauthorized, null, "Wrong Password provided").ToResult();
+    }
 
     return Redirect(shortenedLink.Uri);
   }
 
-  private static ShortenedLink StripPassword(ShortenedLink shortenedLink) => new() {
-    Id = shortenedLink.Id,
-    Uri = shortenedLink.Uri,
-    Creator = shortenedLink.Creator,
-    CreationDate = shortenedLink.CreationDate,
-    ActiveFrom = shortenedLink.ActiveFrom,
-    ActiveUntil = shortenedLink.ActiveUntil,
-    PasswordHash = null
-  };
+  private static bool WantsHtml(HttpRequest request) {
+    var accept = request.Headers.Accept.ToString();
+    return !string.IsNullOrWhiteSpace(accept) && accept.Contains("text/html", StringComparison.OrdinalIgnoreCase);
+  }
 }

@@ -1,3 +1,5 @@
+using System.Net;
+using Flink.Shared.ApiResponse;
 using Flink.WebUI.ActionFilter;
 using Flink.WebUI.Ports.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,12 @@ namespace Flink.WebUI.Ports.Controllers;
 [Produces("text/html")]
 [WebUiSecurityHeadersActionFilter]
 public class WebUiController(IOptions<WebUiConfiguration> webUiConfig, IThemeManager themeManager) : ControllerBase {
+  [HttpGet("/webui/themes")]
+  [ProducesResponseType(typeof(ApiResponse<string[]>), (int)HttpStatusCode.OK, "application/json")]
+  public IActionResult GetAvailableThemes() {
+    return ApiResponse<string[]>.Create(HttpStatusCode.OK, themeManager.AvailableThemes()).ToResult();
+  }
+  
   [HttpGet("/")]
   [ProducesResponseType(typeof(string), 200, "text/html")]
   public IActionResult GetIndex([FromQuery] string? theme) {
@@ -57,5 +65,14 @@ public class WebUiController(IOptions<WebUiConfiguration> webUiConfig, IThemeMan
       return NotFound();
 
     return Content(themeManager.GetFile("history.html", themePath), "text/html");
+  }
+
+  [HttpGet("/states/{statusCode:int}")]
+  public IActionResult GetBlockedPage(int statusCode, [FromQuery] string? theme) {
+    var themePath = theme ?? webUiConfig.Value.DefaultTheme;
+    if (!themeManager.AvailableThemes().Contains(themePath))
+      return NotFound();
+
+    return Content(themeManager.GetFile($"/states/{statusCode}.html", themePath), "text/html");
   }
 }

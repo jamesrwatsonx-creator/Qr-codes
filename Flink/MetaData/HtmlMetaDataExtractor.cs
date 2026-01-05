@@ -1,3 +1,4 @@
+using System.Net;
 using HtmlAgilityPack;
 
 namespace Flink.MetaData;
@@ -33,6 +34,13 @@ public static class HtmlMetaDataExtractor {
           g => g.First().Value,
           StringComparer.OrdinalIgnoreCase
         );
+
+      try {
+        var titleNode = doc.DocumentNode.SelectSingleNode("//head//title");
+        metaDict["title"] = WebUtility.HtmlDecode(titleNode.InnerText.Trim());
+      } catch {
+        metaDict["title"] = "Unknown";
+      }
       
       return metaDict;
     } catch {

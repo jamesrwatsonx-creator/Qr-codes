@@ -151,10 +151,19 @@ public class ShortLinkController(
   [HttpDelete("/links/{shortLinkId}", Name = "RemoveShortLink")]
   [ProducesResponseType((int)HttpStatusCode.OK)]
   [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-  public async Task<ActionResult> Delete(string shortLinkId) {
+  public async Task<IActionResult> Delete(string shortLinkId) {
     var maybeShortLinkResult = await shortLinkRepository.GetAsync(shortLinkId);
-    if (maybeShortLinkResult.IsFailure) return Problem();
-    if (maybeShortLinkResult.Value.HasNoValue) return Ok();
+    if (maybeShortLinkResult.IsFailure) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.InternalServerError, null, "Could not check whether link exists already")
+        .ToResult();
+    }
+
+    if (maybeShortLinkResult.Value.HasNoValue) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.OK, null, "Shortlink does not exist")
+        .ToResult();
+    }
 
     var shortLink = maybeShortLinkResult.Value.Value;
 
@@ -162,7 +171,14 @@ public class ShortLinkController(
       .Tap(() => logger.LogInformation("Deleted Shortened Link {Id}", shortLinkId))
       .Tap(() => PublishDeletionNotification(shortLink))
       .TapError(f => logger.LogError("Could not delete Shortened Link {Id}, because {Error}", shortLinkId, f))
-      .Match(Ok, ActionResult (f) => BadRequest(f));
+      .Match(
+        () => ApiResponse<ShortenedLink>
+          .Create(HttpStatusCode.OK, shortLink.StripPassword(), "Shortlink does not exist")
+          .ToResult(), 
+        f => ApiResponse<ShortenedLink>
+          .Create(HttpStatusCode.InternalServerError, shortLink.StripPassword(), "Could not delete Shortened Link")
+          .ToResult());
+    
   }
 
   private void PublishDeletionNotification(ShortenedLink shortLink) {

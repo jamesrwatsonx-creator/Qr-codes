@@ -283,4 +283,19 @@ public class ShortLinkTests(FlinkWebApplicationFactory webApplicationFactory) : 
     // Assert
     shortenedLink?.Data?.Uri.Should().NotBe(TestConstants.TestUri);
   }
+  
+  [Fact]
+  public async Task GetShortLinkRequest_BetweenActiveFromAndActiveUntil_Returns302Redirect() {
+    // Arrange
+    var id = Guid.NewGuid().ToString();
+    var httpClient = webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
+    await httpClient.CreateShortLinkWithPreferredId(id, activeFrom: DateTimeOffset.UtcNow.AddMinutes(-1), activeUntil: DateTimeOffset.UtcNow.AddMinutes(1));
+    
+    // Act
+    var r = await httpClient.GetAsync($"/links/{id}");
+    
+    // Assert
+    r.StatusCode.Should().Be(HttpStatusCode.Redirect);
+    r.Headers.Location?.ToString().Should().Be(TestConstants.TestUri);
+  }
 }

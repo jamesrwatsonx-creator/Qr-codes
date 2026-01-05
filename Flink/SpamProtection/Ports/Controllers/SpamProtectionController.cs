@@ -44,7 +44,7 @@ public class SpamProtectionController(
   }
 
   /// <summary>
-  ///   Check whether any given Host/FQDN IPv4/IPv6 address is a Spam Protection BlockList
+  ///   Check whether any given Host/FQDN IPv4/IPv6 address is on a Spam Protection BlockList
   /// </summary>
   /// <param name="host">Host, FQDN, IPv4, IPv6</param>
   [HttpGet("/spam-protection/blocks")]

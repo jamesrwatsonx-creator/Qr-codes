@@ -73,6 +73,8 @@ public static class BlockListParser {
       .Where(l => !l.Contains("$image"))
       .Where(l => !l.Contains("$domain="))
       .Where(l => !l.Contains("$media"))
+      .Select(l => l.Replace("$all", ""))
+      .Select(l => l.Replace("$doc", ""))
       .Where(l => l.StartsWith("||") && l.EndsWith('^') && !l.Contains('*'))
       .Select(l => l[2..^1].Trim().ToLowerInvariant())
       .Where(l => !string.IsNullOrWhiteSpace(l))

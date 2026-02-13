@@ -10,7 +10,7 @@ public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
       var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5000));
       var r = await httpClient.GetAsync(shortenedLink.Uri, cts.Token);
       
-      var contentType = r.Content.Headers.ContentType?.MediaType ?? "";
+      var contentType = r.Content.Headers.ContentType?.MediaType?.ToLower() ?? "";
 
       IDictionary<string, string> metaDict;
 
@@ -20,6 +20,10 @@ public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
       }
       else if (contentType.StartsWith("image/")) {
         metaDict = ImageMetaDataExtractor.Extract(new Uri(shortenedLink.Uri));
+      }
+      else if (contentType.StartsWith("application/pdf")) {
+        var body = await r.Content.ReadAsByteArrayAsync(cts.Token);
+        metaDict = PdfMetaDataExtractor.ExtractMetadata(body);
       }
       else {
         metaDict = new Dictionary<string, string>();

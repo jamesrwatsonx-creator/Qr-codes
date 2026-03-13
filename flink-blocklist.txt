@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 24
+! Version: 25
 ! Title: Flink-Blocklist
-! Last modified: 05 Mar 2026 06:54 UTC
+! Last modified: 13 Mar 2026 13:57 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -33,7 +33,7 @@
 ||trueelure.com^
 ||findmyboy.com^
 ||dolcegirlls.com^
-
+||meetgirlforyou.com^
 
 ! Open Redirects
 ||business.google.com^

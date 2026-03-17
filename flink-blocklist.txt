@@ -42,7 +42,8 @@
 ! Open Redirects (reported, not yet fixed)
 ||business.google.com^
 ||catholic.net^
-||www.jbra.com.br
+||www.jbra.com.br^
+||www.min-mura.jp^
 
 ! spam
 ||castle-rock.info^

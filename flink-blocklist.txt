@@ -35,10 +35,12 @@
 ||dolcegirlls.com^
 ||meetgirlforyou.com^
 ||eljado.dolcegirlls.com^
+||www.artificialoiltechno.com^
 
 ! Open Redirects
 ||business.google.com^
 ||catholic.net^
+||www.jbra.com.br
 
 ! spam
 ||castle-rock.info^

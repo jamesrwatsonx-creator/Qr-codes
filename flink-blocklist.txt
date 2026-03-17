@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 26
+! Version: 27
 ! Title: Flink-Blocklist
-! Last modified: 13 Mar 2026 16:07 UTC
+! Last modified: 17 Mar 2026 06:44 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -12,7 +12,7 @@
 ! GitLab: https://gitlab.com/rtraceio/web/flink
 !
 
-! phishing
+! phishing & scam
 ||wixsite.com^
 ||cprapid.com^
 ||xdxcc.top^
@@ -36,8 +36,10 @@
 ||meetgirlforyou.com^
 ||eljado.dolcegirlls.com^
 ||www.artificialoiltechno.com^
+||rnvgqq.sweet4daters.com^
 
-! Open Redirects
+
+! Open Redirects (reported, not yet fixed)
 ||business.google.com^
 ||catholic.net^
 ||www.jbra.com.br

@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 30
+! Version: 31
 ! Title: Flink-Blocklist
-! Last modified: 29 Mar 2026 15:59 UTC
+! Last modified: 01 Apr 2026 05:21 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -17,7 +17,7 @@
 ||cprapid.com^
 ||xdxcc.top^
 ||protpub.fr^
-||fonte.com.co^
+|gxqkaq.brilllantsdates.net|fonte.com.co^
 ||fundacionfunke.org.ar^
 ||lidiferraz.com^
 ||freeoil.ind.br^
@@ -36,9 +36,11 @@
 ||meetgirlforyou.com^
 ||eljado.dolcegirlls.com^
 ||eljado.meetgirlforyou.com^
+||eljado.datinggpassionn.com^
 ||www.artificialoiltechno.com^
 ||rnvgqq.sweet4daters.com^
 ||poshmark.id-4039394.shop^
+||gxqkaq.brilllantsdates.net^
 
 
 

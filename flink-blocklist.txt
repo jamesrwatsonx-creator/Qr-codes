@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 31
+! Version: 32
 ! Title: Flink-Blocklist
-! Last modified: 01 Apr 2026 05:21 UTC
+! Last modified: 01 Apr 2026 19:20 UTC
 ! Expires: 1 days (update frequency)
 ! 
 ! Please report any unblocked adverts or problems
@@ -41,6 +41,7 @@
 ||rnvgqq.sweet4daters.com^
 ||poshmark.id-4039394.shop^
 ||gxqkaq.brilllantsdates.net^
+||jnjqol.getusd8.com^
 
 
 

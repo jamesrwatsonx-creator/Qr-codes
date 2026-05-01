@@ -27,6 +27,8 @@ public class ImageProxyController(IMetaDataRepository metaDataRepository, IForwa
       return NotFound($"The given ShortLink MetaData fo the Id '{shortLinkId}' does not (yet) exist");
     if (r is { IsSuccess: true, Value: { HasValue: true, Value.Image: null } })
       return Redirect($"/links/{shortLinkId}/qr?height=512");
+    if(r is {IsSuccess: true, Value.HasValue: true } && (r.Value.Value.Image?.StartsWith('/') ?? false))
+      return Redirect(r.Value.Value.Image); // file hosted through flink
 
     return await forwardProxy.Proxy(r.Value.Value.Image!)
       .Match(fileContentResult => fileContentResult, IActionResult (f) => BadRequest(f));

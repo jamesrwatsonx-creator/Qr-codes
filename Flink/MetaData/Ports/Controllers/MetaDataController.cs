@@ -40,7 +40,7 @@ public class MetaDataController(
 
     var response = await metaDataRepository.GetAsync(shortLinkId)
       .TapError(e => logger.LogError("Could not get MetaData for {Id}, because {Error}", shortLinkId, e))
-      .Tap(e => e.Execute(m => metricsRegistry.Success(m.Id)))
+      .Tap(e => e.Tap(m => metricsRegistry.Success(m.Id)))
       .Match(maybeMetaData => maybeMetaData.HasValue ? (ActionResult)Ok(maybeMetaData.Value) : NotFound(), BadRequest);
 
     return response;

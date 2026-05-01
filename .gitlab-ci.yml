@@ -23,7 +23,9 @@ build-image-amd64:
   tags:
     - saas-linux-small-amd64
   script:
-    - podman build -t $IMAGE_NAME:test -f Flink/Dockerfile .
+    - podman login -u="$QUAY_CR_USERNAME" -p="$QUAY_CR_PASSWORD" quay.io
+    - podman build -t quay.io/rtraceio/flink:$CI_COMMIT_SHA-amd64-test -f Flink/Dockerfile .
+    - podman push quay.io/rtraceio/flink:$CI_COMMIT_SHA-amd64-test
 
 hadolint:
   stage: lint
@@ -99,7 +101,7 @@ trivy-image-scan:
   needs:
     - build-image-amd64
   script:
-    - trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE_NAME:test
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL quay.io/rtraceio/flink:$CI_COMMIT_SHA-amd64-test
 
 podman-pub-arm64:
   stage: publish

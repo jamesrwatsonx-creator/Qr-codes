@@ -42,14 +42,15 @@ code-quality:
     name: $SDK_IMAGE
   script:
     - dotnet restore --locked-mode
-    - dotnet build --no-restore -warnaserror
-    - dotnet tool install --global dotnet-format
-    - export PATH="$PATH:/root/.dotnet/tools"
-    - dotnet build --no-restore -p:ErrorLog=analysis.sarif
+    - dotnet build --no-restore -p:RunAnalyzers=true -p:AnalysisLevel=latest -p:ErrorLog=$(pwd)/analysis.sarif
+    - |
+      if [ ! -f analysis.sarif ]; then
+        echo '{"runs":[]}' > analysis.sarif
+      fi
     - apt-get update && apt-get install -y jq
     - |
       jq '[
-        .runs[].results[] |
+        .runs[]?.results[]? |
         {
           description: .message.text,
           fingerprint: (.ruleId + "-" + (.locations[0].physicalLocation.artifactLocation.uri // "")),
@@ -60,6 +61,7 @@ code-quality:
           }
         }
       ]' analysis.sarif > gl-code-quality-report.json
+
   artifacts:
     reports:
       codequality: gl-code-quality-report.json

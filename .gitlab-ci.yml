@@ -2,6 +2,7 @@ stages:
   - build
   - lint
   - test
+  - security
   - publish
 
 variables:
@@ -15,6 +16,14 @@ build:
   script:
     - dotnet restore --locked-mode
     - dotnet build --no-restore
+
+build-image-amd64:
+  stage: build
+  image: quay.io/podman/stable
+  tags:
+    - saas-linux-small-amd64
+  script:
+    - podman build -t $IMAGE_NAME:test -f Flink/Dockerfile .
 
 hadolint:
   stage: lint
@@ -72,6 +81,25 @@ integration-test:
       coverage_report:
         coverage_format: cobertura
         path: $CI_PROJECT_DIR/Flink.IntegrationTests/cobertura/**/coverage.cobertura.xml
+
+trivy-fs-scan:
+  stage: security
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs --exit-code 1 --severity HIGH,CRITICAL --no-progress .
+  allow_failure: false
+
+trivy-image-scan:
+  stage: security
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  needs:
+    - build-image-amd64
+  script:
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE_NAME:test
 
 podman-pub-arm64:
   stage: publish

@@ -6,13 +6,15 @@ stages:
 
 variables:
   IMAGE_NAME: quay.io/rtraceio/flink
+  SDK_IMAGE: mcr.microsoft.com/dotnet/sdk:10.0
 
 build:
   stage: build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:10.0
+    name: $SDK_IMAGE
   script:
-    - dotnet build
+    - dotnet restore --locked-mode
+    - dotnet build --no-restore
 
 hadolint:
   stage: lint
@@ -28,7 +30,7 @@ unit-test:
   dependencies:
     - build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:10.0
+    name: $SDK_IMAGE
   script:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.UnitTests/
@@ -52,7 +54,7 @@ integration-test:
   dependencies:
     - build
   image:
-    name: mcr.microsoft.com/dotnet/sdk:10.0
+    name: $SDK_IMAGE
   script:
     - apt-get update -y && apt-get install bc -y
     - cd Flink.IntegrationTests/
@@ -120,7 +122,7 @@ podman-publish-manifest:
 build-executables:
   stage: publish
   image:
-    name: mcr.microsoft.com/dotnet/sdk:10.0
+    name: $SDK_IMAGE
   only:
     - tags
   script:

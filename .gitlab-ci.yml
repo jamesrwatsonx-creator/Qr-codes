@@ -36,6 +36,33 @@ hadolint:
   script:
   - hadolint ./Flink/Dockerfile
 
+code-quality:
+  stage: lint
+  image:
+    name: $SDK_IMAGE
+  script:
+    - dotnet build --no-restore -warnaserror
+    - dotnet tool install --global dotnet-format
+    - export PATH="$PATH:/root/.dotnet/tools"
+    - dotnet build --no-restore -p:ErrorLog=analysis.sarif
+    - apt-get update && apt-get install -y jq
+    - |
+      jq '[
+        .runs[].results[] |
+        {
+          description: .message.text,
+          fingerprint: (.ruleId + "-" + (.locations[0].physicalLocation.artifactLocation.uri // "")),
+          severity: (if .level=="error" then "major" else "minor" end),
+          location: {
+            path: .locations[0].physicalLocation.artifactLocation.uri,
+            lines: { begin: .locations[0].physicalLocation.region.startLine }
+          }
+        }
+      ]' analysis.sarif > gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+
 unit-test:
   stage: test
   dependencies:

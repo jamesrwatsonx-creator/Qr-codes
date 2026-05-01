@@ -41,6 +41,7 @@ code-quality:
   image:
     name: $SDK_IMAGE
   script:
+    - dotnet restore --locked-mode
     - dotnet build --no-restore -warnaserror
     - dotnet tool install --global dotnet-format
     - export PATH="$PATH:/root/.dotnet/tools"

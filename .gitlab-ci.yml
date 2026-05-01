@@ -52,12 +52,24 @@ code-quality:
       jq '[
         .runs[]?.results[]? |
         {
-          description: .message.text,
+          description: (
+            if (.message | type) == "object"
+            then .message.text
+            else .message
+            end
+          ),
           fingerprint: (.ruleId + "-" + (.locations[0].physicalLocation.artifactLocation.uri // "")),
-          severity: (if .level=="error" then "major" else "minor" end),
+          severity: (
+            if .level == "error" then "major"
+            elif .level == "warning" then "minor"
+            else "info"
+            end
+          ),
           location: {
             path: .locations[0].physicalLocation.artifactLocation.uri,
-            lines: { begin: .locations[0].physicalLocation.region.startLine }
+            lines: {
+              begin: .locations[0].physicalLocation.region.startLine
+            }
           }
         }
       ]' analysis.sarif > gl-code-quality-report.json

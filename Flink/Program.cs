@@ -21,6 +21,7 @@ using Flink.SpamProtection.Ports.IoC;
 using Flink.SpamProtection.Ports.Models;
 using Flink.WebUI.Ports.IoC;
 using Flink.WebUI.Ports.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi;
@@ -112,6 +113,9 @@ app.UseSwagger(x => {
 });
 app.UseSwaggerUI(x => {
   x.SwaggerEndpoint("/openapi/v1.json", "v1");
+});
+app.UseForwardedHeaders(new ForwardedHeadersOptions {
+  ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto,
 });
 app.MapControllers();
 app.MapScalarApiReference();

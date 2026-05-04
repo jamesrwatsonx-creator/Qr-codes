@@ -5,7 +5,7 @@ public class EmbedHtmlBuilder(string defaultTheme) {
   private string _shortLinkId = "";
   private string _title = "";
   private string _description = "";
-  private string _originalUrl = "";
+  private string _shortLinkUrl = "";
   private string _imageUrl = "";
 
   public EmbedHtmlBuilder WithTitle(string? title) {
@@ -14,9 +14,9 @@ public class EmbedHtmlBuilder(string defaultTheme) {
     return this;
   }
 
-  public EmbedHtmlBuilder WithOriginalUrl(string? originalUrl) {
+  public EmbedHtmlBuilder WithShortUrl(string? originalUrl) {
     if (originalUrl == null) return this;
-    _originalUrl = originalUrl;
+    _shortLinkUrl = originalUrl;
     return this;
   }
 
@@ -73,7 +73,7 @@ public class EmbedHtmlBuilder(string defaultTheme) {
                 <div class="link-content">
                   <h3 class="link-title">{_title.HtmlEncode().Truncate(80)}</h3>
                   <p class="link-description">{_description.HtmlEncode().Truncate(300)}</p>
-                  <span class="link-url">🌐 {_originalUrl.HtmlEncode()?.Replace("https://", "").Replace("http://", "").Truncate(40)}</span>
+                  <span class="link-url">🌐 {_shortLinkUrl.HtmlEncode()?.Replace("https://", "").Replace("http://", "")}</span>
                 </div>
               </article>
             </a>

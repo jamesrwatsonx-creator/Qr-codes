@@ -27,14 +27,15 @@ public class QrCodeController(
     if (height <= 32)
       return Task.FromResult<ActionResult>(BadRequest());
 
+    var shortLink = $"{HttpContext.Request.GetPublicBaseUrl()}/{shortLinkId}";
+    
     logger.LogInformation("Requesting Short Link with {Id}", shortLinkId);
     return shortLinkRepository
       .GetAsync(shortLinkId)
       .MapError(ActionResult (_) => Problem())
       .Bind(maybeShortenedLink => maybeShortenedLink.ToResult((ActionResult)NotFound()))
-      .Map(shortenedLink => shortenedLink.Uri)
-      .Match(uri => qrCodeCache.Retrieve(uri, height)
-          .Map(maybeQrCode => maybeQrCode.GetValueOrDefault(QrCodeGenerator.CreateUriQrCode(uri, height)))
+      .Match(_ => qrCodeCache.Retrieve(shortLink, height)
+          .Map(maybeQrCode => maybeQrCode.GetValueOrDefault(QrCodeGenerator.CreateUriQrCode(shortLink, height)))
           .Bind(qrCode => qrCodeCache.Cache(shortLinkId, height, qrCode))
           .Tap(_ => metricsRegistry.Success(shortLinkId))
           .Match(ActionResult (qrCode) => File(qrCode, "image/png"), _ => Problem())

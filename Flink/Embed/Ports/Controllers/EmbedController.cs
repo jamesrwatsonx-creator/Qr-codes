@@ -20,20 +20,32 @@ public class EmbedController(
   : ControllerBase {
   private readonly string _404Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
     .WithTitle("🔍 404 / Not Found")
-    .WithImage("/static/img/flink-logo.png", "flink logo")
+    .WithImage("/static/img/flink-404.png", "flink logo")
     .WithDescription("The requested ShortLink does not exist. The Embed you requested does not exist either. Sorry.")
     .Build();
 
   private readonly string _500Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
     .WithTitle("🫣 Temporary Server Error")
-    .WithImage("/static/img/flink-logo.png", "flink logo")
-    .WithDescription("Flink is experiencing a temporary problem. Retry again in a minute. If the problem persists, please contact the administrator")
+    .WithImage("/static/img/flink-5xx.png", "flink logo")
+    .WithDescription("Flink is experiencing a temporary problem. Retry again in a minute. If the problem persists, please contact the administrator.")
     .Build();
 
   private readonly string _401Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
     .WithTitle("⛔ Unauthorized")
-    .WithImage("/static/img/flink-logo.png", "flink logo")
+    .WithImage("/static/img/flink-403.png", "flink logo")
     .WithDescription("The Link you are visiting is password protected. The Embed request is missing the password parameter or the password is wrong.")
+    .Build();
+
+  private readonly string _410Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
+    .WithTitle("⌛ Gone")
+    .WithImage("/static/img/flink-410.png", "flink logo")
+    .WithDescription("The Link you are visiting has expired already. It was available for a limited time only.")
+    .Build();
+
+  private readonly string _503Embed = new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
+    .WithTitle("⏳ Link not yet active")
+    .WithImage("/static/img/flink-410.png", "flink logo")
+    .WithDescription("The Link you are trying to visit has not yet become active. It becomes available at a later time.")
     .Build();
 
   /// <summary>
@@ -51,9 +63,16 @@ public class EmbedController(
     if (shortLinkResult is { IsSuccess: true, Value.HasNoValue: true })
       return Content(_404Embed, "text/html");
 
+    var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    if (shortLinkResult.Value.Value.ActiveFrom > now)
+      return Content(_503Embed, "text/html");
+
     if (shortLinkResult.Value.Value.PasswordHash != null
         && !PasswordHasher.VerifyPasswordHash(shortLinkResult.Value.Value.PasswordHash, password, shortLinkId))
       return Content(_401Embed, "text/html");
+
+    if (shortLinkResult.Value.Value.ActiveUntil < now)
+      return Content(_410Embed, "text/html");
 
     var metaDataResult = await metaDataRepository.GetAsync(shortLinkId);
     if (metaDataResult.IsFailure)
@@ -68,12 +87,13 @@ public class EmbedController(
   }
 
   private string BuildEmbed(ShortLinkMetaData metaData, ShortenedLink shortLink) {
+    var shortLinkUri = $"{HttpContext.Request.GetPublicBaseUrl()}/{shortLink.Id}";
     return new EmbedHtmlBuilder(webUiConfig.Value.DefaultTheme)
       .WithTitle(metaData.Title)
       .WithDescription(metaData.Description)
       .WithShortLinkId(shortLink.Id)
       .WithImage($"/links/{shortLink.Id}/thumbnail", metaData.Title)
-      .WithOriginalUrl(shortLink.Uri)
+      .WithShortUrl(shortLinkUri)
       .Build();
   }
 }

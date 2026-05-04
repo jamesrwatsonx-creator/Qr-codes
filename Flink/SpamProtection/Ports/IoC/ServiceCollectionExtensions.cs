@@ -1,5 +1,4 @@
 using System.Net;
-using Flink.Shared.Extensions;
 using Flink.SpamProtection.Ports.Repositories;
 using Flink.SpamProtection.Repositories;
 using Flink.SpamProtection.Services;

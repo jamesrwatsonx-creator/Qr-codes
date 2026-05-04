@@ -11,9 +11,9 @@ public static class BlockListParser {
       if (relevantLine == null) return fallback;
 
       var index = relevantLine.IndexOf(':');
-      return index == -1 
-        ? fallback 
-        : relevantLine[(index+1)..].Trim();
+      return index == -1
+        ? fallback
+        : relevantLine[(index + 1)..].Trim();
     } catch {
       return fallback;
     }
@@ -54,30 +54,55 @@ public static class BlockListParser {
   }
 
   public static IEnumerable<string> ParseExactMatches(string blockListText) {
-    return blockListText
-      .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-      .Where(l => !l.StartsWith('!'))
-      .Where(l => !l.StartsWith("@@"))
-      .Where(l => !l.Contains("##"))
-      .Where(l => !l.Contains("#?#"))
-      .Where(l => !l.Contains("##"))
-      .Where(l => !l.Contains("$~"))
-      .Where(l => !l.Contains("$script"))
-      .Where(l => !l.Contains("$document"))
-      .Where(l => !l.Contains("$third-party"))
-      .Where(l => !l.Contains("$popup"))
-      .Where(l => !l.Contains("$subdocument"))
-      .Where(l => !l.Contains("$stylesheet"))
-      .Where(l => !l.Contains("$xmlhttprequest"))
-      .Where(l => !l.Contains("$object"))
-      .Where(l => !l.Contains("$image"))
-      .Where(l => !l.Contains("$domain="))
-      .Where(l => !l.Contains("$media"))
-      .Select(l => l.Replace("$all", ""))
-      .Select(l => l.Replace("$doc", ""))
-      .Where(l => l.StartsWith("||") && l.EndsWith('^') && !l.Contains('*'))
-      .Select(l => l[2..^1].Trim().ToLowerInvariant())
-      .Where(l => !string.IsNullOrWhiteSpace(l))
-      .ToArray();
+    if (string.IsNullOrWhiteSpace(blockListText))
+      yield break;
+
+    var lines = blockListText.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    foreach (var raw in lines) {
+      if (string.IsNullOrEmpty(raw))
+        continue;
+      
+      if (raw[0] == '!' || raw.StartsWith("@@"))
+        continue;
+      
+      if (raw.Contains("##") || raw.Contains("#?#"))
+        continue;
+      
+      if (!raw.StartsWith("||") || !raw.EndsWith('^') || raw.Contains('*'))
+        continue;
+      
+      if (raw.Contains('$')) {
+        if (ContainsAnyDisallowedModifier(raw))
+          continue;
+      }
+      
+      var hostSpan = raw.AsSpan(2, raw.Length - 3).Trim();
+
+      if (hostSpan.IsEmpty)
+        continue;
+      
+      var host = hostSpan.ToString().ToLowerInvariant();
+
+      yield return host;
+    }
+  }
+
+  private static bool ContainsAnyDisallowedModifier(string raw) {
+    // single scan, no repeated Contains chains
+    return raw.Contains("$~") ||
+           raw.Contains("$script") ||
+           raw.Contains("$document") ||
+           raw.Contains("$third-party") ||
+           raw.Contains("$popup") ||
+           raw.Contains("$subdocument") ||
+           raw.Contains("$stylesheet") ||
+           raw.Contains("$xmlhttprequest") ||
+           raw.Contains("$object") ||
+           raw.Contains("$image") ||
+           raw.Contains("$domain=") ||
+           raw.Contains("$media") ||
+           raw.Contains("$doc") ||
+           raw.Contains("$all");
   }
 }

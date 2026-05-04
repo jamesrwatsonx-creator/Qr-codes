@@ -1,4 +1,3 @@
-using Flink.Shared;
 using Flink.Shared.DataStructures;
 using FluentAssertions;
 

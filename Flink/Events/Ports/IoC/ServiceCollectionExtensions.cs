@@ -1,6 +1,5 @@
 using System.Net;
 using Flink.Events.Services;
-using Flink.Shared.Extensions;
 
 namespace Flink.Events.Ports.IoC;
 

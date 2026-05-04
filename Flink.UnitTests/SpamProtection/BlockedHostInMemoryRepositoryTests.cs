@@ -71,20 +71,35 @@ public class BlockedHostInMemoryRepositoryTests {
     // Assert
     count.Should().Be(1);
   }
-  
-  
-  [Fact]
-  public async Task HashSetFilledToExpectedCountAlready_InsertOneMore_AddsOne() {
+
+  [Theory]
+  [InlineData("sub.")]
+  [InlineData("sub.sub.")]
+  [InlineData("sub.sub.sub.")]
+  public async Task ParentDomainIsBlocked_SubDomainChecked_IsBlocked(string subdomains) {
     // Arrange
+    const string ParentDomain = "awesome.domain.tld";
     var r = new BlockedHostInMemoryRepository();
-    var blocks = Enumerable.Range(0, BlockedHostInMemoryRepository.HashsetCapacity).Select(i => $"{i}");
-    await r.InsertAsync(blocks);
+    await r.InsertAsync([ParentDomain]);
     
     // Act
-    await r.InsertAsync([Guid.NewGuid().ToString()]);
-    var count = await r.CountAsync();
+    var result = await r.Contains($"{subdomains}{ParentDomain}");
     
     // Assert
-    count.Should().Be(BlockedHostInMemoryRepository.HashsetCapacity + 1);
+    result.Should().BeTrue();
+  }
+  
+  [Fact]
+  public async Task ChildDomainIsBlocked_ParentDomainChecked_IsUnblocked() {
+    // Arrange
+    const string ParentDomain = "awesome.domain.tld";
+    var r = new BlockedHostInMemoryRepository();
+    await r.InsertAsync([ParentDomain]);
+    
+    // Act
+    var result = await r.Contains("domain.tld");
+    
+    // Assert
+    result.Should().BeFalse();
   }
 }

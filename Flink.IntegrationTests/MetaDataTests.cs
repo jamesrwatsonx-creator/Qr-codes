@@ -1,10 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Flink.Domain;
 using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
-using FluentAssertions;
 
 namespace Flink.IntegrationTests;
 
@@ -29,7 +27,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     // Arrange
     var shortLinkId = $"noice{Guid.NewGuid()}";
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/"
     }), Encoding.UTF8, "application/json");
@@ -53,7 +50,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     // Arrange
     var shortLinkId = $"noice{Guid.NewGuid()}";
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       Password = Guid.NewGuid().ToString()
@@ -76,7 +72,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var shortLinkId = $"noice{Guid.NewGuid()}";
     var password = Guid.NewGuid().ToString();
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       Password = password
@@ -111,7 +106,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     // Arrange
     var shortLinkId = $"embed{Guid.NewGuid()}";
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/"
     }), Encoding.UTF8, "application/json");
@@ -134,7 +128,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     // Arrange
     var shortLinkId = $"embed{Guid.NewGuid()}";
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       Password = Guid.NewGuid().ToString()
@@ -160,7 +153,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var password = Guid.NewGuid().ToString();
 
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       Password = password
@@ -185,7 +177,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var shortLinkId = $"embed{Guid.NewGuid()}";
 
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       ActiveUntil = DateTimeOffset.UtcNow.AddSeconds(-10)
@@ -210,7 +201,6 @@ public class MetaDataTests(FlinkWebApplicationFactory webApplicationFactory) : I
     var shortLinkId = $"embed{Guid.NewGuid()}";
 
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       ActiveFrom = DateTimeOffset.UtcNow.AddMinutes(5)

@@ -8,7 +8,7 @@ class FlinkInfo {
 }
 
 class ShortLink {
-  constructor(id, creationDate, creator, uri, preferredId=null, preferredIdLength=4, activeUntil=null, activeFrom=null, password=null) {
+  constructor(id, creationDate, creator, uri, preferredId = null, preferredIdLength = 4, activeUntil = null, activeFrom = null, password = null) {
     this.id = id;
     this.creationDate = creationDate;
     this.creator = creator;
@@ -34,19 +34,29 @@ class ShortLinkMeta {
   }
 }
 
+class AuthProvider {
+  constructor(id, displayName, imageUrl, loginUrl, buttonColor = null) {
+    this.id = id;
+    this.displayName = displayName;
+    this.imageUrl = imageUrl;
+    this.loginUrl = loginUrl;
+    this.buttonColor = buttonColor;
+  }
+}
+
 class FlinkApiClient {
-  async getPasswordQueryParam(plainTextPassword=null) {
-    if(plainTextPassword === null || plainTextPassword?.trim() === "") return '';
+  async getPasswordQueryParam(plainTextPassword = null) {
+    if (plainTextPassword === null || plainTextPassword?.trim() === "") return '';
     const hashedPassword = await this.hashPassword(plainTextPassword);
     return `?password=${hashedPassword}`;
   }
 
-  async getShortLinkHref(shortLinkId, plainTextPassword=null) {
+  async getShortLinkHref(shortLinkId, plainTextPassword = null) {
     const passwordQueryParam = await this.getPasswordQueryParam(plainTextPassword);
     return `${location.protocol}//${location.host}/${shortLinkId}${passwordQueryParam}`;
   }
 
-  async getMetaHref(shortLinkId, plainTextPassword=null) {
+  async getMetaHref(shortLinkId, plainTextPassword = null) {
     const passwordQueryParam = await this.getPasswordQueryParam(plainTextPassword);
     return `${location.protocol}//${location.host}/links/${shortLinkId}/meta${passwordQueryParam}`;
   }
@@ -56,7 +66,7 @@ class FlinkApiClient {
     return `${location.protocol}//${location.host}/links/${shortLinkId}/qr${heightQueryParam}`;
   }
 
-  async getEmbedHref(shortLinkId, plainTextPassword=null) {
+  async getEmbedHref(shortLinkId, plainTextPassword = null) {
     const passwordQueryParam = await this.getPasswordQueryParam(plainTextPassword);
     return `${location.protocol}//${location.host}/links/${shortLinkId}/embed${passwordQueryParam}`;
   }
@@ -94,7 +104,7 @@ class FlinkApiClient {
   }
 
 
-  async postLink(uri, creator, preferredId=null, preferredIdLength=4, activeFrom=null, activeUntil=null, plainTextPassword=null) {
+  async postLink(uri, creator, preferredId = null, preferredIdLength = 4, activeFrom = null, activeUntil = null, plainTextPassword = null) {
     const hashedPassword = plainTextPassword === null ? null : await this.hashPassword(plainTextPassword);
 
     return new Promise((resolve, reject) => {
@@ -121,7 +131,7 @@ class FlinkApiClient {
       xhr.send(JSON.stringify({
         'uri': uri,
         'creator': creator,
-        'preferredId':  preferredId,
+        'preferredId': preferredId,
         'preferredIdLength': preferredIdLength,
         'activeUntil': activeUntil,
         'activeFrom': activeFrom,
@@ -130,7 +140,7 @@ class FlinkApiClient {
     });
   }
 
-  async checkPassword(shortLinkId, plainTextPassword=null) {
+  async checkPassword(shortLinkId, plainTextPassword = null) {
     const href = await this.getMetaHref(shortLinkId, plainTextPassword);
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -142,12 +152,10 @@ class FlinkApiClient {
         if (xhr.status === 200) {
           console.log("Password correct");
           resolve(true);
-        }
-        else if(xhr.status === 401) {
+        } else if (xhr.status === 401) {
           console.log("Password incorrect");
           resolve(false);
-        }
-        else {
+        } else {
           reject(new Error(`Request failed with status ${xhr.status}`));
         }
       };
@@ -157,7 +165,7 @@ class FlinkApiClient {
     });
   }
 
-  async getMeta(shortLinkId, plainTextPassword=null) {
+  async getMeta(shortLinkId, plainTextPassword = null) {
     const href = await this.getMetaHref(shortLinkId, plainTextPassword);
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -186,7 +194,7 @@ class FlinkApiClient {
     });
   }
 
-  async retryGetMeta(shortLinkId, plainTextPassword=null, interval = 300) {
+  async retryGetMeta(shortLinkId, plainTextPassword = null, interval = 300) {
     while (true) {
       try {
         const meta = await this.getMeta(shortLinkId, plainTextPassword);
@@ -199,5 +207,69 @@ class FlinkApiClient {
         await new Promise(resolve => setTimeout(resolve, interval));
       }
     }
+  }
+
+  async getAuthProviders() {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/auth/providers', true);
+      xhr.responseType = "json";
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          const providers = xhr.response.data.map(p =>
+            new AuthProvider(
+              p.id,
+              p.displayName,
+              p.imageUrl,
+              p.loginUrl,
+              p.buttonColor
+            )
+          );
+          resolve(providers);
+        } else {
+          reject(new Error(`Failed to load providers (${xhr.status})`));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error("Network error"));
+      xhr.send();
+    });
+  }
+
+  async getCurrentUser() {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/auth/me', true);
+      xhr.responseType = "json";
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          resolve(xhr.response.data);
+        } else if (xhr.status === 401) {
+          resolve(null);
+        } else {
+          reject(new Error(`Failed (${xhr.status})`));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error("Network error"));
+      xhr.send();
+    });
+  }
+
+  async logout() {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/auth/logout', true);
+
+      xhr.onload = () => {
+        if (xhr.status === 200) resolve();
+        else reject(new Error(`Logout failed (${xhr.status})`));
+      };
+
+      xhr.onerror = () => reject(new Error("Network error"));
+      xhr.send();
+    });
   }
 }

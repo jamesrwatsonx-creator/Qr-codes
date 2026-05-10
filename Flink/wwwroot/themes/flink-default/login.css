@@ -1,0 +1,52 @@
+.sec-login {
+  align-items: center;
+  text-align: center;
+  max-width: 600px;
+}
+
+.login-title {
+  color: #FFF;
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  margin-bottom: 25px;
+  font-size: 1rem;
+  color: #AAA;
+}
+
+.div-login-providers {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.btn-login-provider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+
+  height: 50px;
+  border-radius: 10px;
+  border: none;
+
+  font-size: 1.1rem;
+  color: #FFF;
+  background-color: #303030;
+
+  box-shadow: 0 0 15px #151515;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-login-provider:hover {
+  box-shadow: 0 0 15px #505050;
+  transform: translateY(-1px);
+}
+
+.btn-login-provider img {
+  width: 24px;
+  height: 24px;
+}

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Claims;
 using CSharpFunctionalExtensions;
 using Flink.Domain;
 using Flink.Events.Ports;
@@ -10,6 +11,7 @@ using Flink.Shared.Extensions;
 using Flink.ShortLinks.Models;
 using Flink.ShortLinks.Ports.Events;
 using Flink.SpamProtection.Ports.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flink.ShortLinks.Ports.Controllers;
@@ -85,7 +87,7 @@ public class ShortLinkController(
     if (isBlocked) {
       return ApiResponse<ShortenedLink>
         .Create(HttpStatusCode.UnavailableForLegalReasons, null, "The given URL is considered spam/malicious")
-          .ToResult();
+        .ToResult();
     }
 
     var actualId = shortLinkRequest.PreferredId?.Trim() ?? ShortLinkIdGenerator.CreateRandomId(shortLinkRequest.PreferredIdLength);
@@ -96,15 +98,18 @@ public class ShortLinkController(
         .Create(HttpStatusCode.InternalServerError, null, "Could not check whether link exists already")
         .ToResult();
     }
-    
-    if(existCheckResult.Value.HasValue) {
+
+    if (existCheckResult.Value.HasValue) {
       metrics.AlreadyExists(actualId);
       return ApiResponse<ShortenedLink>.Create(HttpStatusCode.BadRequest, null, "The Shortlink already exists").ToResult();
     }
     
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var creator = userId ?? "anonymous";
+
     var shortenedLink = new ShortenedLink {
       Id = actualId,
-      Creator = shortLinkRequest.Creator,
+      Creator = creator,
       Uri = shortLinkRequest.Uri,
       CreationDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
       ActiveFrom = shortLinkRequest.ActiveFrom?.ToUnixTimeSeconds() ?? 0,
@@ -112,7 +117,7 @@ public class ShortLinkController(
       PasswordHash = shortLinkRequest.Password == null ? null : PasswordHasher.CalculatePasswordHash(shortLinkRequest.Password, actualId)
     };
 
-    return await shortLinkRepository .AddAsync(shortenedLink)
+    return await shortLinkRepository.AddAsync(shortenedLink)
       .TapError(e => logger.LogError("Could not create Shortened Link with {Id}, because {Error}", shortenedLink.Id, e))
       .Tap(shortLink => logger.LogInformation("Saved Shortened Link with {Id}", shortLink.Id))
       .Check(_ => scrapingQueue.EnqueueForScraping(shortenedLink))
@@ -148,10 +153,12 @@ public class ShortLinkController(
   ///   Delete a (previously flinkified) shortlink
   /// </summary>
   /// <param name="shortLinkId">Id of the shortlink to remove</param>
+  /// <param name="authorizationService">not needed</param>
+  [Authorize]
   [HttpDelete("/links/{shortLinkId}", Name = "RemoveShortLink")]
   [ProducesResponseType((int)HttpStatusCode.OK)]
   [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-  public async Task<IActionResult> Delete(string shortLinkId) {
+  public async Task<IActionResult> Delete(string shortLinkId, [FromServices] IAuthorizationService authorizationService) {
     var maybeShortLinkResult = await shortLinkRepository.GetAsync(shortLinkId);
     if (maybeShortLinkResult.IsFailure) {
       return ApiResponse<ShortenedLink>
@@ -167,6 +174,17 @@ public class ShortLinkController(
 
     var shortLink = maybeShortLinkResult.Value.Value;
 
+    var authResult = await authorizationService.AuthorizeAsync(
+      User,
+      shortLink,
+      "CanDeleteLink");
+
+    if (!authResult.Succeeded) {
+      return ApiResponse<ShortenedLink>
+        .Create(HttpStatusCode.Forbidden, null, "Not allowed to delete this link")
+        .ToResult();
+    }
+
     return await shortLinkRepository.DeleteAsync(shortLinkId)
       .Tap(() => logger.LogInformation("Deleted Shortened Link {Id}", shortLinkId))
       .Tap(() => PublishDeletionNotification(shortLink))
@@ -174,11 +192,10 @@ public class ShortLinkController(
       .Match(
         () => ApiResponse<ShortenedLink>
           .Create(HttpStatusCode.OK, shortLink.StripPassword(), "Shortlink does not exist")
-          .ToResult(), 
+          .ToResult(),
         f => ApiResponse<ShortenedLink>
           .Create(HttpStatusCode.InternalServerError, shortLink.StripPassword(), "Could not delete Shortened Link")
           .ToResult());
-    
   }
 
   private void PublishDeletionNotification(ShortenedLink shortLink) {

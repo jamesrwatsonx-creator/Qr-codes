@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
-using FluentAssertions;
 
 namespace Flink.IntegrationTests;
 
@@ -37,7 +36,6 @@ public class EmbedTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     var shortLinkId = $"{nameof(PasswordProtectedEmbed_RequestedWithPassword_Returns200)}-{Guid.NewGuid()}";
     var password = Guid.NewGuid().ToString();
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       Password = password
@@ -60,7 +58,6 @@ public class EmbedTests(FlinkWebApplicationFactory webApplicationFactory) : ICla
     var shortLinkId = $"{nameof(PasswordProtectedEmbed_RequestedWithoutPassword_ReturnsUnauthorizedEmbed)}-{Guid.NewGuid()}";
     var password = Guid.NewGuid().ToString();
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = shortLinkId,
       Uri = "https://blog.rtrace.io/",
       Password = password

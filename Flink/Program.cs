@@ -1,6 +1,10 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Claims;
+using System.Text.Json;
 using Flink;
+using Flink.Authentication.Ports.Models;
+using Flink.Authorization.Ports.Models;
 using Flink.Embed.Ports;
 using Flink.Embed.Ports.IoC;
 using Flink.Events.Ports.IoC;
@@ -21,6 +25,9 @@ using Flink.SpamProtection.Ports.IoC;
 using Flink.SpamProtection.Ports.Models;
 using Flink.WebUI.Ports.IoC;
 using Flink.WebUI.Ports.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
@@ -60,7 +67,9 @@ builder
   .ValidateAndConfigure<MetricsConfiguration>(out var metricsConfiguration)
   .ValidateAndConfigure<WebUiConfiguration>()
   .ValidateAndConfigure<SpamProtectionConfiguration>()
-  .ValidateAndConfigure<EventNotificationConfiguration>();
+  .ValidateAndConfigure<EventNotificationConfiguration>()
+  .ValidateAndConfigure<AuthenticationProviderConfiguration>()
+  .ValidateAndConfigure<AuthorizationConfiguration>();
 
 var consoleTracingEnabled = builder.Configuration.GetSection("Tracing").GetValue<bool>("ConsoleTracingEnabled");
 
@@ -96,6 +105,82 @@ builder.Services.AddOpenTelemetry()
     }
   });
 
+
+var authOptions = builder.Configuration
+  .GetSection(nameof(AuthenticationProviderConfiguration))
+  .Get<AuthenticationProviderConfiguration>();
+
+var authBuilder = builder.Services.AddAuthentication(options => {
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+  })
+  .AddCookie();
+
+foreach (var provider in authOptions!.Providers) {
+  switch (provider.AuthProviderType) {
+    case AuthProviderType.OpenIdConnect:
+      authBuilder.AddOpenIdConnect(provider.Id, options => {
+        options.Authority = provider.Authority;
+        options.ClientId = provider.ClientId;
+        options.ClientSecret = provider.ClientSecret;
+
+        options.ResponseType = "code";
+        options.SaveTokens = true;
+
+        foreach (var scope in provider.Scopes ?? new())
+          options.Scope.Add(scope);
+
+        options.Events.OnTokenValidated = ctx => {
+          var sub = ctx.Principal!.FindFirst("sub")!.Value;
+
+          var identity = (ClaimsIdentity)ctx.Principal.Identity!;
+          identity.AddClaim(new Claim(
+            ClaimTypes.NameIdentifier,
+            $"{provider.Id}:{sub}"
+          ));
+
+          return Task.CompletedTask;
+        };
+      });
+      break;
+    case AuthProviderType.OAuth:
+      authBuilder.AddOAuth(provider.Id, options => {
+        options.ClientId = provider.ClientId;
+        options.ClientSecret = provider.ClientSecret;
+
+        options.CallbackPath = $"/auth/callback/signin-{provider.Id}";
+
+        options.AuthorizationEndpoint = provider.AuthorizationEndpoint!;
+        options.TokenEndpoint = provider.TokenEndpoint!;
+        options.UserInformationEndpoint = provider.UserInfoEndpoint!;
+
+        options.SaveTokens = true;
+
+        options.Events = new OAuthEvents {
+          OnCreatingTicket = async ctx => {
+            var req = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
+            req.Headers.Authorization =
+              new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+
+            var res = await ctx.Backchannel.SendAsync(req);
+            res.EnsureSuccessStatusCode();
+
+            using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+
+            // You may want provider-specific mapping here
+            var id = doc.RootElement.GetProperty("id").ToString();
+
+            ctx.Identity!.AddClaim(new Claim(
+              ClaimTypes.NameIdentifier,
+              $"{provider.Id}:{id}"
+            ));
+          }
+        };
+      });
+      break;
+    default:
+      throw new ArgumentOutOfRangeException();
+  }
+}
 
 var app = builder.Build();
 

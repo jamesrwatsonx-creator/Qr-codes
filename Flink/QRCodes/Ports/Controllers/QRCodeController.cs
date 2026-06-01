@@ -36,7 +36,7 @@ public class QrCodeController(
       .Bind(maybeShortenedLink => maybeShortenedLink.ToResult((ActionResult)NotFound()))
       .Match(_ => qrCodeCache.Retrieve(shortLink, height)
           .Map(maybeQrCode => maybeQrCode.GetValueOrDefault(QrCodeGenerator.CreateUriQrCode(shortLink, height)))
-          .Bind(qrCode => qrCodeCache.Cache(shortLinkId, height, qrCode))
+          .Bind(qrCode => qrCodeCache.Cache(shortLink, height, qrCode))
           .Tap(_ => metricsRegistry.Success(shortLinkId))
           .Match(ActionResult (qrCode) => File(qrCode, "image/png"), _ => Problem())
         , e => e);

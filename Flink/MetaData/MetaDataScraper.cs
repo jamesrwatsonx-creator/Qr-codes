@@ -7,7 +7,7 @@ namespace Flink.MetaData;
 public class MetaDataScraper(HttpClient httpClient) : IMetaDataScraper {
   public async Task<Result<ShortLinkMetaData>> ScrapeAsync(ShortenedLink shortenedLink) {
     try {
-      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5000));
+      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
       var r = await httpClient.GetAsync(shortenedLink.Uri, cts.Token);
       
       var contentType = r.Content.Headers.ContentType?.MediaType?.ToLower() ?? "";

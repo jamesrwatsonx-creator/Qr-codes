@@ -75,4 +75,14 @@ public class WebUiController(IOptions<WebUiConfiguration> webUiConfig, IThemeMan
 
     return Content(themeManager.GetFile($"/states/{statusCode}.html", themePath), "text/html");
   }
+  
+  [HttpGet("/login")]
+  [ProducesResponseType(typeof(string), 200, "text/html")]
+  public IActionResult GetLogin([FromQuery] string? theme) {
+    var themePath = theme ?? webUiConfig.Value.DefaultTheme;
+    if (!themeManager.AvailableThemes().Contains(themePath))
+      return NotFound();
+
+    return Content(themeManager.GetFile("login.html", themePath), "text/html");
+  }
 }

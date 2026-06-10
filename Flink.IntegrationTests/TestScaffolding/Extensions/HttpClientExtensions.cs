@@ -14,7 +14,6 @@ public static class HttpClientExtensions {
     JsonSerializerOptions? options = null,
     Encoding? encoding=null) {
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
       PreferredId = preferredId,
       Uri = TestConstants.TestUri,
       ActiveUntil = activeUntil,
@@ -33,7 +32,6 @@ public static class HttpClientExtensions {
     JsonSerializerOptions? options = null,
     Encoding? encoding = null) {
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = Guid.NewGuid().ToString(),
       Uri = TestConstants.TestUri,
       ActiveUntil = activeUntil,
       ActiveFrom = activeFrom,

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Flink</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <link href="/themes/flink-default/theme-shared.css" rel="stylesheet"/>
+  <link href="/themes/flink-default/index.css" rel="stylesheet"/>
+  <link href="/themes/flink-default/login.css" rel="stylesheet"/>
+</head>
+<body>
+
+<nav role="navigation" aria-label="main">
+  <a href="/"><span aria-hidden="true">🦔 </span><span>home</span></a>
+  <a href="/history"><span aria-hidden="true">⭕ </span><span>history</span></a>
+</nav>
+
+<main>
+  <img class="img-flink-logo"
+       src="/static/img/flink-logo.png"
+       alt="Flink Logo"/>
+
+  <div class="sec-input sec-login">
+
+    <h2 class="login-title">Login</h2>
+    <p class="login-subtitle">Choose a provider</p>
+
+    <div id="div-login-providers" class="div-login-providers">
+      <!-- dynamically filled -->
+    </div>
+
+  </div>
+
+  <div id="error-popover" class="error-popover"></div>
+</main>
+
+<script src="/static/flink-core-api.js"></script>
+<script src="/themes/flink-default/login.js"></script>
+</body>
+</html>

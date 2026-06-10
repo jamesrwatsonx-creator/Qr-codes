@@ -11,12 +11,6 @@ public class ShortLinkRequest {
   public required string Uri { get; init; }
 
   /// <summary>
-  ///   An ideally unique identifier of an entity/identity creating the shortened link
-  /// </summary>
-  [Required]
-  public required string Creator { get; init; }
-
-  /// <summary>
   ///   In case a preferred Id is provided, Flink will attempt to use it as the Id
   /// </summary>
   [Length(2, 250)]

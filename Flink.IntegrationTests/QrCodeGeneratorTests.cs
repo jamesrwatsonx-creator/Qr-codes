@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.Json;
 using Flink.IntegrationTests.TestScaffolding;
 using Flink.ShortLinks.Models;
-using FluentAssertions;
 
 namespace Flink.IntegrationTests;
 
@@ -12,7 +11,6 @@ public class QrCodeGeneratorTests(FlinkWebApplicationFactory webApplicationFacto
   public async Task GetQrCodeRequest_RequestedShortLinkExists_ReturnsExpectedImage() {
     // Arrange
     var payload = new StringContent(JsonSerializer.Serialize(new ShortLinkRequest {
-      Creator = "ruffy",
       PreferredId = "blog",
       Uri = "https://flink.rtrace.io/"
     }), Encoding.UTF8, "application/json");
